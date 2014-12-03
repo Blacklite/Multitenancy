@@ -9,12 +9,17 @@ namespace Microsoft.AspNet.Builder
 {
     public static class BuilderExtensions
     {
-        public static IApplicationBuilder UseMultitenancy([NotNull] this IApplicationBuilder app,
+        public static IApplicationBuilder UseMultitenancy([NotNull] this IApplicationBuilder app)
+        {
+            app.UseMiddleware<TenantContainerMiddleware>();
+            return app;
+        }
+
+        public static IApplicationBuilder AddMultitenancy([NotNull] this IApplicationBuilder app,
             ContainerBuilder builder,
             IEnumerable<IServiceDescriptor> descriptors)
         {
             builder.Populate(descriptors, fallbackServiceProvider: app.ApplicationServices);
-            app.UseMiddleware<TenantContainerMiddleware>();
             return app;
         }
     }

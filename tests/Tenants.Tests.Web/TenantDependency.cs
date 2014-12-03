@@ -6,13 +6,13 @@ namespace Tenants.Tests.Web
 {
     [LifecyclePerTenant]
     [ServiceDescriptor(Lifecycle = LifecycleKind.Singleton)]
-    public class TenantDependency
+    public class TenantDependencySingleton
     {
         public ITenant Tenant { get; }
 
-        public int Number { get; }
+        public int Number { get; set; }
 
-        public TenantDependency(ITenant tenant)
+        public TenantDependencySingleton(ITenant tenant)
         {
             Tenant = tenant;
         }
@@ -20,13 +20,27 @@ namespace Tenants.Tests.Web
 
     [LifecyclePerTenant]
     [ServiceDescriptor(Lifecycle = LifecycleKind.Scoped)]
-    public class TenantDependency2
+    public class TenantDependencyScoped
     {
         public ITenant Tenant { get; }
 
-        public int Number { get; }
+        public int Number { get; set; }
 
-        public TenantDependency2(ITenant tenant)
+        public TenantDependencyScoped(ITenant tenant)
+        {
+            Tenant = tenant;
+        }
+    }
+
+    [LifecyclePerTenant]
+    [ServiceDescriptor(Lifecycle = LifecycleKind.Transient)]
+    public class TenantDependencyTransient
+    {
+        public ITenant Tenant { get; }
+
+        public int Number { get; set; }
+
+        public TenantDependencyTransient(ITenant tenant)
         {
             Tenant = tenant;
         }
