@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.22310.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Blacklite.Framework.Multitenancy", "src\Blacklite.Framework.Multitenancy\Blacklite.Framework.Multitenancy.kproj", "{1628899E-71FF-4D91-8AD3-42E5C8DC384E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E7107856-A73C-4F45-B766-32A27E7BD335}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0A9E1BE6-3595-4978-94B5-F7B673B15E14}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{F160FFB4-10A0-444A-9B10-B0174E0B9CCB}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		appveyor.yml = appveyor.yml
+		global.json = global.json
+		NuGet.config = NuGet.config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{AFF669A6-0345-4C12-845B-B496055025DA}"
+	ProjectSection(SolutionItems) = preProject
+		makefile.shade = makefile.shade
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{E2373EE8-DF3D-4A8C-8CD4-0819FBE9F656}"
+	ProjectSection(SolutionItems) = preProject
+		build.cmd = build.cmd
+		build.sh = build.sh
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Tenants.Tests.Web", "tests\Tenants.Tests.Web\Tenants.Tests.Web.kproj", "{97D83DF7-04F8-48A3-BE75-EB5E5335F7BB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1628899E-71FF-4D91-8AD3-42E5C8DC384E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1628899E-71FF-4D91-8AD3-42E5C8DC384E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1628899E-71FF-4D91-8AD3-42E5C8DC384E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1628899E-71FF-4D91-8AD3-42E5C8DC384E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97D83DF7-04F8-48A3-BE75-EB5E5335F7BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97D83DF7-04F8-48A3-BE75-EB5E5335F7BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97D83DF7-04F8-48A3-BE75-EB5E5335F7BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97D83DF7-04F8-48A3-BE75-EB5E5335F7BB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1628899E-71FF-4D91-8AD3-42E5C8DC384E} = {E7107856-A73C-4F45-B766-32A27E7BD335}
+		{97D83DF7-04F8-48A3-BE75-EB5E5335F7BB} = {0A9E1BE6-3595-4978-94B5-F7B673B15E14}
+	EndGlobalSection
+EndGlobal

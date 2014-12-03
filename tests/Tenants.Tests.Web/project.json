@@ -1,0 +1,25 @@
+﻿{
+    "webroot": "wwwroot",
+    "version": "1.0.0-*",
+    "exclude": [
+        "wwwroot"
+    ],
+    "packExclude": [
+        "**.kproj",
+        "**.user",
+        "**.vspscc"
+    ],
+    "commands": {
+        "web": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.WebListener --server.urls http://localhost:5000"
+    },
+    "dependencies": {
+        "Microsoft.AspNet.Server.IIS": "1.0.0-beta1",
+        "Microsoft.AspNet.Server.WebListener": "1.0.0-beta1",
+        "Blacklite.Framework.Multitenancy": "",
+        "Blacklite.Framework.DependencyInjection": "",
+        "Microsoft.AspNet.Mvc": "6.0.0-beta1"
+    },
+    "frameworks": {
+        "aspnet50": { }
+    }
+}
