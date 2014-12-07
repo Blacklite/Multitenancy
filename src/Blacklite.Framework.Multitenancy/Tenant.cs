@@ -1,5 +1,7 @@
-﻿using Blacklite.Framework.Multitenancy.Events;
+﻿using Blacklite.Framework.Multitenancy.ConfigurationModel;
+using Blacklite.Framework.Multitenancy.Events;
 using Blacklite.Framework.Multitenancy.Operations;
+using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -21,8 +23,7 @@ namespace Blacklite.Framework.Multitenancy
         void Initialize([NotNull] string identifier);
         string Id { get; }
         TenantState State { get; }
-        object this[string key] { get; set; }
-        IReadOnlyDictionary<string, object> Settings { get; }
+        IConfiguration Configuration { get; }
 
         event EventHandler<OnBootEventArgs> OnBoot;
         event EventHandler<OnStartEventArgs> OnStart;
@@ -33,12 +34,11 @@ namespace Blacklite.Framework.Multitenancy
     [LifecyclePerTenant]
     public class Tenant : ITenant
     {
-        private IDictionary<string, object> _settings = new Dictionary<string, object>();
         private bool _initalized = false;
 
-        public Tenant()
+        public Tenant(ITenantConfiguration configuration)
         {
-            Settings = new ReadOnlyDictionary<string, object>(_settings);
+            Configuration = configuration;
 
             OnBoot += (object sender, OnBootEventArgs e) => this.State = TenantState.Boot;
             OnStart += (object sender, OnStartEventArgs e) => this.State = TenantState.Started;
@@ -60,30 +60,8 @@ namespace Blacklite.Framework.Multitenancy
 
         public string Id { get; private set; }
 
-        public object this[string key]
-        {
-            get
-            {
-                object value;
-                if (Settings.TryGetValue(key, out value))
-                    return value;
-                return null;
-            }
-            set
-            {
-                lock (_settings)
-                {
-                    if (_settings.ContainsKey(key))
-                    {
-                        _settings.Remove(key);
-                    }
-                    _settings.Add(key, value);
-                }
-            }
-        }
-
-        public IReadOnlyDictionary<string, object> Settings { get; }
-
+        public IConfiguration Configuration { get; }
+        
         public TenantState State { get; private set; }
 
         public event EventHandler<OnBootEventArgs> OnBoot;
@@ -136,8 +114,6 @@ namespace Blacklite.Framework.Multitenancy
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).    
-                    _settings.Clear();
-
                     if (State == TenantState.Started)
                     {
                         ExecuteStopOperation(new StopOperation());
@@ -151,7 +127,6 @@ namespace Blacklite.Framework.Multitenancy
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
                 // TODO: set large fields to null.
-                _settings = null;
                 OnBoot = null;
                 OnStart = null;
                 OnStop = null;

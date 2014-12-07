@@ -1,4 +1,4 @@
-﻿using Blacklite.Framework.Multitenancy.Configuration;
+﻿using Blacklite.Framework.Multitenancy.ConfigurationModel;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using System;
@@ -15,6 +15,7 @@ namespace Blacklite.Framework.Multitenancy
 
             yield return describe.Singleton<ITenantLogger, TenantLogger>();
             yield return describe.Singleton<ITenant, Tenant>();
+            yield return describe.Singleton<ITenantConfiguration, TenantConfiguration>();
             yield return describe.Singleton<ITenantConfigurationService, TenantConfigurationService>();
         }
 

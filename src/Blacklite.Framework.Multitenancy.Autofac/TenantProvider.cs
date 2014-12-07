@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Blacklite.Framework.Multitenancy.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Collections.Concurrent;
@@ -10,17 +11,19 @@ namespace Blacklite.Framework.Multitenancy.Autofac
     {
         private readonly ILifetimeScope _lifetimeScope;
         private readonly IServiceProvider _serviceProvider;
+        private readonly ITenantConfigurationService _configurationService;
         private readonly ConcurrentDictionary<string, ITenantScope> _tenantScopes = new ConcurrentDictionary<string, ITenantScope>();
 
-        public TenantProvider([NotNull] ILifetimeScope lifetimeScope, [NotNull] IServiceProvider serviceProvider)
+        public TenantProvider([NotNull] ILifetimeScope lifetimeScope, [NotNull] ITenantConfigurationService configurationService, [NotNull] IServiceProvider serviceProvider)
         {
             _lifetimeScope = lifetimeScope;
             _serviceProvider = serviceProvider;
+            _configurationService = configurationService;
         }
 
         public ITenantScope GetOrCreateTenant(string tenantId)
         {
-            return _tenantScopes.GetOrAdd(tenantId, x => new TenantScope(_lifetimeScope.BeginLifetimeScope(AutofacTenantRegistration.TenantTag), x));
+            return _tenantScopes.GetOrAdd(tenantId, x => new TenantScope(_lifetimeScope.BeginLifetimeScope(AutofacTenantRegistration.TenantTag), _configurationService, x));
         }
 
         public IEnumerable<string> Tenants { get { return _tenantScopes.Keys; } }
@@ -39,13 +42,14 @@ namespace Blacklite.Framework.Multitenancy.Autofac
     {
         private readonly ILifetimeScope _lifetimeScope;
 
-        public TenantScope([NotNull] ILifetimeScope lifetimeScope, [NotNull] string tenantId)
+        public TenantScope([NotNull] ILifetimeScope lifetimeScope, [NotNull] ITenantConfigurationService configurationService, [NotNull] string tenantId)
         {
             _lifetimeScope = lifetimeScope;
             ServiceProvider = _lifetimeScope.Resolve<IServiceProvider>();
 
             Tenant = ServiceProvider.GetRequiredService<ITenant>();
             Tenant.Initialize(tenantId);
+            configurationService.Configure(Tenant);
         }
 
         public IServiceProvider ServiceProvider { get; }
