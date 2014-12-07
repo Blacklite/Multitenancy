@@ -6,6 +6,8 @@ using Blacklite.Framework.Multitenancy;
 using Autofac;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.Framework.Logging;
+using Microsoft.Framework.Logging.Console;
 
 namespace Tenants.Tests.Web
 {
@@ -63,6 +65,9 @@ namespace Tenants.Tests.Web
         public void Configure(IApplicationBuilder app)
         {
             var builder = new ContainerBuilder();
+
+            var loggerFactory = app.ApplicationServices.GetService<ILoggerFactory>();
+            loggerFactory.AddConsole();
             // Create the container and use the default application services as a fallback
 
             app.AddMultitenancy(builder, _services);
@@ -76,6 +81,8 @@ namespace Tenants.Tests.Web
             {
                 x.UseMvc();
             });
+            app.UseRuntimeInfoPage("/runtimeinfo");
+            
 
             app.MapWhen(IsTenantInPath, x =>
             {

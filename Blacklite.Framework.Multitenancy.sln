@@ -32,6 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{E2373E
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Tenants.Tests.Web", "tests\Tenants.Tests.Web\Tenants.Tests.Web.kproj", "{97D83DF7-04F8-48A3-BE75-EB5E5335F7BB}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Blacklite.Framework.Multitenancy.Autofac", "src\Blacklite.Framework.Multitenancy.Autofac\Blacklite.Framework.Multitenancy.Autofac.kproj", "{16A36C84-02D8-4CF8-9B7F-5110DC50F09F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{97D83DF7-04F8-48A3-BE75-EB5E5335F7BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97D83DF7-04F8-48A3-BE75-EB5E5335F7BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97D83DF7-04F8-48A3-BE75-EB5E5335F7BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16A36C84-02D8-4CF8-9B7F-5110DC50F09F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16A36C84-02D8-4CF8-9B7F-5110DC50F09F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16A36C84-02D8-4CF8-9B7F-5110DC50F09F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16A36C84-02D8-4CF8-9B7F-5110DC50F09F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,5 +59,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1628899E-71FF-4D91-8AD3-42E5C8DC384E} = {E7107856-A73C-4F45-B766-32A27E7BD335}
 		{97D83DF7-04F8-48A3-BE75-EB5E5335F7BB} = {0A9E1BE6-3595-4978-94B5-F7B673B15E14}
+		{16A36C84-02D8-4CF8-9B7F-5110DC50F09F} = {E7107856-A73C-4F45-B766-32A27E7BD335}
 	EndGlobalSection
 EndGlobal

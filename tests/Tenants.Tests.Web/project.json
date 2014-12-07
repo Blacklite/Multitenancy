@@ -16,6 +16,7 @@
         "Microsoft.AspNet.Server.IIS": "1.0.0-beta1",
         "Microsoft.AspNet.Server.WebListener": "1.0.0-beta1",
         "Microsoft.AspNet.Diagnostics": "1.0.0-beta1",
+        "Microsoft.Framework.Logging.Console": "1.0.0-beta1",
         "Blacklite.Framework.Multitenancy": "",
         "Blacklite.Framework.DependencyInjection": "",
         "Microsoft.AspNet.Mvc": "6.0.0-beta1"

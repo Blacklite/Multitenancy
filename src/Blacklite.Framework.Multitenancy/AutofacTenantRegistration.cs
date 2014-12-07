@@ -2,6 +2,7 @@
 using Autofac.Builder;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.DependencyInjection.Autofac;
+using Microsoft.Framework.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -26,6 +27,12 @@ namespace Blacklite.Framework.Multitenancy
 
             builder.RegisterType<Tenant>()
                 .As<ITenant>()
+                .InstancePerMatchingLifetimeScope(TenantTag);
+
+            builder.Register(x => 
+                x.Resolve<ILoggerFactory>()
+                    .Create(x.Resolve<ITenant>().Id))
+                .As<ILogger>()
                 .InstancePerMatchingLifetimeScope(TenantTag);
 
             Register(builder, descriptors.Where(IsTenantSingleton));

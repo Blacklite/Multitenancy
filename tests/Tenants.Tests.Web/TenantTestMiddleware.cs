@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
 using Microsoft.Framework.DependencyInjection;
+using Microsoft.Framework.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -19,6 +20,9 @@ namespace Tenants.Tests.Web
         {
             var tenantScoped = httpContext.RequestServices.GetService<TenantDependencyScoped>();
             tenantScoped.Number++;
+
+            var logger = httpContext.RequestServices.GetService<ILogger>();
+            logger.WriteWarning(nameof(TenantTestMiddleware2));
 
             var applicationScoped = httpContext.RequestServices.GetService<ApplicationDependencyScoped>();
             applicationScoped.Number++;
@@ -58,9 +62,13 @@ namespace Tenants.Tests.Web
             var applicationTransient = httpContext.RequestServices.GetService<ApplicationDependencyTransient>();
             applicationTransient.Number++;
 
+            var logger = httpContext.RequestServices.GetService<ILogger>();
+            logger.WriteWarning(nameof(TenantTestMiddleware));
+
+
             await httpContext.Response.WriteAsync(httpContext.Request.Path + "\n\n");
 
-            await httpContext.Response.WriteAsync("Tenant \{tenant.Identifier}\n");
+            await httpContext.Response.WriteAsync("Tenant \{tenant.Id}\n");
             await httpContext.Response.WriteAsync("ApplicationDependencySingleton: \{applicationSingleton.Number}\n");
             await httpContext.Response.WriteAsync("ApplicationDependencyScoped: \{applicationScoped.Number}\n");
             await httpContext.Response.WriteAsync("ApplicationDependencyTransient: \{applicationTransient.Number}\n\n");
