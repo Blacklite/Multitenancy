@@ -10,7 +10,7 @@ namespace Blacklite.Framework.Multitenancy
     class TenantLogger : ITenantLogger
     {
         private ILogger _logger;
-        public TenantLogger(ITenant tenant, ILoggerFactory factory)
+        public TenantLogger([NotNull] ITenant tenant, [NotNull] ILoggerFactory factory)
         {
             _logger = factory.Create(tenant.Id);
         }

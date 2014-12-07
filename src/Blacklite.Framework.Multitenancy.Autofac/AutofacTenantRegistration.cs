@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Builder;
+using Blacklite;
 using Blacklite.Framework.Multitenancy;
 using Blacklite.Framework.Multitenancy.Autofac;
 using Microsoft.Framework.ConfigurationModel;
@@ -19,7 +20,7 @@ namespace Autofac
         internal static string TenantTag = "Tenant";
 
         public static T PopulateMultitenancy<T>(
-                this T builder,
+                [NotNull] this T builder,
                 IServiceCollection services,
                 IConfiguration configuration = null)
             where T : ContainerBuilder

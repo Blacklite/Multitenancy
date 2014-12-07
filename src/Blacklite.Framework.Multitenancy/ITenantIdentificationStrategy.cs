@@ -19,6 +19,6 @@ namespace Blacklite.Framework.Multitenancy
         /// <see langword="true" /> if the tenant could be identified; <see langword="false" />
         /// if not.
         /// </returns>
-        bool TryIdentifyTenant(HttpContext context, out string tenantId);
+        bool TryIdentifyTenant([NotNull] HttpContext context, out string tenantId);
     }
 }

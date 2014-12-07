@@ -18,7 +18,7 @@ namespace Blacklite.Framework.Multitenancy
 
     public interface ITenant : IDisposable
     {
-        void Initialize(string identifier);
+        void Initialize([NotNull] string identifier);
         string Id { get; }
         TenantState State { get; }
         object this[string key] { get; set; }

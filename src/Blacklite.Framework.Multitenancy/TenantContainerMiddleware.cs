@@ -15,7 +15,6 @@ namespace Blacklite.Framework.Multitenancy
 {
     public class TenantContainerMiddleware
     {
-        private const string LogicalDataKey = "__HttpContext_Current__";
         private readonly RequestDelegate _next;
         private readonly IServiceProvider _serviceProvider;
         private readonly IContextAccessor<HttpContext> _httpContextAccessor;
