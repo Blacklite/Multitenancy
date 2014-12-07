@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
 using Microsoft.Framework.DependencyInjection;
+using Microsoft.AspNet.Hosting;
 #if ASPNET50
 using System.Runtime.Remoting;
-using Microsoft.AspNet.Hosting;
 #endif
 
 namespace Blacklite.Framework.Multitenancy
@@ -19,14 +19,14 @@ namespace Blacklite.Framework.Multitenancy
         private readonly RequestDelegate _next;
         private readonly IServiceProvider _serviceProvider;
         private readonly IContextAccessor<HttpContext> _httpContextAccessor;
-        private readonly ITenantServiceScopeFactory _serviceScopeFactory;
+        private readonly ITenantProvider _serviceScopeFactory;
         private readonly ITenantIdentificationStrategy _tenantIdentificationStrategy;
         private readonly IHostingEnvironment _environment;
 
         public TenantContainerMiddleware(
             RequestDelegate next,
             IServiceProvider serviceProvider,
-            ITenantServiceScopeFactory serviceScopeFactory,
+            ITenantProvider serviceScopeFactory,
             ITenantIdentificationStrategy tenantIdentificationStrategy,
             IHostingEnvironment environment,
             IContextAccessor<HttpContext> httpContextAccessor)
@@ -67,7 +67,7 @@ namespace Blacklite.Framework.Multitenancy
                 priorApplicationServices != appServiceProvider)
             {
                 appServiceProvider = priorApplicationServices;
-                appServiceScopeFactory = priorApplicationServices.GetRequiredService<ITenantServiceScopeFactory>();
+                appServiceScopeFactory = priorApplicationServices.GetRequiredService<ITenantProvider>();
                 appHttpContextAccessor = priorApplicationServices.GetRequiredService<IContextAccessor<HttpContext>>();
             }
 

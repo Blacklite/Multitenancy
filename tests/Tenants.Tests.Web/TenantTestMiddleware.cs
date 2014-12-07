@@ -21,7 +21,7 @@ namespace Tenants.Tests.Web
             var tenantScoped = httpContext.RequestServices.GetService<TenantDependencyScoped>();
             tenantScoped.Number++;
 
-            var logger = httpContext.RequestServices.GetService<ILogger>();
+            var logger = httpContext.RequestServices.GetService<ITenantLogger>();
             logger.WriteWarning(nameof(TenantTestMiddleware2));
 
             var applicationScoped = httpContext.RequestServices.GetService<ApplicationDependencyScoped>();
@@ -62,7 +62,7 @@ namespace Tenants.Tests.Web
             var applicationTransient = httpContext.RequestServices.GetService<ApplicationDependencyTransient>();
             applicationTransient.Number++;
 
-            var logger = httpContext.RequestServices.GetService<ILogger>();
+            var logger = httpContext.RequestServices.GetService<ITenantLogger>();
             logger.WriteWarning(nameof(TenantTestMiddleware));
 
 

@@ -1,5 +1,6 @@
 ﻿using Blacklite.Framework.Multitenancy.Events;
 using Blacklite.Framework.Multitenancy.Operations;
+using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -29,6 +30,7 @@ namespace Blacklite.Framework.Multitenancy
         event EventHandler<OnShutdownEventArgs> OnShutdown;
     }
 
+    [LifecyclePerTenant]
     public class Tenant : ITenant
     {
         private IDictionary<string, object> _settings = new Dictionary<string, object>();

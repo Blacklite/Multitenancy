@@ -3,20 +3,15 @@ using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Collections.Concurrent;
 
-namespace Blacklite.Framework.Multitenancy
+namespace Blacklite.Framework.Multitenancy.Autofac
 {
-    public interface ITenantServiceScopeFactory
-    {
-        IServiceScope GetOrCreateScope(string tenantId);
-    }
-
-    class TenantServiceScopeFactory : ITenantServiceScopeFactory
+    class TenantProvider : ITenantProvider
     {
         private readonly ILifetimeScope _lifetimeScope;
         private readonly IServiceProvider _serviceProvider;
         private readonly ConcurrentDictionary<string, IServiceScope> _tenantScopes = new ConcurrentDictionary<string, IServiceScope>();
 
-        public TenantServiceScopeFactory(ILifetimeScope lifetimeScope, IServiceProvider serviceProvider)
+        public TenantProvider(ILifetimeScope lifetimeScope, IServiceProvider serviceProvider)
         {
             _lifetimeScope = lifetimeScope;
             _serviceProvider = serviceProvider;

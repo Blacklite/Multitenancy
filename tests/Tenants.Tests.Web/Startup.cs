@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.Framework.Logging;
 using Microsoft.Framework.Logging.Console;
+using Microsoft.Framework.DependencyInjection.ServiceLookup;
 
 namespace Tenants.Tests.Web
 {
@@ -48,32 +49,26 @@ namespace Tenants.Tests.Web
 
     public class Startup
     {
-        private IContainer Container;
-        private IServiceCollection _services;
-        private IServiceCollection _tenantServices = new ServiceCollection();
         private ITenantIdentificationStrategy _tenantIdentificationStrategy;
 
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(typeof(ITenantIdentificationStrategy), typeof(PathTenantIdentificationStrategy));
             services.AddMvc();
             services.AddAssembly(this);
 
-            _services = services;
+            return new ContainerBuilder()
+                .PopulateMultitenancy(services)
+                .Build()
+                .Resolve<IServiceProvider>();
         }
 
         public void Configure(IApplicationBuilder app)
         {
-            var builder = new ContainerBuilder();
-
             var loggerFactory = app.ApplicationServices.GetService<ILoggerFactory>();
             loggerFactory.AddConsole();
             // Create the container and use the default application services as a fallback
 
-            app.AddMultitenancy(builder, _services);
-
-            Container = builder.Build();
-            app.ApplicationServices = Container.Resolve<IServiceProvider>();
             _tenantIdentificationStrategy = app.ApplicationServices.GetService<ITenantIdentificationStrategy>();
             // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
 
@@ -93,11 +88,6 @@ namespace Tenants.Tests.Web
             });
 
             app.UseWelcomePage();
-            /*
-            app.UseMultitenancy();
-            app.UseMvc();
-            app.UseMiddleware<TenantTestMiddleware2>();
-            app.UseMiddleware<TenantTestMiddleware>();*/
         }
 
         public bool IsTenantInPath(HttpContext context)

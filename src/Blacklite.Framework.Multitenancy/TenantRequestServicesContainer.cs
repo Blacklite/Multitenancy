@@ -18,7 +18,7 @@ namespace Blacklite.Framework.Multitenancy
             HttpContext context,
             string tenantId,
             IContextAccessor<HttpContext> httpContextAccessor,
-            ITenantServiceScopeFactory scopeFactory,
+            ITenantProvider scopeFactory,
             IServiceProvider appServiceProvider)
         {
             if (scopeFactory == null)

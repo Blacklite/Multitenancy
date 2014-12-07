@@ -3,14 +3,12 @@
     "dependencies": {
     },
 
-    "frameworks" : {
-        "aspnet50" : { 
+    "frameworks": {
+        "aspnet50": {
+            "frameworkAssemblies": { "System.Collections.Concurrent": "4.0.0.0" },
             "dependencies": {
-            }
-        },
-        "aspnetcore50" : { 
-            "dependencies": {
-                "System.Runtime": "4.0.20-beta-*"
+                "Microsoft.Framework.DependencyInjection.Autofac": "1.0.0-beta2-*",
+                "Blacklite.Framework.Multitenancy": ""
             }
         }
     }

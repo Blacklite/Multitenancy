@@ -1,5 +1,8 @@
 ﻿using Autofac;
 using Autofac.Builder;
+using Blacklite.Framework.Multitenancy;
+using Blacklite.Framework.Multitenancy.Autofac;
+using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.DependencyInjection.Autofac;
 using Microsoft.Framework.Logging;
@@ -9,32 +12,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Blacklite.Framework.Multitenancy
+namespace Autofac
 {
     public static class AutofacTenantRegistration
     {
         internal static string TenantTag = "Tenant";
 
-        public static void Populate(
-                this ContainerBuilder builder,
-                IEnumerable<IServiceDescriptor> descriptors)
+        public static T PopulateMultitenancy<T>(
+                this T builder,
+                IServiceCollection services,
+                IConfiguration configuration = null)
+            where T : ContainerBuilder
         {
-            AutofacRegistration.Populate(builder, descriptors.Where(IsNotTenantSingleton));
+            services.AddSingleton<ITenantProvider, TenantProvider>();
+            services.AddAutofacMultitenancy(configuration);
+            MultitenancyServices.HasRequiredServicesRegistered(services);
 
-            builder.RegisterType<TenantServiceScopeFactory>()
-                .As<ITenantServiceScopeFactory>();
+            AutofacRegistration.Populate(builder, services.Where(IsNotTenantSingleton));
 
-            builder.RegisterType<Tenant>()
-                .As<ITenant>()
-                .InstancePerMatchingLifetimeScope(TenantTag);
-
-            builder.Register(x => 
-                x.Resolve<ILoggerFactory>()
-                    .Create(x.Resolve<ITenant>().Id))
+            builder.Register(x => x.Resolve<ITenantLogger>())
                 .As<ILogger>()
                 .InstancePerMatchingLifetimeScope(TenantTag);
 
-            Register(builder, descriptors.Where(IsTenantSingleton));
+            Register(builder, services.Where(IsTenantSingleton));
+
+            return builder;
         }
 
         private static bool IsTenantSingleton(IServiceDescriptor service)
