@@ -17,10 +17,9 @@ namespace Blacklite.Framework.Multitenancy
 
         public static void Populate(
                 this ContainerBuilder builder,
-                IEnumerable<IServiceDescriptor> descriptors,
-                IServiceProvider fallbackServiceProvider = null)
+                IEnumerable<IServiceDescriptor> descriptors)
         {
-            AutofacRegistration.Populate(builder, descriptors.Where(IsNotTenantSingleton), fallbackServiceProvider: fallbackServiceProvider);
+            AutofacRegistration.Populate(builder, descriptors.Where(IsNotTenantSingleton));
 
             builder.RegisterType<TenantServiceScopeFactory>()
                 .As<ITenantServiceScopeFactory>();

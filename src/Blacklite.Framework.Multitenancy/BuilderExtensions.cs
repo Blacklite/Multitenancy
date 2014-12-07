@@ -19,7 +19,7 @@ namespace Microsoft.AspNet.Builder
             ContainerBuilder builder,
             IEnumerable<IServiceDescriptor> descriptors)
         {
-            builder.Populate(descriptors, fallbackServiceProvider: app.ApplicationServices);
+            builder.Populate(descriptors);
             return app;
         }
     }

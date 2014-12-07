@@ -13,13 +13,13 @@
         "web": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.WebListener --server.urls http://localhost:5000"
     },
     "dependencies": {
-        "Microsoft.AspNet.Server.IIS": "1.0.0-beta1",
-        "Microsoft.AspNet.Server.WebListener": "1.0.0-beta1",
-        "Microsoft.AspNet.Diagnostics": "1.0.0-beta1",
-        "Microsoft.Framework.Logging.Console": "1.0.0-beta1",
+        "Microsoft.AspNet.Server.IIS": "1.0.0-beta2-*",
+        "Microsoft.AspNet.Server.WebListener": "1.0.0-beta2-*",
+        "Microsoft.AspNet.Diagnostics": "1.0.0-beta2-*",
+        "Microsoft.Framework.Logging.Console": "1.0.0-beta2-*",
         "Blacklite.Framework.Multitenancy": "",
         "Blacklite.Framework.DependencyInjection": "",
-        "Microsoft.AspNet.Mvc": "6.0.0-beta1"
+        "Microsoft.AspNet.Mvc": "6.0.0-beta2-*"
     },
     "frameworks": {
         "aspnet50": { }
