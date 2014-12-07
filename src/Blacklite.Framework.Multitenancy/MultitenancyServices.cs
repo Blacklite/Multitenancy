@@ -1,4 +1,5 @@
-﻿using Microsoft.Framework.ConfigurationModel;
+﻿using Blacklite.Framework.Multitenancy.Configuration;
+using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace Blacklite.Framework.Multitenancy
 
             yield return describe.Singleton<ITenantLogger, TenantLogger>();
             yield return describe.Singleton<ITenant, Tenant>();
+            yield return describe.Singleton<ITenantConfigurationService, TenantConfigurationService>();
         }
 
         public static bool HasRequiredServicesRegistered(IServiceCollection services)
