@@ -32,10 +32,6 @@ namespace Autofac
 
             AutofacRegistration.Populate(builder, services.Where(MultitenancyServices.IsNotTenantSingleton));
 
-            builder.Register(x => x.Resolve<ITenantLogger>())
-                .As<ILogger>()
-                .InstancePerMatchingLifetimeScope(TenantTag);
-
             Register(builder, services.Where(MultitenancyServices.IsTenantSingleton));
 
             return builder;

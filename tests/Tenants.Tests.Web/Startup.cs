@@ -65,7 +65,7 @@ namespace Tenants.Tests.Web
 
         public void Configure(IApplicationBuilder app)
         {
-            var loggerFactory = app.ApplicationServices.GetService<ILoggerFactory>();
+            var loggerFactory = app.ApplicationServices.GetRequiredService<ILoggerFactory>();
             loggerFactory.AddConsole();
             // Create the container and use the default application services as a fallback
 
