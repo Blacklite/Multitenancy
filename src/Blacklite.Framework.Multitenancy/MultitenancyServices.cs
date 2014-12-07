@@ -4,6 +4,7 @@ using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Blacklite.Framework.Multitenancy
 {
@@ -13,10 +14,10 @@ namespace Blacklite.Framework.Multitenancy
         {
             var describe = new ServiceDescriber(configuration);
 
-            yield return describe.Singleton<ITenantLogger, TenantLogger>();
-            yield return describe.Singleton<ITenant, Tenant>();
-            yield return describe.Singleton<ITenantConfiguration, TenantConfiguration>();
-            yield return describe.Singleton<ITenantConfigurationService, TenantConfigurationService>();
+            yield return describe.TenantSingleton<ITenantLogger, TenantLogger>();
+            yield return describe.TenantSingleton<ITenant, Tenant>();
+            yield return describe.TenantSingleton<ITenantConfiguration, TenantConfiguration>();
+            yield return describe.TenantSingleton<ITenantConfigurationService, TenantConfigurationService>();
         }
 
         public static bool HasRequiredServicesRegistered(IServiceCollection services)
@@ -29,6 +30,21 @@ namespace Blacklite.Framework.Multitenancy
                 throw new Exception("\{nameof(ITenantIdentificationStrategy)} has not been registered, \{nameof(ITenantIdentificationStrategy)} is required for Multitenancy.");
 
             return true;
+        }
+        
+        public static bool IsTenantSingleton(IServiceDescriptor service)
+        {
+            return service is TenantServiceDescriptor || service.Lifecycle == LifecycleKind.Singleton &&
+                (
+                    service.ServiceType != null && service.ServiceType.GetTypeInfo().GetCustomAttributes<LifecyclePerTenantAttribute>(true).Any() ||
+                    service.ImplementationType != null && service.ImplementationType.GetTypeInfo().GetCustomAttributes<LifecyclePerTenantAttribute>(true).Any() ||
+                    service.ImplementationInstance != null && service.ImplementationInstance.GetType().GetTypeInfo().GetCustomAttributes<LifecyclePerTenantAttribute>(true).Any()
+                );
+        }
+
+        public static bool IsNotTenantSingleton(IServiceDescriptor service)
+        {
+            return !IsTenantSingleton(service);
         }
     }
 }

@@ -26,33 +26,19 @@ namespace Autofac
             where T : ContainerBuilder
         {
             services.AddSingleton<ITenantProvider, TenantProvider>();
-            services.AddAutofacMultitenancy(configuration);
+            services.AddMultitenancy(configuration);
+
             MultitenancyServices.HasRequiredServicesRegistered(services);
 
-            AutofacRegistration.Populate(builder, services.Where(IsNotTenantSingleton));
+            AutofacRegistration.Populate(builder, services.Where(MultitenancyServices.IsNotTenantSingleton));
 
             builder.Register(x => x.Resolve<ITenantLogger>())
                 .As<ILogger>()
                 .InstancePerMatchingLifetimeScope(TenantTag);
 
-            Register(builder, services.Where(IsTenantSingleton));
+            Register(builder, services.Where(MultitenancyServices.IsTenantSingleton));
 
             return builder;
-        }
-
-        private static bool IsTenantSingleton(IServiceDescriptor service)
-        {
-            return service.Lifecycle == LifecycleKind.Singleton &&
-                (
-                    service.ServiceType != null && service.ServiceType.GetTypeInfo().GetCustomAttributes<LifecyclePerTenantAttribute>(true).Any() ||
-                    service.ImplementationType != null && service.ImplementationType.GetTypeInfo().GetCustomAttributes<LifecyclePerTenantAttribute>(true).Any() ||
-                    service.ImplementationInstance != null && service.ImplementationInstance.GetType().GetTypeInfo().GetCustomAttributes<LifecyclePerTenantAttribute>(true).Any()
-                );
-        }
-
-        private static bool IsNotTenantSingleton(IServiceDescriptor service)
-        {
-            return !IsTenantSingleton(service);
         }
 
         private static void Register(

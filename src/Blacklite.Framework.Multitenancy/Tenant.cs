@@ -31,7 +31,6 @@ namespace Blacklite.Framework.Multitenancy
         event EventHandler<OnShutdownEventArgs> OnShutdown;
     }
 
-    [LifecyclePerTenant]
     public class Tenant : ITenant
     {
         private bool _initalized = false;

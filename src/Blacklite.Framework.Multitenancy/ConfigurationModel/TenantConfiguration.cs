@@ -9,7 +9,6 @@ namespace Blacklite.Framework.Multitenancy.ConfigurationModel
 
     }
 
-    [LifecyclePerTenant]
     public class TenantConfiguration : Configuration, ITenantConfiguration
     {
 

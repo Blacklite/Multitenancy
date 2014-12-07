@@ -6,7 +6,6 @@ namespace Blacklite.Framework.Multitenancy
 {
     public interface ITenantLogger : ILogger { }
 
-    [LifecyclePerTenant]
     class TenantLogger : ITenantLogger
     {
         private ILogger _logger;
