@@ -10,7 +10,6 @@ namespace Blacklite.Framework.Multitenancy
         private IServiceProvider _priorAppServices;
         private HttpContext _priorAppHttpContext;
         private HttpContext _priorScopeHttpContext;
-        private IServiceScope _scope;
         private IContextAccessor<HttpContext> _httpContextAccessor;
         private IContextAccessor<HttpContext> _scopeContextAccessor;
 
@@ -35,10 +34,10 @@ namespace Blacklite.Framework.Multitenancy
             _priorAppServices = context.ApplicationServices;
 
             // Begin the scope
-            _scope = scopeFactory.GetOrCreateScope(tenantId);
-            _scopeContextAccessor = _scope.ServiceProvider.GetRequiredService<IContextAccessor<HttpContext>>();
+            var scope = scopeFactory.GetOrCreateTenant(tenantId);
+            _scopeContextAccessor = scope.ServiceProvider.GetRequiredService<IContextAccessor<HttpContext>>();
 
-            _context.ApplicationServices = _scope.ServiceProvider;
+            _context.ApplicationServices = scope.ServiceProvider;
 
             _priorAppHttpContext = _httpContextAccessor.SetValue(context);
             _priorScopeHttpContext = _scopeContextAccessor.SetValue(context);

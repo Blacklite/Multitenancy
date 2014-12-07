@@ -9,7 +9,7 @@ namespace Blacklite.Framework.Multitenancy.Autofac
     {
         private readonly ILifetimeScope _lifetimeScope;
         private readonly IServiceProvider _serviceProvider;
-        private readonly ConcurrentDictionary<string, IServiceScope> _tenantScopes = new ConcurrentDictionary<string, IServiceScope>();
+        private readonly ConcurrentDictionary<string, ITenantScope> _tenantScopes = new ConcurrentDictionary<string, ITenantScope>();
 
         public TenantProvider(ILifetimeScope lifetimeScope, IServiceProvider serviceProvider)
         {
@@ -17,30 +17,37 @@ namespace Blacklite.Framework.Multitenancy.Autofac
             _serviceProvider = serviceProvider;
         }
 
-        public IServiceScope GetOrCreateScope(string tenantId)
+        public void DisposeTenant(string tenantId)
         {
-            return _tenantScopes.GetOrAdd(tenantId, x => new TenantServiceScope(_lifetimeScope.BeginLifetimeScope(AutofacTenantRegistration.TenantTag), x));
+            ITenantScope tenant;
+            if (_tenantScopes.TryGetValue(tenantId, out tenant))
+            {
+                tenant.Dispose();
+            }
+        }
+
+        public ITenantScope GetOrCreateTenant(string tenantId)
+        {
+            return _tenantScopes.GetOrAdd(tenantId, x => new TenantScope(_lifetimeScope.BeginLifetimeScope(AutofacTenantRegistration.TenantTag), x));
         }
     }
 
-    class TenantServiceScope : IServiceScope
+    class TenantScope : ITenantScope
     {
         private readonly ILifetimeScope _lifetimeScope;
-        private readonly IServiceProvider _serviceProvider;
 
-        public TenantServiceScope(ILifetimeScope lifetimeScope, string tenantId)
+        public TenantScope(ILifetimeScope lifetimeScope, string tenantId)
         {
             _lifetimeScope = lifetimeScope;
-            _serviceProvider = _lifetimeScope.Resolve<IServiceProvider>();
+            ServiceProvider = _lifetimeScope.Resolve<IServiceProvider>();
 
-            var tenant = _serviceProvider.GetRequiredService<ITenant>();
-            tenant.Initialize(tenantId);
+            Tenant = ServiceProvider.GetRequiredService<ITenant>();
+            Tenant.Initialize(tenantId);
         }
 
-        public IServiceProvider ServiceProvider
-        {
-            get { return _serviceProvider; }
-        }
+        public IServiceProvider ServiceProvider { get; }
+
+        public ITenant Tenant { get; }
 
         public void Dispose()
         {
