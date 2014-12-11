@@ -12,15 +12,23 @@ namespace Blacklite.Framework.Multitenancy.ConfigurationModel
 
     class TenantConfigurationService : ITenantConfigurationService
     {
-        private IEnumerable<ITenantConfigurationDescriber> _configurationDescribers;
-        public TenantConfigurationService(IEnumerable<ITenantConfigurationDescriber> configurationDescribers)
+        private IEnumerable<ITenantComposer> _tenantComposers;
+        private IEnumerable<ITenantConfigurationComposer> _tenantConfigurationComposers;
+        public TenantConfigurationService(IEnumerable<ITenantComposer> tenantComposers, IEnumerable<ITenantConfigurationComposer> tenantConfigurationComposers)
         {
-            _configurationDescribers = configurationDescribers.OrderByDescending(z => z.Order);
+            _tenantComposers = tenantComposers
+                .OrderByDescending(z => z.Order);
+
+            _tenantConfigurationComposers = tenantConfigurationComposers
+                .OrderByDescending(z => z.Order);
         }
 
         public void Configure(ITenant tenant)
         {
-            foreach (var service in _configurationDescribers)
+            foreach (var service in _tenantConfigurationComposers)
+                service.Configure(tenant, tenant.Configuration.GetSubKey(service.Key));
+
+            foreach (var service in _tenantComposers)
                 service.Configure(tenant);
         }
     }
