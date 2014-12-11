@@ -55,9 +55,14 @@ namespace Blacklite.Framework.Multitenancy.Autofac
             _lifetimeScope = lifetimeScope;
             ServiceProvider = _lifetimeScope.Resolve<IServiceProvider>();
 
-            Tenant = ServiceProvider.GetRequiredService<ITenant>();
-            Tenant.Initialize(tenantId);
+            var tenant = (Tenant)ServiceProvider.GetRequiredService<ITenant>();
+            tenant.Initialize(tenantId);
+
             configurationService.Configure(Tenant);
+
+            tenant.ChangeState(TenantState.Boot);
+
+            Tenant = tenant;
         }
 
         public IServiceProvider ServiceProvider { get; }

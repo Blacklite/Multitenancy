@@ -22,12 +22,12 @@ namespace Blacklite.Framework.Multitenancy
 
     public interface ITenant : IDisposable
     {
-        void Initialize([NotNull] string identifier);
         string Id { get; }
         TenantState State { get; }
         IConfiguration Configuration { get; }
+        void Broadcast(Operation operation);
 
-        IObservable<Operation> Change { get; }
+        IObservable<Operation> Events { get; }
         IObservable<Operation> Boot { get; }
         IObservable<Operation> Start { get; }
         IObservable<Operation> Stop { get; }
@@ -41,7 +41,7 @@ namespace Blacklite.Framework.Multitenancy
         private readonly IDictionary<TenantState, TenantState[]> _validStates = new Dictionary<TenantState, TenantState[]>()
         {
             [TenantState.None] = new[] { TenantState.Boot, TenantState.Started },
-            [TenantState.Boot] = new[] { TenantState.Started },
+            [TenantState.Boot] = new[] { TenantState.Started, TenantState.Shutdown },
             [TenantState.Started] = new[] { TenantState.Stopped, TenantState.Shutdown },
             [TenantState.Stopped] = new[] { TenantState.Shutdown },
             [TenantState.Shutdown] = new TenantState[] { },
@@ -53,20 +53,21 @@ namespace Blacklite.Framework.Multitenancy
 
             var subject = new Subject<Operation>();
             _changeSubject = subject;
-            Change = subject;
-            Boot = Change.Where(x => x.Type == "\{TenantState.Boot}");
-            Start = Change.Where(x => x.Type == "\{TenantState.Started}");
-            Stop = Change.Where(x => x.Type == "\{TenantState.Stopped}");
-            Shutdown = Change.Where(x => x.Type == "\{TenantState.Shutdown}");
-
-
+            Events = subject;
+            Boot = Events.Where(x => x.Type == "\{TenantState.Boot}");
             Boot.Subscribe(x => State = TenantState.Boot);
+
+            Start = Events.Where(x => x.Type == "\{TenantState.Started}");
             Start.Subscribe(x => State = TenantState.Started);
+
+            Stop = Events.Where(x => x.Type == "\{TenantState.Stopped}");
             Stop.Subscribe(x => State = TenantState.Stopped);
+
+            Shutdown = Events.Where(x => x.Type == "\{TenantState.Shutdown}");
             Shutdown.Subscribe(x => State = TenantState.Shutdown);
         }
 
-        public void Initialize(string identifier)
+        public void Initialize([NotNull] string identifier)
         {
             if (_initalized)
                 return;
@@ -83,13 +84,28 @@ namespace Blacklite.Framework.Multitenancy
 
         public void ChangeState(TenantState state)
         {
-            ChangeState(new Operation()
+            Broadcast(new Operation()
             {
                 Type = "\{state}"
             });
         }
 
-        public void ChangeState(Operation operation)
+        /// <summary>
+        /// Broadcasts from the tenant, specificly, should ignore state changes.
+        ///  This allows for operations to be broadcast, that are not tenant related.        /// </summary>
+        /// <param name="operation"></param>
+        void ITenant.Broadcast(Operation operation)
+        {
+            // Broadcasts from the tenant, specificly, should ignore state changes.
+            //  This allows for operations to be broadcast, that are not tenant related.
+            TenantState movingTo;
+            if (Enum.TryParse(operation.Type, out movingTo))
+                operation.Type = "Not\{operation.Type}";
+
+            Broadcast(operation);
+        }
+
+        public void Broadcast(Operation operation)
         {
             TenantState movingTo;
             if (Enum.TryParse(operation.Type, out movingTo))
@@ -108,24 +124,26 @@ namespace Blacklite.Framework.Multitenancy
                         }
 
                         _changeSubject.OnNext(operation);
-                    }
-                    else
-                    {
-                        throw;
+                        return;
                     }
                 }
-            }
 
-            _changeSubject.OnNext(operation);
+                operation.Type = "InvalidStateTransition \{operation.Type}";
+                _changeSubject.OnNext(operation);
+            }
+            else
+            {
+                _changeSubject.OnNext(operation);
+            }
         }
 
         public void ChangeState(TenantState state, Operation operation)
         {
             operation.Type = "\{state}";
-            ChangeState(operation);
+            Broadcast(operation);
         }
 
-        public IObservable<Operation> Change { get; }
+        public IObservable<Operation> Events { get; }
         public IObservable<Operation> Boot { get; }
         public IObservable<Operation> Start { get; }
         public IObservable<Operation> Stop { get; }
@@ -140,7 +158,7 @@ namespace Blacklite.Framework.Multitenancy
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects).    
+                    // TODO: dispose managed state (managed objects).
                     if (State == TenantState.Started)
                     {
                         ChangeState(TenantState.Stopped);
