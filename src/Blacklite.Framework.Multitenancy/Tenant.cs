@@ -32,6 +32,9 @@ namespace Blacklite.Framework.Multitenancy
         IObservable<Event> Start { get; }
         IObservable<Event> Stop { get; }
         IObservable<Event> Shutdown { get; }
+
+        void DoStart();
+        void DoStop();
     }
 
     public class Tenant : ITenant
@@ -148,6 +151,16 @@ namespace Blacklite.Framework.Multitenancy
         public IObservable<Event> Start { get; }
         public IObservable<Event> Stop { get; }
         public IObservable<Event> Shutdown { get; }
+
+        public void DoStart()
+        {
+            Broadcast(new Event() { Type = "\{TenantState.Started}" });
+        }
+
+        public void DoStop()
+        {
+            Broadcast(new Event() { Type = "\{TenantState.Stopped}" });
+        }
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls

@@ -37,6 +37,9 @@ namespace Blacklite.Framework.Multitenancy
             var scope = tenantProvider.GetOrAdd(tenantId);
             _scopeContextAccessor = scope.ServiceProvider.GetRequiredService<IContextAccessor<HttpContext>>();
 
+            if (scope.Tenant.State == TenantState.Boot)
+                scope.Tenant.DoStart();
+
             _context.ApplicationServices = scope.ServiceProvider;
 
             _priorAppHttpContext = _httpContextAccessor.SetValue(context);
