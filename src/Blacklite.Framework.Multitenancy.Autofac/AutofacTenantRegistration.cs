@@ -17,15 +17,13 @@ namespace Autofac
 {
     public static class AutofacTenantRegistration
     {
-        internal static string TenantTag = "Tenant";
-
         public static T PopulateMultitenancy<T>(
                 [NotNull] this T builder,
                 IServiceCollection services,
                 IConfiguration configuration = null)
             where T : ContainerBuilder
         {
-            services.AddSingleton<ITenantProvider, TenantProvider>();
+            services.AddSingleton<ITenantProvider, AutofacTenantProvider>();
             services.AddMultitenancy(configuration);
 
             MultitenancyServices.HasRequiredServicesRegistered(services);
@@ -91,7 +89,7 @@ namespace Autofac
             switch (lifecycleKind)
             {
                 case LifecycleKind.Singleton:
-                    registrationBuilder.InstancePerMatchingLifetimeScope(TenantTag);
+                    registrationBuilder.InstancePerMatchingLifetimeScope(AutofacTenantProvider.Tag);
                     break;
                 case LifecycleKind.Scoped:
                     registrationBuilder.InstancePerLifetimeScope();

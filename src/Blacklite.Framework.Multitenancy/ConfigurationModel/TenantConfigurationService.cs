@@ -10,7 +10,7 @@ namespace Blacklite.Framework.Multitenancy.ConfigurationModel
         void Configure(ITenant tenant);
     }
 
-    class TenantConfigurationService : ITenantConfigurationService
+    public class TenantConfigurationService : ITenantConfigurationService
     {
         private IEnumerable<ITenantComposer> _tenantComposers;
         private IEnumerable<ITenantConfigurationComposer> _tenantConfigurationComposers;

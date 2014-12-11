@@ -17,12 +17,12 @@ namespace Blacklite.Framework.Multitenancy
             HttpContext context,
             string tenantId,
             IContextAccessor<HttpContext> httpContextAccessor,
-            ITenantProvider scopeFactory,
+            ITenantProvider tenantProvider,
             IServiceProvider appServiceProvider)
         {
-            if (scopeFactory == null)
+            if (tenantProvider == null)
             {
-                throw new ArgumentNullException(nameof(scopeFactory));
+                throw new ArgumentNullException(nameof(tenantProvider));
             }
             if (context == null)
             {
@@ -34,7 +34,7 @@ namespace Blacklite.Framework.Multitenancy
             _priorAppServices = context.ApplicationServices;
 
             // Begin the scope
-            var scope = scopeFactory.GetOrCreateTenant(tenantId);
+            var scope = tenantProvider.GetOrAdd(tenantId);
             _scopeContextAccessor = scope.ServiceProvider.GetRequiredService<IContextAccessor<HttpContext>>();
 
             _context.ApplicationServices = scope.ServiceProvider;
