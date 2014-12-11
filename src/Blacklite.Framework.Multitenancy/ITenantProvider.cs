@@ -7,7 +7,8 @@ namespace Blacklite.Framework.Multitenancy
 {
     public interface ITenantProvider
     {
-        ITenantScope GetOrCreateTenant([NotNull] string tenantId);
+        ITenantScope Get([NotNull] string tenantId);
+        ITenantScope GetOrAdd([NotNull] string tenantId);
         void DisposeTenant(string tenantId);
         IEnumerable<string> Tenants { get; }
     }

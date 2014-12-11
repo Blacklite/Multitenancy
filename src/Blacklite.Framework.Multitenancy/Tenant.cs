@@ -1,5 +1,4 @@
 ﻿using Blacklite.Framework.Multitenancy.ConfigurationModel;
-using Blacklite.Framework.Multitenancy.Events;
 using Blacklite.Framework.Multitenancy.Operations;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
@@ -7,11 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
 namespace Blacklite.Framework.Multitenancy
 {
     public enum TenantState
     {
+        None,
         Boot,
         Started,
         Stopped,
@@ -20,116 +22,153 @@ namespace Blacklite.Framework.Multitenancy
 
     public interface ITenant : IDisposable
     {
-        void Initialize([NotNull] string identifier);
         string Id { get; }
         TenantState State { get; }
         IConfiguration Configuration { get; }
+        void Broadcast(Operation operation);
 
-        event EventHandler<OnBootEventArgs> OnBoot;
-        event EventHandler<OnStartEventArgs> OnStart;
-        event EventHandler<OnStopEventArgs> OnStop;
-        event EventHandler<OnShutdownEventArgs> OnShutdown;
+        IObservable<Operation> Events { get; }
+        IObservable<Operation> Boot { get; }
+        IObservable<Operation> Start { get; }
+        IObservable<Operation> Stop { get; }
+        IObservable<Operation> Shutdown { get; }
     }
 
     public class Tenant : ITenant
     {
         private bool _initalized = false;
+        private readonly IObserver<Operation> _changeSubject;
+        private readonly IDictionary<TenantState, TenantState[]> _validStates = new Dictionary<TenantState, TenantState[]>()
+        {
+            [TenantState.None] = new[] { TenantState.Boot, TenantState.Started },
+            [TenantState.Boot] = new[] { TenantState.Started, TenantState.Shutdown },
+            [TenantState.Started] = new[] { TenantState.Stopped, TenantState.Shutdown },
+            [TenantState.Stopped] = new[] { TenantState.Shutdown },
+            [TenantState.Shutdown] = new TenantState[] { },
+        };
 
         public Tenant(ITenantConfiguration configuration)
         {
             Configuration = configuration;
 
-            OnBoot += (object sender, OnBootEventArgs e) => this.State = TenantState.Boot;
-            OnStart += (object sender, OnStartEventArgs e) => this.State = TenantState.Started;
-            OnStop += (object sender, OnStopEventArgs e) => this.State = TenantState.Stopped;
-            OnShutdown += (object sender, OnShutdownEventArgs e) => this.State = TenantState.Shutdown;
+            var subject = new Subject<Operation>();
+            _changeSubject = subject;
+            Events = subject;
+            Boot = Events.Where(x => x.Type == "\{TenantState.Boot}");
+            Boot.Subscribe(x => State = TenantState.Boot);
+
+            Start = Events.Where(x => x.Type == "\{TenantState.Started}");
+            Start.Subscribe(x => State = TenantState.Started);
+
+            Stop = Events.Where(x => x.Type == "\{TenantState.Stopped}");
+            Stop.Subscribe(x => State = TenantState.Stopped);
+
+            Shutdown = Events.Where(x => x.Type == "\{TenantState.Shutdown}");
+            Shutdown.Subscribe(x => State = TenantState.Shutdown);
         }
 
-        public void Initialize(string identifier)
+        public void Initialize([NotNull] string identifier)
         {
             if (_initalized)
                 return;
 
             Id = identifier;
-
-            RaiseOnBoot(new OnBootEventArgs());
-
             _initalized = true;
         }
 
         public string Id { get; private set; }
 
         public IConfiguration Configuration { get; }
-        
+
         public TenantState State { get; private set; }
 
-        public event EventHandler<OnBootEventArgs> OnBoot;
-
-        private void RaiseOnBoot(OnBootEventArgs e) { if (OnBoot != null) OnBoot(this, e); }
-
-        internal bool ExecuteBootOperation(BootOperation context)
+        public void ChangeState(TenantState state)
         {
-            RaiseOnBoot(new OnBootEventArgs());
-            return true;
+            Broadcast(new Operation()
+            {
+                Type = "\{state}"
+            });
         }
 
-        public event EventHandler<OnStartEventArgs> OnStart;
-
-        private void RaiseOnStart(OnStartEventArgs e) { if (OnStart != null) OnStart(this, e); }
-
-        internal bool ExecuteStartOperation(StartOperation context)
+        /// <summary>
+        /// Broadcasts from the tenant, specificly, should ignore state changes.
+        ///  This allows for operations to be broadcast, that are not tenant related.        /// </summary>
+        /// <param name="operation"></param>
+        void ITenant.Broadcast(Operation operation)
         {
-            RaiseOnStart(new OnStartEventArgs());
-            return true;
+            // Broadcasts from the tenant, specificly, should ignore state changes.
+            //  This allows for operations to be broadcast, that are not tenant related.
+            TenantState movingTo;
+            if (Enum.TryParse(operation.Type, out movingTo))
+                operation.Type = "Not\{operation.Type}";
+
+            Broadcast(operation);
         }
 
-        public event EventHandler<OnStopEventArgs> OnStop;
-
-        private void RaiseOnStop(OnStopEventArgs e) { if (OnStop != null) OnStop(this, e); }
-
-        internal bool ExecuteStopOperation(StopOperation context)
+        public void Broadcast(Operation operation)
         {
-            RaiseOnStop(new OnStopEventArgs());
-            return true;
+            TenantState movingTo;
+            if (Enum.TryParse(operation.Type, out movingTo))
+            {
+                TenantState[] validStates;
+                if (_validStates.TryGetValue(State, out validStates))
+                {
+                    if (validStates.Any(z => z == movingTo))
+                    {
+                        foreach (var s in validStates.TakeWhile(x => x != movingTo))
+                        {
+                            var newOperation = operation.Clone();
+                            newOperation.Type = "\{s}";
+
+                            _changeSubject.OnNext(newOperation);
+                        }
+
+                        _changeSubject.OnNext(operation);
+                        return;
+                    }
+                }
+
+                operation.Type = "InvalidStateTransition \{operation.Type}";
+                _changeSubject.OnNext(operation);
+            }
+            else
+            {
+                _changeSubject.OnNext(operation);
+            }
         }
 
-        public event EventHandler<OnShutdownEventArgs> OnShutdown;
-
-        private void RaiseOnShutdown(OnShutdownEventArgs e) { if (OnShutdown != null) OnShutdown(this, e); }
-
-        internal bool ExecuteShutdownOperation(ShutdownOperation context)
+        public void ChangeState(TenantState state, Operation operation)
         {
-            RaiseOnShutdown(new OnShutdownEventArgs());
-            return true;
+            operation.Type = "\{state}";
+            Broadcast(operation);
         }
+
+        public IObservable<Operation> Events { get; }
+        public IObservable<Operation> Boot { get; }
+        public IObservable<Operation> Start { get; }
+        public IObservable<Operation> Stop { get; }
+        public IObservable<Operation> Shutdown { get; }
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
-        protected virtual void Dispose(bool disposing)
+        public virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects).    
+                    // TODO: dispose managed state (managed objects).
                     if (State == TenantState.Started)
                     {
-                        ExecuteStopOperation(new StopOperation());
+                        ChangeState(TenantState.Stopped);
                     }
 
                     if (State == TenantState.Stopped)
                     {
-                        ExecuteShutdownOperation(new ShutdownOperation());
+                        ChangeState(TenantState.Shutdown);
                     }
                 }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
-                OnBoot = null;
-                OnStart = null;
-                OnStop = null;
-                OnShutdown = null;
 
                 disposedValue = true;
             }
