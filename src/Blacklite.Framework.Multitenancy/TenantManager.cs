@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Blacklite.Framework.Multitenancy.Operations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,41 +23,44 @@ namespace Blacklite.Framework.Multitenancy
             _provider = provider;
         }
 
-        public ITenant GetTenant(string tenantId)
-        {
-            if (_provider.Tenants.Any(z => string.Equals(z, tenantId, StringComparison.OrdinalIgnoreCase)))
-            {
-                return _provider.GetOrCreateTenant(tenantId).Tenant;
-            }
-            return null;
-        }
+        public ITenant GetTenant(string tenantId) { return _provider.GetOrAdd(tenantId)?.Tenant; }
 
-        public IEnumerable<string> AvailableTenants
-        {
-            get
-            {
-                return _provider.Tenants;
-            }
-        }
+        public IEnumerable<string> AvailableTenants { get { return _provider.Tenants; } }
 
         public void Boot(ITenant tenant)
         {
-            ((Tenant)tenant).ExecuteBootOperation(new Operations.BootOperation());
+            var t = tenant as Tenant;
+            if (t == null)
+                throw new NotSupportedException("All tenant implementations must derive from the \{nameof(Tenant)} class.");
+
+            t.ChangeState(Operation.Boot());
         }
 
         public void Start(ITenant tenant)
         {
-            ((Tenant)tenant).ExecuteStartOperation(new Operations.StartOperation());
+            var t = tenant as Tenant;
+            if (t == null)
+                throw new NotSupportedException("All tenant implementations must derive from the \{nameof(Tenant)} class.");
+
+            t.ChangeState(Operation.Start());
         }
 
         public void Stop(ITenant tenant)
         {
-            ((Tenant)tenant).ExecuteStopOperation(new Operations.StopOperation());
+            var t = tenant as Tenant;
+            if (t == null)
+                throw new NotSupportedException("All tenant implementations must derive from the \{nameof(Tenant)} class.");
+
+            t.ChangeState(Operation.Stop());
         }
 
         public void Shutdown(ITenant tenant)
         {
-            ((Tenant)tenant).ExecuteShutdownOperation(new Operations.ShutdownOperation());
+            var t = tenant as Tenant;
+            if (t == null)
+                throw new NotSupportedException("All tenant implementations must derive from the \{nameof(Tenant)} class.");
+
+            t.ChangeState(Operation.Shutdown());
         }
     }
 }

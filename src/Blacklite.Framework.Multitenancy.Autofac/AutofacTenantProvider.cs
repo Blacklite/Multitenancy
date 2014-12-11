@@ -7,23 +7,31 @@ using System.Collections.Generic;
 
 namespace Blacklite.Framework.Multitenancy.Autofac
 {
-    class TenantProvider : ITenantProvider
+    public class AutofacTenantProvider : ITenantProvider
     {
+        public static object Tag = "Tenant";
+
         private readonly ILifetimeScope _lifetimeScope;
-        private readonly IServiceProvider _serviceProvider;
         private readonly ITenantConfigurationService _configurationService;
         private readonly ConcurrentDictionary<string, ITenantScope> _tenantScopes = new ConcurrentDictionary<string, ITenantScope>();
 
-        public TenantProvider([NotNull] ILifetimeScope lifetimeScope, [NotNull] ITenantConfigurationService configurationService, [NotNull] IServiceProvider serviceProvider)
+        public AutofacTenantProvider([NotNull] ILifetimeScope lifetimeScope, [NotNull] ITenantConfigurationService configurationService)
         {
             _lifetimeScope = lifetimeScope;
-            _serviceProvider = serviceProvider;
             _configurationService = configurationService;
         }
 
-        public ITenantScope GetOrCreateTenant(string tenantId)
+        public ITenantScope Get([NotNull]string tenantId)
         {
-            return _tenantScopes.GetOrAdd(tenantId, x => new TenantScope(_lifetimeScope.BeginLifetimeScope(AutofacTenantRegistration.TenantTag), _configurationService, x));
+            ITenantScope scope;
+            if (_tenantScopes.TryGetValue(tenantId, out scope))
+                return scope;
+            return null;
+        }
+
+        public ITenantScope GetOrAdd(string tenantId)
+        {
+            return _tenantScopes.GetOrAdd(tenantId, x => new TenantScope(_lifetimeScope.BeginLifetimeScope(AutofacTenantProvider.Tag), _configurationService, x));
         }
 
         public IEnumerable<string> Tenants { get { return _tenantScopes.Keys; } }
