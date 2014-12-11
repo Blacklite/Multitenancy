@@ -56,6 +56,7 @@ namespace Tenants.Tests.Web
             services.AddSingleton(typeof(ITenantIdentificationStrategy), typeof(PathTenantIdentificationStrategy));
             services.AddMvc();
             services.AddAssembly(this);
+            services.AddMultitenancyApplicationEvents();
 
             return new ContainerBuilder()
                 .PopulateMultitenancy(services)
@@ -77,7 +78,7 @@ namespace Tenants.Tests.Web
                 x.UseMvc();
             });
             app.UseRuntimeInfoPage("/runtimeinfo");
-            
+
 
             app.MapWhen(IsTenantInPath, x =>
             {
@@ -85,6 +86,7 @@ namespace Tenants.Tests.Web
                 x.UseMvc();
                 x.UseMiddleware<TenantTestMiddleware2>();
                 x.UseMiddleware<TenantTestMiddleware>();
+                x.UseMiddleware<TenantEventsMiddleware>();
             });
 
             app.UseWelcomePage();

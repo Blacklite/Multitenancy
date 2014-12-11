@@ -13,7 +13,7 @@ namespace Multitenancy.Tests.ConfigurationModel
         [Fact]
         public void ConfiguresDescriptions()
         {
-            var service = new TenantConfigurationService(Enumerable.Empty< ITenantConfigurationDescriber>());
+            var service = new TenantConfigurationService(Enumerable.Empty<ITenantComposer>(), Enumerable.Empty<ITenantConfigurationComposer>());
 
             service.Configure(new Tenant(new TenantConfiguration()));
 

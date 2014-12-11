@@ -58,7 +58,7 @@ namespace Blacklite.Framework.Multitenancy.Autofac
             var tenant = (Tenant)ServiceProvider.GetRequiredService<ITenant>();
             tenant.Initialize(tenantId);
 
-            configurationService.Configure(Tenant);
+            configurationService.Configure(tenant);
 
             tenant.ChangeState(TenantState.Boot);
 
