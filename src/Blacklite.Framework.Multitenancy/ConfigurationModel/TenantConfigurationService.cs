@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace Blacklite.Framework.Multitenancy.ConfigurationModel
 {
+    [ApplicationOnly]
     public interface ITenantConfigurationService
     {
         void Configure(ITenant tenant);
@@ -14,6 +15,7 @@ namespace Blacklite.Framework.Multitenancy.ConfigurationModel
     {
         private IEnumerable<ITenantComposer> _tenantComposers;
         private IEnumerable<ITenantConfigurationComposer> _tenantConfigurationComposers;
+
         public TenantConfigurationService(IEnumerable<ITenantComposer> tenantComposers, IEnumerable<ITenantConfigurationComposer> tenantConfigurationComposers)
         {
             _tenantComposers = tenantComposers

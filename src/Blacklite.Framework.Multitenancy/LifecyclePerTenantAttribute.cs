@@ -1,7 +1,10 @@
 ﻿using System;
 
-namespace Microsoft.Framework.DependencyInjection
+namespace Blacklite.Framework.Multitenancy
 {
     [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
-    public class LifecyclePerTenantAttribute : Attribute { }
+    public class TenantOnlyAttribute : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
+    public class ApplicationOnlyAttribute : Attribute { }
 }

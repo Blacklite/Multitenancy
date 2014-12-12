@@ -12,56 +12,56 @@ namespace Multitenancy.Tests
         public void AddTenantSingletonUsingTypes()
         {
             var collection = new ServiceCollection();
-            collection.AddTenantSingleton(typeof(Tenant));
+            collection.AddTenantOnlySingleton(typeof(Tenant));
             Assert.Equal(1, collection.Count());
             Assert.Equal(collection.First().ServiceType, typeof(Tenant));
             Assert.Equal(collection.First().ImplementationType, typeof(Tenant));
-            Assert.IsType(typeof(TenantServiceDescriptor), collection.First());
+            Assert.IsType(typeof(TenantOnlyServiceDescriptor), collection.First());
 
             collection = new ServiceCollection();
-            collection.AddTenantSingleton(typeof(ITenant), typeof(Tenant));
+            collection.AddTenantOnlySingleton(typeof(ITenant), typeof(Tenant));
             Assert.Equal(1, collection.Count());
             Assert.Equal(collection.First().ServiceType, typeof(ITenant));
             Assert.Equal(collection.First().ImplementationType, typeof(Tenant));
-            Assert.IsType(typeof(TenantServiceDescriptor), collection.First());
+            Assert.IsType(typeof(TenantOnlyServiceDescriptor), collection.First());
         }
 
         [Fact]
         public void AddTenantSingletonUsingGenericTypes()
         {
             var collection = new ServiceCollection();
-            collection.AddTenantSingleton<Tenant>();
+            collection.AddTenantOnlySingleton<Tenant>();
             Assert.Equal(1, collection.Count());
             Assert.Equal(collection.First().ServiceType, typeof(Tenant));
             Assert.Equal(collection.First().ImplementationType, typeof(Tenant));
-            Assert.IsType(typeof(TenantServiceDescriptor), collection.First());
+            Assert.IsType(typeof(TenantOnlyServiceDescriptor), collection.First());
 
             collection = new ServiceCollection();
-            collection.AddTenantSingleton<ITenant, Tenant>();
+            collection.AddTenantOnlySingleton<ITenant, Tenant>();
             Assert.Equal(1, collection.Count());
             Assert.Equal(collection.First().ServiceType, typeof(ITenant));
             Assert.Equal(collection.First().ImplementationType, typeof(Tenant));
-            Assert.IsType(typeof(TenantServiceDescriptor), collection.First());
+            Assert.IsType(typeof(TenantOnlyServiceDescriptor), collection.First());
         }
 
         [Fact]
         public void AddTenantSingletonUsingFactory()
         {
             var collection = new ServiceCollection();
-            collection.AddTenantSingleton(typeof(ITenant), x => x.GetService<Tenant>());
+            collection.AddTenantOnlySingleton(typeof(ITenant), x => x.GetService<Tenant>());
             Assert.Equal(1, collection.Count());
             Assert.Equal(collection.First().ServiceType, typeof(ITenant));
-            Assert.IsType(typeof(TenantServiceDescriptor), collection.First());
+            Assert.IsType(typeof(TenantOnlyServiceDescriptor), collection.First());
         }
 
         [Fact]
         public void AddTenantSingletonUsingGenericFactory()
         {
             var collection = new ServiceCollection();
-            collection.AddTenantSingleton<ITenant>(x => x.GetService<Tenant>());
+            collection.AddTenantOnlySingleton<ITenant>(x => x.GetService<Tenant>());
             Assert.Equal(1, collection.Count());
             Assert.Equal(collection.First().ServiceType, typeof(ITenant));
-            Assert.IsType(typeof(TenantServiceDescriptor), collection.First());
+            Assert.IsType(typeof(TenantOnlyServiceDescriptor), collection.First());
         }
     }
 }

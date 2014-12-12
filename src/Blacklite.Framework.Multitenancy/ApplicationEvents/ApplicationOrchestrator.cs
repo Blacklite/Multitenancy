@@ -5,6 +5,7 @@ using System.Reactive.Subjects;
 
 namespace Blacklite.Framework.Multitenancy.ApplicationEvents
 {
+    [ApplicationOnly]
     public interface IApplicationOrchestrator
     {
         void Broadcast(ApplicationEvent value);

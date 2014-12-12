@@ -24,8 +24,8 @@ namespace Tenants.Tests.Web
             var logger = httpContext.RequestServices.GetService<ITenantLogger>();
             logger.WriteWarning(nameof(TenantTestMiddleware2));
 
-            var applicationScoped = httpContext.RequestServices.GetService<ApplicationDependencyScoped>();
-            applicationScoped.Number++;
+            var globalScoped = httpContext.RequestServices.GetService<GlobalDependencyScoped>();
+            globalScoped.Number++;
 
             await _next.Invoke(httpContext);
         }
@@ -53,14 +53,14 @@ namespace Tenants.Tests.Web
             var tenantTransient = httpContext.RequestServices.GetService<TenantDependencyTransient>();
             tenantTransient.Number++;
 
-            var applicationSingleton = httpContext.RequestServices.GetService<ApplicationDependencySingleton>();
-            applicationSingleton.Number++;
+            var globalSingleton = httpContext.RequestServices.GetService<GlobalDependencySingleton>();
+            globalSingleton.Number++;
 
-            var applicationScoped = httpContext.RequestServices.GetService<ApplicationDependencyScoped>();
-            applicationScoped.Number++;
+            var globalScoped = httpContext.RequestServices.GetService<GlobalDependencyScoped>();
+            globalScoped.Number++;
 
-            var applicationTransient = httpContext.RequestServices.GetService<ApplicationDependencyTransient>();
-            applicationTransient.Number++;
+            var globalTransient = httpContext.RequestServices.GetService<GlobalDependencyTransient>();
+            globalTransient.Number++;
 
             var logger = httpContext.RequestServices.GetService<ITenantLogger>();
             logger.WriteWarning(nameof(TenantTestMiddleware));
@@ -69,13 +69,22 @@ namespace Tenants.Tests.Web
             await httpContext.Response.WriteAsync(httpContext.Request.Path + "\n\n");
 
             await httpContext.Response.WriteAsync("Tenant \{tenant.Id}\n");
-            await httpContext.Response.WriteAsync("ApplicationDependencySingleton: \{applicationSingleton.Number}\n");
-            await httpContext.Response.WriteAsync("ApplicationDependencyScoped: \{applicationScoped.Number}\n");
-            await httpContext.Response.WriteAsync("ApplicationDependencyTransient: \{applicationTransient.Number}\n\n");
-            await httpContext.Response.WriteAsync("TenantDependencySingleton: \{tenantSingleton.Number}\n");
-            await httpContext.Response.WriteAsync("TenantDependencyScoped: \{tenantScoped.Number}\n");
-            await httpContext.Response.WriteAsync("TenantDependencyTransient: \{tenantTransient.Number}\n");
+            await httpContext.Response.WriteAsync("\{nameof(GlobalDependencySingleton)}: \{globalSingleton.Number}\n");
+            await httpContext.Response.WriteAsync("\{nameof(GlobalDependencyScoped)}: \{globalScoped.Number}\n");
+            await httpContext.Response.WriteAsync("\{nameof(GlobalDependencyTransient)}: \{globalTransient.Number}\n\n");
+            await httpContext.Response.WriteAsync("\{nameof(TenantDependencySingleton)}: \{tenantSingleton.Number}\n");
+            await httpContext.Response.WriteAsync("\{nameof(TenantDependencyScoped)}: \{tenantScoped.Number}\n");
+            await httpContext.Response.WriteAsync("\{nameof(TenantDependencyTransient)}: \{tenantTransient.Number}\n");
             //await httpContext.Response.WriteAsync("Hello world?");
+
+            try
+            {
+                var appSingleton = httpContext.RequestServices.GetService<ApplicationDependencySingleton>();
+            }
+            catch
+            {
+                await httpContext.Response.WriteAsync("Could not fetch \{nameof(ApplicationDependencySingleton)}\n");
+            }
 
             await _next.Invoke(httpContext);
         }

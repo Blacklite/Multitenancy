@@ -2,6 +2,7 @@
 
 namespace Blacklite.Framework.Multitenancy
 {
+    [ApplicationOnly]
     public interface ITenantScope : IDisposable
     {
         ITenant Tenant { get; }

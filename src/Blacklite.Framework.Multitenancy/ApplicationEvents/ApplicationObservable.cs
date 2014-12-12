@@ -3,6 +3,7 @@ using System;
 
 namespace Blacklite.Framework.Multitenancy.ApplicationEvents
 {
+    [ApplicationOnly]
     public interface IApplicationObservable : IObservable<ApplicationEvent>
     {
 

@@ -8,7 +8,7 @@ namespace Microsoft.AspNet.Builder
 {
     public static class BuilderExtensions
     {
-        public static IApplicationBuilder UseMultitenancy([NotNull] this IApplicationBuilder app)
+        public static IApplicationBuilder UseMultitenancyTenant([NotNull] this IApplicationBuilder app)
         {
             app.UseMiddleware<TenantContainerMiddleware>();
             return app;

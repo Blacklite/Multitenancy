@@ -20,6 +20,7 @@ namespace Blacklite.Framework.Multitenancy
         Shutdown
     }
 
+    [TenantOnly]
     public interface ITenant : IDisposable
     {
         string Id { get; }

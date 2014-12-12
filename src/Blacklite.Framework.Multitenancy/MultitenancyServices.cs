@@ -16,21 +16,21 @@ namespace Blacklite.Framework.Multitenancy
         {
             var describe = new ServiceDescriber(configuration);
 
-            yield return describe.Singleton<ITenantConfigurationService, TenantConfigurationService>();
+            yield return describe.ApplicationOnlySingleton<ITenantConfigurationService, TenantConfigurationService>();
 
-            yield return describe.TenantSingleton<ITenantLogger, TenantLogger>();
-            yield return describe.TenantSingleton<ITenant, Tenant>();
-            yield return describe.TenantSingleton<ITenantConfiguration, TenantConfiguration>();
-            yield return describe.TenantSingleton<ILogger>(x => x.GetRequiredService<ITenantLogger>());
+            yield return describe.TenantOnlySingleton<ITenantLogger, TenantLogger>();
+            yield return describe.TenantOnlySingleton<ITenant, Tenant>();
+            yield return describe.TenantOnlySingleton<ITenantConfiguration, TenantConfiguration>();
+            yield return describe.TenantOnlySingleton<ILogger>(x => x.GetRequiredService<ITenantLogger>());
         }
 
         public static IEnumerable<IServiceDescriptor> GetApplicationEvents(IConfiguration configuration = null)
         {
             var describe = new ServiceDescriber(configuration);
 
-            yield return describe.Singleton<ITenantComposer, ApplicationBroadcastComposer>();
-            yield return describe.Singleton<IApplicationObservable, ApplicationObservable>();
-            yield return describe.Singleton<IApplicationOrchestrator, ApplicationOrchestrator>();
+            yield return describe.ApplicationOnlySingleton<ITenantComposer, ApplicationBroadcastComposer>();
+            yield return describe.ApplicationOnlySingleton<IApplicationObservable, ApplicationObservable>();
+            yield return describe.ApplicationOnlySingleton<IApplicationOrchestrator, ApplicationOrchestrator>();
         }
 
         public static bool HasRequiredServicesRegistered(IServiceCollection services)
@@ -47,22 +47,20 @@ namespace Blacklite.Framework.Multitenancy
             return true;
         }
 
-        private static bool IsPerTenant(IServiceDescriptor service)
+        public static bool IsTenantScope(this IServiceDescriptor service)
         {
-            return service is TenantServiceDescriptor || (
-                        service.ServiceType != null && service.ServiceType.GetTypeInfo().GetCustomAttributes<LifecyclePerTenantAttribute>(true).Any() ||
-                        service.ImplementationType != null && service.ImplementationType.GetTypeInfo().GetCustomAttributes<LifecyclePerTenantAttribute>(true).Any()
-                   );
+            return service is TenantOnlyServiceDescriptor || (
+                          service.ServiceType != null && service.ServiceType.GetTypeInfo().GetCustomAttributes<TenantOnlyAttribute>(true).Any() ||
+                          service.ImplementationType != null && service.ImplementationType.GetTypeInfo().GetCustomAttributes<TenantOnlyAttribute>(true).Any()
+                     );
         }
 
-        public static bool IsTenantSingleton(IServiceDescriptor service)
+        public static bool IsApplicationScope(this IServiceDescriptor service)
         {
-            return service.Lifecycle == LifecycleKind.Singleton && IsPerTenant(service);
-        }
-
-        public static bool IsNotTenantSingleton(IServiceDescriptor service)
-        {
-            return !IsTenantSingleton(service);
+            return service is ApplicationOnlyServiceDescriptor || (
+                           service.ServiceType != null && service.ServiceType.GetTypeInfo().GetCustomAttributes<ApplicationOnlyAttribute>(true).Any() ||
+                           service.ImplementationType != null && service.ImplementationType.GetTypeInfo().GetCustomAttributes<ApplicationOnlyAttribute>(true).Any()
+                      );
         }
     }
 }

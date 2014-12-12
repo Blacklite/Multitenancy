@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace Blacklite.Framework.Multitenancy
 {
+    [ApplicationOnly]
     public interface ITenantManager
     {
         ITenant GetTenant(string tenantId);

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Microsoft.Framework.DependencyInjection
 {
-    public static class ServiceCollectionExtensions
+    public static class TenantOnlyServiceCollectionExtensions
     {
         public static IServiceCollection AddMultitenancy(
             [NotNull] this IServiceCollection services,
@@ -25,43 +25,43 @@ namespace Microsoft.Framework.DependencyInjection
             return services;
         }
 
-        public static IServiceCollection AddTenantSingleton([NotNull] this IServiceCollection collection,
+        public static IServiceCollection AddTenantOnlySingleton([NotNull] this IServiceCollection collection,
                                                             [NotNull] Type service,
                                                             [NotNull] Type implementationType)
         {
-            var descriptor = new TenantServiceDescriptor(service, implementationType, LifecycleKind.Singleton);
+            var descriptor = new TenantOnlyServiceDescriptor(service, implementationType, LifecycleKind.Singleton);
             return collection.Add(descriptor);
         }
 
-        public static IServiceCollection AddTenantSingleton([NotNull] this IServiceCollection collection,
+        public static IServiceCollection AddTenantOnlySingleton([NotNull] this IServiceCollection collection,
                                                       [NotNull] Type service,
                                                       [NotNull] Func<IServiceProvider, object> implementationFactory)
         {
-            var descriptor = new TenantServiceDescriptor(service, implementationFactory, LifecycleKind.Singleton);
+            var descriptor = new TenantOnlyServiceDescriptor(service, implementationFactory, LifecycleKind.Singleton);
             return collection.Add(descriptor);
         }
 
-        public static IServiceCollection AddTenantSingleton<TService, TImplementation>([NotNull] this IServiceCollection services)
+        public static IServiceCollection AddTenantOnlySingleton<TService, TImplementation>([NotNull] this IServiceCollection services)
         {
-            return services.AddTenantSingleton(typeof(TService), typeof(TImplementation));
+            return services.AddTenantOnlySingleton(typeof(TService), typeof(TImplementation));
         }
 
-        public static IServiceCollection AddTenantSingleton([NotNull] this IServiceCollection services,
+        public static IServiceCollection AddTenantOnlySingleton([NotNull] this IServiceCollection services,
                                                             [NotNull] Type serviceType)
         {
-            return services.AddTenantSingleton(serviceType, serviceType);
+            return services.AddTenantOnlySingleton(serviceType, serviceType);
         }
 
-        public static IServiceCollection AddTenantSingleton<TService>([NotNull] this IServiceCollection services)
+        public static IServiceCollection AddTenantOnlySingleton<TService>([NotNull] this IServiceCollection services)
         {
-            return services.AddTenantSingleton(typeof(TService));
+            return services.AddTenantOnlySingleton(typeof(TService));
         }
 
-        public static IServiceCollection AddTenantSingleton<TService>([NotNull] this IServiceCollection services,
+        public static IServiceCollection AddTenantOnlySingleton<TService>([NotNull] this IServiceCollection services,
                                                                       [NotNull] Func<IServiceProvider, TService> implementationFactory)
             where TService : class
         {
-            return services.AddTenantSingleton(typeof(TService), implementationFactory);
+            return services.AddTenantOnlySingleton(typeof(TService), implementationFactory);
         }
     }
 }

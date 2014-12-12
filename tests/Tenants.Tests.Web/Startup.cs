@@ -59,9 +59,8 @@ namespace Tenants.Tests.Web
             services.AddMultitenancyApplicationEvents();
 
             return new ContainerBuilder()
-                .PopulateMultitenancy(services)
-                .Build()
-                .Resolve<IServiceProvider>();
+                .Populate(services)
+                .BuildMultitenancy();
         }
 
         public void Configure(IApplicationBuilder app)
@@ -82,7 +81,7 @@ namespace Tenants.Tests.Web
 
             app.MapWhen(IsTenantInPath, x =>
             {
-                x.UseMultitenancy();
+                x.UseMultitenancyTenant();
                 x.UseMvc();
                 x.UseMiddleware<TenantTestMiddleware2>();
                 x.UseMiddleware<TenantTestMiddleware>();

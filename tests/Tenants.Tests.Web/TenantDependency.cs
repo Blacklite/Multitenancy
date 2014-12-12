@@ -4,7 +4,7 @@ using System;
 
 namespace Tenants.Tests.Web
 {
-    [LifecyclePerTenant]
+    [TenantOnly]
     [ServiceDescriptor(Lifecycle = LifecycleKind.Singleton)]
     public class TenantDependencySingleton
     {
@@ -18,7 +18,7 @@ namespace Tenants.Tests.Web
         }
     }
 
-    [LifecyclePerTenant]
+    [TenantOnly]
     [ServiceDescriptor(Lifecycle = LifecycleKind.Scoped)]
     public class TenantDependencyScoped
     {
@@ -32,7 +32,7 @@ namespace Tenants.Tests.Web
         }
     }
 
-    [LifecyclePerTenant]
+    [TenantOnly]
     [ServiceDescriptor(Lifecycle = LifecycleKind.Transient)]
     public class TenantDependencyTransient
     {

@@ -37,6 +37,7 @@ namespace Tenants.Tests.Web
         public async Task Invoke(HttpContext httpContext)
         {
             var tenant = httpContext.RequestServices.GetService<ITenant>();
+            var applicationServices = httpContext.RequestServices.GetService<IApplicationObservable>();
 
             var sb = new StringBuilder();
             sb.AppendLine("--------------------------")

@@ -7,6 +7,7 @@ namespace Blacklite.Framework.Multitenancy
     /// Defines a provider that determines the current tenant ID from
     /// execution context.
     /// </summary>
+    [ApplicationOnly]
     public interface ITenantIdentificationStrategy
     {
         /// <summary>

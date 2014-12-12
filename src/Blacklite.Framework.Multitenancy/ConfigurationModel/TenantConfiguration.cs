@@ -4,6 +4,7 @@ using System;
 
 namespace Blacklite.Framework.Multitenancy.ConfigurationModel
 {
+    [TenantOnly]
     public interface ITenantConfiguration : IConfiguration
     {
 

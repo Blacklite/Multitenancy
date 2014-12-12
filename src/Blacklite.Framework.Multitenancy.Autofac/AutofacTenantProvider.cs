@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Core;
 using Blacklite.Framework.Multitenancy.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using System;
@@ -9,7 +10,8 @@ namespace Blacklite.Framework.Multitenancy.Autofac
 {
     public class AutofacTenantProvider : ITenantProvider
     {
-        public static object Tag = "Tenant";
+        public static object ApplicationTag = "__%Application";
+        public static object TenantTag = "__%Tenant";
 
         private readonly ILifetimeScope _lifetimeScope;
         private readonly ITenantConfigurationService _configurationService;
@@ -17,7 +19,12 @@ namespace Blacklite.Framework.Multitenancy.Autofac
 
         public AutofacTenantProvider([NotNull] ILifetimeScope lifetimeScope, [NotNull] ITenantConfigurationService configurationService)
         {
-            _lifetimeScope = lifetimeScope;
+            var childLifetimeScope = lifetimeScope as ISharingLifetimeScope;
+            if (childLifetimeScope != null)
+                _lifetimeScope = childLifetimeScope.RootLifetimeScope;
+            else
+                _lifetimeScope = lifetimeScope;
+
             _configurationService = configurationService;
         }
 
@@ -31,7 +38,7 @@ namespace Blacklite.Framework.Multitenancy.Autofac
 
         public ITenantScope GetOrAdd(string tenantId)
         {
-            return _tenantScopes.GetOrAdd(tenantId, x => new TenantScope(_lifetimeScope.BeginLifetimeScope(AutofacTenantProvider.Tag), _configurationService, x));
+            return _tenantScopes.GetOrAdd(tenantId, x => new TenantScope(_lifetimeScope.BeginLifetimeScope(AutofacTenantProvider.TenantTag), _configurationService, x));
         }
 
         public IEnumerable<string> Tenants { get { return _tenantScopes.Keys; } }

@@ -5,7 +5,6 @@ using Blacklite.Framework.Multitenancy;
 using Blacklite.Framework.Multitenancy.Autofac;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
-using Microsoft.Framework.DependencyInjection.Autofac;
 using Microsoft.Framework.Logging;
 using System;
 using System.Collections.Concurrent;
@@ -17,22 +16,34 @@ namespace Autofac
 {
     public static class AutofacTenantRegistration
     {
-        public static T PopulateMultitenancy<T>(
+        public static T Populate<T>(
                 [NotNull] this T builder,
                 IServiceCollection services,
                 IConfiguration configuration = null)
             where T : ContainerBuilder
         {
+
             services.AddSingleton<ITenantProvider, AutofacTenantProvider>();
             services.AddMultitenancy(configuration);
 
             MultitenancyServices.HasRequiredServicesRegistered(services);
 
-            AutofacRegistration.Populate(builder, services.Where(MultitenancyServices.IsNotTenantSingleton));
+            builder.RegisterType<AutofacServiceProvider>().As<IServiceProvider>();
+            builder.RegisterType<AutofacServiceScopeFactory>().As<IServiceScopeFactory>();
 
-            Register(builder, services.Where(MultitenancyServices.IsTenantSingleton));
+            //Populate(builder, services.Where(service => service.Lifecycle == LifecycleKind.Singleton && MultitenancyServices.IsNotTenant(service)));
+
+            Register(builder, services);
 
             return builder;
+        }
+
+        public static IServiceProvider BuildMultitenancy<T>([NotNull] this T builder)
+            where T : ContainerBuilder
+        {
+            var container = builder.Build();
+            var applicationLifetime = container.BeginLifetimeScope(AutofacTenantProvider.ApplicationTag);
+            return applicationLifetime.Resolve<IServiceProvider>();
         }
 
         private static void Register(
@@ -50,14 +61,14 @@ namespace Autofac
                         builder
                             .RegisterGeneric(descriptor.ImplementationType)
                             .As(descriptor.ServiceType)
-                            .ConfigureLifecycle(descriptor.Lifecycle);
+                            .ConfigureLifecycle(descriptor);
                     }
                     else
                     {
                         builder
                             .RegisterType(descriptor.ImplementationType)
                             .As(descriptor.ServiceType)
-                            .ConfigureLifecycle(descriptor.Lifecycle);
+                            .ConfigureLifecycle(descriptor);
                     }
                 }
                 else if (descriptor.ImplementationFactory != null)
@@ -67,7 +78,7 @@ namespace Autofac
                         var serviceProvider = context.Resolve<IServiceProvider>();
                         return descriptor.ImplementationFactory(serviceProvider);
                     })
-                    .ConfigureLifecycle(descriptor.Lifecycle)
+                    .ConfigureLifecycle(descriptor)
                     .CreateRegistration();
 
                     builder.RegisterComponent(registration);
@@ -77,29 +88,34 @@ namespace Autofac
                     builder
                         .RegisterInstance(descriptor.ImplementationInstance)
                         .As(descriptor.ServiceType)
-                        .ConfigureLifecycle(descriptor.Lifecycle);
+                        .ConfigureLifecycle(descriptor);
                 }
             }
         }
 
-        private static IRegistrationBuilder<object, T, U> ConfigureLifecycle<T, U>(
-                this IRegistrationBuilder<object, T, U> registrationBuilder,
-                LifecycleKind lifecycleKind)
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> ConfigureLifecycle<TLimit, TReflectionActivatorData, TStyle>(
+                this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
+                IServiceDescriptor descriptor)
         {
-            switch (lifecycleKind)
+            switch (descriptor.Lifecycle)
             {
                 case LifecycleKind.Singleton:
-                    registrationBuilder.InstancePerMatchingLifetimeScope(AutofacTenantProvider.Tag);
+                    if (descriptor.IsTenantScope())
+                        registration.InstancePerTenantScope();
+                    else if (descriptor.IsApplicationScope())
+                        registration.InstancePerApplicationScope();
+                    else // Global
+                        registration.SingleInstance();
                     break;
                 case LifecycleKind.Scoped:
-                    registrationBuilder.InstancePerLifetimeScope();
+                    registration.InstancePerLifetimeScope();
                     break;
                 case LifecycleKind.Transient:
-                    registrationBuilder.InstancePerDependency();
+                    registration.InstancePerDependency();
                     break;
             }
 
-            return registrationBuilder;
+            return registration;
         }
     }
 
