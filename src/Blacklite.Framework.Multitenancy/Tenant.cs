@@ -1,5 +1,5 @@
 ﻿using Blacklite.Framework.Multitenancy.ConfigurationModel;
-using Blacklite.Framework.Multitenancy.Operations;
+using Blacklite.Framework.Multitenancy.Events;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using System;
@@ -22,26 +22,29 @@ namespace Blacklite.Framework.Multitenancy
 
     public interface ITenant : IDisposable
     {
-        void Initialize([NotNull] string identifier);
         string Id { get; }
         TenantState State { get; }
         IConfiguration Configuration { get; }
+        void Broadcast(Event operation);
 
-        IObservable<Operation> Change { get; }
-        IObservable<Operation> Boot { get; }
-        IObservable<Operation> Start { get; }
-        IObservable<Operation> Stop { get; }
-        IObservable<Operation> Shutdown { get; }
+        IObservable<Event> Events { get; }
+        IObservable<Event> Boot { get; }
+        IObservable<Event> Start { get; }
+        IObservable<Event> Stop { get; }
+        IObservable<Event> Shutdown { get; }
+
+        void DoStart();
+        void DoStop();
     }
 
     public class Tenant : ITenant
     {
         private bool _initalized = false;
-        private readonly IObserver<Operation> _changeSubject;
+        private readonly IObserver<Event> _changeSubject;
         private readonly IDictionary<TenantState, TenantState[]> _validStates = new Dictionary<TenantState, TenantState[]>()
         {
             [TenantState.None] = new[] { TenantState.Boot, TenantState.Started },
-            [TenantState.Boot] = new[] { TenantState.Started },
+            [TenantState.Boot] = new[] { TenantState.Started, TenantState.Shutdown },
             [TenantState.Started] = new[] { TenantState.Stopped, TenantState.Shutdown },
             [TenantState.Stopped] = new[] { TenantState.Shutdown },
             [TenantState.Shutdown] = new TenantState[] { },
@@ -51,22 +54,23 @@ namespace Blacklite.Framework.Multitenancy
         {
             Configuration = configuration;
 
-            var subject = new Subject<Operation>();
+            var subject = new Subject<Event>();
             _changeSubject = subject;
-            Change = subject;
-            Boot = Change.Where(x => x.Type == "\{TenantState.Boot}");
-            Start = Change.Where(x => x.Type == "\{TenantState.Started}");
-            Stop = Change.Where(x => x.Type == "\{TenantState.Stopped}");
-            Shutdown = Change.Where(x => x.Type == "\{TenantState.Shutdown}");
-
-
+            Events = subject;
+            Boot = Events.Where(x => x.Type == "\{TenantState.Boot}");
             Boot.Subscribe(x => State = TenantState.Boot);
+
+            Start = Events.Where(x => x.Type == "\{TenantState.Started}");
             Start.Subscribe(x => State = TenantState.Started);
+
+            Stop = Events.Where(x => x.Type == "\{TenantState.Stopped}");
             Stop.Subscribe(x => State = TenantState.Stopped);
+
+            Shutdown = Events.Where(x => x.Type == "\{TenantState.Shutdown}");
             Shutdown.Subscribe(x => State = TenantState.Shutdown);
         }
 
-        public void Initialize(string identifier)
+        public void Initialize([NotNull] string identifier)
         {
             if (_initalized)
                 return;
@@ -83,13 +87,28 @@ namespace Blacklite.Framework.Multitenancy
 
         public void ChangeState(TenantState state)
         {
-            ChangeState(new Operation()
+            Broadcast(new Event()
             {
                 Type = "\{state}"
             });
         }
 
-        public void ChangeState(Operation operation)
+        /// <summary>
+        /// Broadcasts from the tenant, specificly, should ignore state changes.
+        ///  This allows for operations to be broadcast, that are not tenant related.        /// </summary>
+        /// <param name="operation"></param>
+        void ITenant.Broadcast(Event operation)
+        {
+            // Broadcasts from the tenant, specificly, should ignore state changes.
+            //  This allows for operations to be broadcast, that are not tenant related.
+            TenantState movingTo;
+            if (Enum.TryParse(operation.Type, out movingTo))
+                operation.Type = "Not\{operation.Type}";
+
+            Broadcast(operation);
+        }
+
+        public void Broadcast(Event operation)
         {
             TenantState movingTo;
             if (Enum.TryParse(operation.Type, out movingTo))
@@ -108,28 +127,40 @@ namespace Blacklite.Framework.Multitenancy
                         }
 
                         _changeSubject.OnNext(operation);
-                    }
-                    else
-                    {
-                        throw;
+                        return;
                     }
                 }
-            }
 
-            _changeSubject.OnNext(operation);
+                operation.Type = "InvalidStateTransition \{operation.Type}";
+                _changeSubject.OnNext(operation);
+            }
+            else
+            {
+                _changeSubject.OnNext(operation);
+            }
         }
 
-        public void ChangeState(TenantState state, Operation operation)
+        public void ChangeState(TenantState state, Event operation)
         {
             operation.Type = "\{state}";
-            ChangeState(operation);
+            Broadcast(operation);
         }
 
-        public IObservable<Operation> Change { get; }
-        public IObservable<Operation> Boot { get; }
-        public IObservable<Operation> Start { get; }
-        public IObservable<Operation> Stop { get; }
-        public IObservable<Operation> Shutdown { get; }
+        public IObservable<Event> Events { get; }
+        public IObservable<Event> Boot { get; }
+        public IObservable<Event> Start { get; }
+        public IObservable<Event> Stop { get; }
+        public IObservable<Event> Shutdown { get; }
+
+        public void DoStart()
+        {
+            Broadcast(new Event() { Type = "\{TenantState.Started}" });
+        }
+
+        public void DoStop()
+        {
+            Broadcast(new Event() { Type = "\{TenantState.Stopped}" });
+        }
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
@@ -140,7 +171,7 @@ namespace Blacklite.Framework.Multitenancy
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects).    
+                    // TODO: dispose managed state (managed objects).
                     if (State == TenantState.Started)
                     {
                         ChangeState(TenantState.Stopped);

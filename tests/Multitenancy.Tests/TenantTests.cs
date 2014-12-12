@@ -44,36 +44,46 @@ namespace Multitenancy.Tests
         }
 
         [Fact]
-        public void TenantChangesStateWhenBooted()
+        public void TenantChangesStateWhenStarted()
         {
             var tenant = new Tenant(new TenantConfiguration());
             tenant.Initialize("tenant1");
 
-            tenant.ChangeState(TenantState.Boot);
+            tenant.ChangeState(TenantState.Started);
 
-            Assert.Equal(tenant.State, TenantState.Boot);
+            Assert.Equal(tenant.State, TenantState.Started);
         }
 
         [Fact]
-        public void TenantChangesStateWhenBooted()
+        public void TenantIgnoresChangesStateWhenStoppedUntilStarted()
         {
             var tenant = new Tenant(new TenantConfiguration());
             tenant.Initialize("tenant1");
 
-            tenant.ChangeState(TenantState.Boot);
+            tenant.ChangeState(TenantState.Stopped);
 
-            Assert.Equal(tenant.State, TenantState.Boot);
+            Assert.NotEqual(tenant.State, TenantState.Stopped);
+
+            tenant.ChangeState(TenantState.Started);
+            tenant.ChangeState(TenantState.Stopped);
+
+            Assert.Equal(tenant.State, TenantState.Stopped);
         }
 
         [Fact]
-        public void TenantChangesStateWhenBooted()
+        public void TenantIgnoresChangesStateWhenShutdownUntilBooted()
         {
             var tenant = new Tenant(new TenantConfiguration());
             tenant.Initialize("tenant1");
 
-            tenant.ChangeState(TenantState.Boot);
+            tenant.ChangeState(TenantState.Shutdown);
 
-            Assert.Equal(tenant.State, TenantState.Boot);
+            Assert.NotEqual(tenant.State, TenantState.Shutdown);
+
+            tenant.ChangeState(TenantState.Boot);
+            tenant.ChangeState(TenantState.Shutdown);
+
+            Assert.Equal(tenant.State, TenantState.Shutdown);
         }
     }
 }

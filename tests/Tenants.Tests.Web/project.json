@@ -19,8 +19,9 @@
         "Microsoft.Framework.Logging.Console": "1.0.0-beta2-*",
         "Blacklite.Framework.Multitenancy": "",
         "Blacklite.Framework.Multitenancy.Autofac": "",
-        "Blacklite.Framework.DependencyInjection": "",
-        "Microsoft.AspNet.Mvc": "6.0.0-beta2-*"
+        "Blacklite.Framework.DependencyInjection": "1.0.0-beta-*",
+        "Microsoft.AspNet.Mvc": "6.0.0-beta2-*",
+        "Newtonsoft.Json": "6.0.6"
     },
     "frameworks": {
         "aspnet50": { }

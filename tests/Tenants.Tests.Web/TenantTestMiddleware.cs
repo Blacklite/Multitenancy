@@ -27,7 +27,7 @@ namespace Tenants.Tests.Web
             var applicationScoped = httpContext.RequestServices.GetService<ApplicationDependencyScoped>();
             applicationScoped.Number++;
 
-            _next.Invoke(httpContext);
+            await _next.Invoke(httpContext);
         }
     }
 
@@ -76,7 +76,8 @@ namespace Tenants.Tests.Web
             await httpContext.Response.WriteAsync("TenantDependencyScoped: \{tenantScoped.Number}\n");
             await httpContext.Response.WriteAsync("TenantDependencyTransient: \{tenantTransient.Number}\n");
             //await httpContext.Response.WriteAsync("Hello world?");
-            //await _next.Invoke(httpContext);
+
+            await _next.Invoke(httpContext);
         }
 
     }

@@ -17,6 +17,14 @@ namespace Microsoft.Framework.DependencyInjection
             return services;
         }
 
+        public static IServiceCollection AddMultitenancyApplicationEvents(
+            [NotNull] this IServiceCollection services,
+            IConfiguration configuration = null)
+        {
+            services.TryAdd(MultitenancyServices.GetApplicationEvents(configuration));
+            return services;
+        }
+
         public static IServiceCollection AddTenantSingleton([NotNull] this IServiceCollection collection,
                                                             [NotNull] Type service,
                                                             [NotNull] Type implementationType)

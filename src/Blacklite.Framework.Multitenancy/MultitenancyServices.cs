@@ -1,4 +1,5 @@
-﻿using Blacklite.Framework.Multitenancy.ConfigurationModel;
+﻿using Blacklite.Framework.Multitenancy.ApplicationEvents;
+using Blacklite.Framework.Multitenancy.ConfigurationModel;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
@@ -23,6 +24,15 @@ namespace Blacklite.Framework.Multitenancy
             yield return describe.TenantSingleton<ILogger>(x => x.GetRequiredService<ITenantLogger>());
         }
 
+        public static IEnumerable<IServiceDescriptor> GetApplicationEvents(IConfiguration configuration = null)
+        {
+            var describe = new ServiceDescriber(configuration);
+
+            yield return describe.Singleton<ITenantComposer, ApplicationBroadcastComposer>();
+            yield return describe.Singleton<IApplicationObservable, ApplicationObservable>();
+            yield return describe.Singleton<IApplicationOrchestrator, ApplicationOrchestrator>();
+        }
+
         public static bool HasRequiredServicesRegistered(IServiceCollection services)
         {
             if (!services.Any(z => z.ServiceType == typeof(ITenant)))
@@ -44,7 +54,7 @@ namespace Blacklite.Framework.Multitenancy
                         service.ImplementationType != null && service.ImplementationType.GetTypeInfo().GetCustomAttributes<LifecyclePerTenantAttribute>(true).Any()
                    );
         }
-        
+
         public static bool IsTenantSingleton(IServiceDescriptor service)
         {
             return service.Lifecycle == LifecycleKind.Singleton && IsPerTenant(service);
