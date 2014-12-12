@@ -76,6 +76,8 @@ namespace Tenants.Tests.Web
             {
                 x.UseMvc();
             });
+
+            app.Map("/events", x => x.UseMvc().UseMiddleware<ApplicationEventsMiddleware>());
             app.UseRuntimeInfoPage("/runtimeinfo");
 
 
@@ -85,7 +87,6 @@ namespace Tenants.Tests.Web
                 x.UseMvc();
                 x.UseMiddleware<TenantTestMiddleware2>();
                 x.UseMiddleware<TenantTestMiddleware>();
-                x.UseMiddleware<TenantEventsMiddleware>();
             });
 
             app.UseWelcomePage();
