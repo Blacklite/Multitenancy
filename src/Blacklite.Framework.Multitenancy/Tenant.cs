@@ -47,7 +47,7 @@ namespace Blacklite.Framework.Multitenancy
             [TenantState.None] = new[] { TenantState.Boot, TenantState.Started },
             [TenantState.Boot] = new[] { TenantState.Started, TenantState.Shutdown },
             [TenantState.Started] = new[] { TenantState.Stopped, TenantState.Shutdown },
-            [TenantState.Stopped] = new[] { TenantState.Shutdown },
+            [TenantState.Stopped] = new[] { TenantState.Started, TenantState.Shutdown },
             [TenantState.Shutdown] = new TenantState[] { },
         };
 
