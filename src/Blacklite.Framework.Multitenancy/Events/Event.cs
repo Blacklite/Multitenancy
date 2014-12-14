@@ -12,9 +12,9 @@ namespace Blacklite.Framework.Multitenancy.Events
             return (Event)this.MemberwiseClone();
         }
 
-        public static Event Boot() { return new Event() { Type = "\{TenantState.Boot}" }; }
-        public static Event Start() { return new Event() { Type = "\{TenantState.Started}" }; }
-        public static Event Stop() { return new Event() { Type = "\{TenantState.Stopped}" }; }
-        public static Event Shutdown() { return new Event() { Type = "\{TenantState.Shutdown}" }; }
+        public static Event Boot() { return new Event() { Type = string.Format("{0}", TenantState.Boot) }; }
+        public static Event Start() { return new Event() { Type = string.Format("{0}", TenantState.Started) }; }
+        public static Event Stop() { return new Event() { Type = string.Format("{0}", TenantState.Stopped) }; }
+        public static Event Shutdown() { return new Event() { Type = string.Format("{0}", TenantState.Shutdown) }; }
     }
 }

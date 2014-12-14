@@ -10,8 +10,8 @@ namespace Blacklite.Framework.Multitenancy.Autofac
 {
     public class AutofacTenantProvider : ITenantProvider
     {
-        public static object ApplicationTag = "__%Application";
-        public static object TenantTag = "__%Tenant";
+        public static string ApplicationTag = "__%Application";
+        public static string TenantTag = "__%Tenant";
 
         private readonly ILifetimeScope _lifetimeScope;
         private readonly ITenantConfigurationService _configurationService;

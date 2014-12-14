@@ -19,13 +19,13 @@ namespace Blacklite.Framework.Multitenancy.Autofac
             {
                 return _componentContext.ResolveOptional(serviceType);
             }
-            catch (DependencyResolutionException dre) if (dre.Message.Contains("\{AutofacTenantProvider.TenantTag}"))
+            catch (DependencyResolutionException dre) if (dre.Message.Contains(AutofacTenantProvider.TenantTag))
             {
-                throw new NotSupportedException("Cannot resolve dependency '\{serviceType.FullName}'.  It can only be resolved from inside of a tenant.", dre);
+                throw new NotSupportedException(string.Format("Cannot resolve dependency {0}.  It can only be resolved from inside of a tenant.", serviceType.FullName), dre);
             }
-            catch (DependencyResolutionException dre) if (dre.Message.Contains("\{AutofacTenantProvider.ApplicationTag}"))
+            catch (DependencyResolutionException dre) if (dre.Message.Contains(AutofacTenantProvider.ApplicationTag))
             {
-                throw new NotSupportedException("Cannot resolve dependency '\{serviceType.FullName}'.  It can only be resolved from outside of a tenant", dre);
+                throw new NotSupportedException(string.Format("Cannot resolve dependency {0}.  It can only be resolved from outside of a tenant", serviceType.FullName), dre);
             }
         }
     }

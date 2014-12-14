@@ -97,7 +97,7 @@ namespace Tenants.Tests.Web
             string tenantId;
             if (_tenantIdentificationStrategy.TryIdentifyTenant(context, out tenantId))
             {
-                var path = new PathString("/\{tenantId}");
+                var path = new PathString(string.Format("/{0}", tenantId));
 
                 PathString remainingPath;
                 if (path.StartsWithSegments(path, out remainingPath))

@@ -36,13 +36,13 @@ namespace Blacklite.Framework.Multitenancy
         public static bool HasRequiredServicesRegistered(IServiceCollection services)
         {
             if (!services.Any(z => z.ServiceType == typeof(ITenant)))
-                throw new Exception("\{nameof(ITenant)} has not been registered, \{nameof(ITenant)} is required for Multitenancy.");
+                throw new Exception(string.Format("{0} has not been registered, {0} is required for Multitenancy.", nameof(ITenant)));
 
             if (!services.Any(z => z.ServiceType == typeof(ITenantProvider)))
-                throw new Exception("\{nameof(ITenantProvider)} has not been registered, \{nameof(ITenantProvider)} is required for Multitenancy.");
+                throw new Exception(string.Format("{0} has not been registered, {0} is required for Multitenancy.", nameof(ITenantProvider)));
 
             if (!services.Any(z => z.ServiceType == typeof(ITenantIdentificationStrategy)))
-                throw new Exception("\{nameof(ITenantIdentificationStrategy)} has not been registered, \{nameof(ITenantIdentificationStrategy)} is required for Multitenancy.");
+                throw new Exception(string.Format("{0} has not been registered, {0} is required for Multitenancy.", nameof(ITenantIdentificationStrategy)));
 
             return true;
         }

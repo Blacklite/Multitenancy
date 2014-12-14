@@ -68,13 +68,13 @@ namespace Tenants.Tests.Web
 
             await httpContext.Response.WriteAsync(httpContext.Request.Path + "\n\n");
 
-            await httpContext.Response.WriteAsync("Tenant \{tenant.Id}\n");
-            await httpContext.Response.WriteAsync("\{nameof(GlobalDependencySingleton)}: \{globalSingleton.Number}\n");
-            await httpContext.Response.WriteAsync("\{nameof(GlobalDependencyScoped)}: \{globalScoped.Number}\n");
-            await httpContext.Response.WriteAsync("\{nameof(GlobalDependencyTransient)}: \{globalTransient.Number}\n\n");
-            await httpContext.Response.WriteAsync("\{nameof(TenantDependencySingleton)}: \{tenantSingleton.Number}\n");
-            await httpContext.Response.WriteAsync("\{nameof(TenantDependencyScoped)}: \{tenantScoped.Number}\n");
-            await httpContext.Response.WriteAsync("\{nameof(TenantDependencyTransient)}: \{tenantTransient.Number}\n");
+            await httpContext.Response.WriteAsync(string.Format("Tenant {0}\n", tenant.Id));
+            await httpContext.Response.WriteAsync(nameof(GlobalDependencySingleton) + ": " + globalSingleton.Number + "\n");
+            await httpContext.Response.WriteAsync(nameof(GlobalDependencyScoped) + ": " + globalScoped.Number + "\n");
+            await httpContext.Response.WriteAsync(nameof(GlobalDependencyTransient) + ": " + globalTransient.Number + "\n\n");
+            await httpContext.Response.WriteAsync(nameof(TenantDependencySingleton) + ": " + tenantSingleton.Number + "\n");
+            await httpContext.Response.WriteAsync(nameof(TenantDependencyScoped) + ": " + tenantScoped.Number + "\n");
+            await httpContext.Response.WriteAsync(nameof(TenantDependencyTransient) + ": " + tenantTransient.Number + "\n");
             //await httpContext.Response.WriteAsync("Hello world?");
 
             try
@@ -83,7 +83,7 @@ namespace Tenants.Tests.Web
             }
             catch
             {
-                await httpContext.Response.WriteAsync("Could not fetch \{nameof(ApplicationDependencySingleton)}\n");
+                await httpContext.Response.WriteAsync("Could not fetch " + nameof(ApplicationDependencySingleton) + "\n");
             }
 
             await _next.Invoke(httpContext);

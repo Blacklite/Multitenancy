@@ -25,7 +25,7 @@ namespace Multitenancy.Autofac.Tests
             var lifetimeScopeContainer = builder.Build();
 
             var lifetimeScope = new Mock<ILifetimeScope>();
-            lifetimeScope.Setup(x => x.BeginLifetimeScope(AutofacTenantProvider.Tag)).Returns(lifetimeScopeContainer);
+            lifetimeScope.Setup(x => x.BeginLifetimeScope(AutofacTenantProvider.TenantTag)).Returns(lifetimeScopeContainer);
 
             //.Setup(x => x.Resolve< IServiceProvider>()).Returns(;
             var tenantConfigurationService = new Mock<ITenantConfigurationService>();
@@ -34,8 +34,7 @@ namespace Multitenancy.Autofac.Tests
 
             var result = provider.GetOrAdd("tenant1");
 
-            lifetimeScope.Verify(x => x.BeginLifetimeScope(AutofacTenantProvider.Tag), Times.Once);
-            tenant.Verify(x => x.Initialize("tenant1"), Times.Once);
+            lifetimeScope.Verify(x => x.BeginLifetimeScope(AutofacTenantProvider.TenantTag), Times.Once);
 
             Assert.Equal(result.Tenant, tenant.Object);
             Assert.Equal(result.ServiceProvider, childServiceProvider.Object);
@@ -54,7 +53,7 @@ namespace Multitenancy.Autofac.Tests
             var lifetimeScopeContainer = builder.Build();
 
             var lifetimeScope = new Mock<ILifetimeScope>();
-            lifetimeScope.Setup(x => x.BeginLifetimeScope(AutofacTenantProvider.Tag)).Returns(lifetimeScopeContainer);
+            lifetimeScope.Setup(x => x.BeginLifetimeScope(AutofacTenantProvider.TenantTag)).Returns(lifetimeScopeContainer);
 
             //.Setup(x => x.Resolve< IServiceProvider>()).Returns(;
             var tenantConfigurationService = new Mock<ITenantConfigurationService>();

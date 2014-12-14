@@ -32,7 +32,7 @@ namespace Blacklite.Framework.Multitenancy
         {
             var t = tenant as Tenant;
             if (t == null)
-                throw new NotSupportedException("All tenant implementations must derive from the \{nameof(Tenant)} class.");
+                throw new NotSupportedException(string.Format("All tenant implementations must derive from the {0} class.", nameof(Tenant)));
 
             t.Broadcast(Event.Boot());
         }
@@ -41,7 +41,7 @@ namespace Blacklite.Framework.Multitenancy
         {
             var t = tenant as Tenant;
             if (t == null)
-                throw new NotSupportedException("All tenant implementations must derive from the \{nameof(Tenant)} class.");
+                throw new NotSupportedException(string.Format("All tenant implementations must derive from the {0} class.", nameof(Tenant)));
 
             t.Broadcast(Event.Start());
         }
@@ -50,7 +50,7 @@ namespace Blacklite.Framework.Multitenancy
         {
             var t = tenant as Tenant;
             if (t == null)
-                throw new NotSupportedException("All tenant implementations must derive from the \{nameof(Tenant)} class.");
+                throw new NotSupportedException(string.Format("All tenant implementations must derive from the {0} class.", nameof(Tenant)));
 
             t.Broadcast(Event.Stop());
         }
@@ -59,7 +59,7 @@ namespace Blacklite.Framework.Multitenancy
         {
             var t = tenant as Tenant;
             if (t == null)
-                throw new NotSupportedException("All tenant implementations must derive from the \{nameof(Tenant)} class.");
+                throw new NotSupportedException(string.Format("All tenant implementations must derive from the {0} class.", nameof(Tenant)));
 
             t.Broadcast(Event.Shutdown());
         }
