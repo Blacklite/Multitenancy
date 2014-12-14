@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Http;
+using Microsoft.Framework.Runtime;
 using System;
 
 namespace Blacklite.Framework.Multitenancy
@@ -7,6 +8,7 @@ namespace Blacklite.Framework.Multitenancy
     /// Defines a provider that determines the current tenant ID from
     /// execution context.
     /// </summary>
+    [AssemblyNeutral]
     [ApplicationOnly]
     public interface ITenantIdentificationStrategy
     {

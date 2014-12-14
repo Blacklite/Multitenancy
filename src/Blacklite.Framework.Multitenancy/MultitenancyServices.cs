@@ -1,5 +1,4 @@
-﻿using Blacklite.Framework.Multitenancy.ApplicationEvents;
-using Blacklite.Framework.Multitenancy.ConfigurationModel;
+﻿using Blacklite.Framework.Multitenancy.ConfigurationModel;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
@@ -18,19 +17,8 @@ namespace Blacklite.Framework.Multitenancy
 
             yield return describe.ApplicationOnlySingleton<ITenantConfigurationService, TenantConfigurationService>();
 
-            yield return describe.TenantOnlySingleton<ITenantLogger, TenantLogger>();
             yield return describe.TenantOnlySingleton<ITenant, Tenant>();
             yield return describe.TenantOnlySingleton<ITenantConfiguration, TenantConfiguration>();
-            yield return describe.TenantOnlySingleton<ILogger>(x => x.GetRequiredService<ITenantLogger>());
-        }
-
-        public static IEnumerable<IServiceDescriptor> GetApplicationEvents(IConfiguration configuration = null)
-        {
-            var describe = new ServiceDescriber(configuration);
-
-            yield return describe.ApplicationOnlySingleton<ITenantComposer, ApplicationBroadcastComposer>();
-            yield return describe.ApplicationOnlySingleton<IApplicationObservable, ApplicationObservable>();
-            yield return describe.ApplicationOnlySingleton<IApplicationOrchestrator, ApplicationOrchestrator>();
         }
 
         public static bool HasRequiredServicesRegistered(IServiceCollection services)

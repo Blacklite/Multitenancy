@@ -1,10 +1,10 @@
-﻿using Microsoft.Framework.DependencyInjection;
+﻿using Microsoft.Framework.Runtime;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Blacklite.Framework.Multitenancy
 {
+    [AssemblyNeutral]
     [ApplicationOnly]
     public interface ITenantProvider
     {

@@ -3,21 +3,15 @@ using System;
 
 namespace Blacklite.Framework.Multitenancy.ApplicationEvents
 {
-    [ApplicationOnly]
-    public interface IApplicationObservable : IObservable<ApplicationEvent>
-    {
-
-    }
-
     public class ApplicationObservable : IApplicationObservable
     {
-        private readonly IObservable<ApplicationEvent> _observable;
+        private readonly IObservable<IApplicationEvent> _observable;
         public ApplicationObservable(IApplicationOrchestrator orchestrator)
         {
             _observable = orchestrator.Events;
         }
 
-        public IDisposable Subscribe(IObserver<ApplicationEvent> observer)
+        public IDisposable Subscribe(IObserver<IApplicationEvent> observer)
         {
             return _observable.Subscribe(observer);
         }

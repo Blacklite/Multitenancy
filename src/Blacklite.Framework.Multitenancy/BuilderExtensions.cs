@@ -2,6 +2,7 @@
 using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using Blacklite.Framework;
 using Blacklite.Framework.Multitenancy;
 
 namespace Microsoft.AspNet.Builder

@@ -1,5 +1,4 @@
-﻿using Blacklite.Framework.Multitenancy.Events;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
 

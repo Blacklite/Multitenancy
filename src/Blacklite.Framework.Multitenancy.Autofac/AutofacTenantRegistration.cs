@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Builder;
 using Blacklite;
+using Blacklite.Framework;
 using Blacklite.Framework.Multitenancy;
 using Blacklite.Framework.Multitenancy.Autofac;
 using Microsoft.Framework.ConfigurationModel;

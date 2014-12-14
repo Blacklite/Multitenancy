@@ -1,15 +1,10 @@
 ﻿using Microsoft.Framework.ConfigurationModel;
+using Microsoft.Framework.Runtime;
 using System;
 
 namespace Blacklite.Framework.Multitenancy
 {
-    [ApplicationOnly]
-    public interface ITenantComposer
-    {
-        int Order { get; }
-        void Configure(ITenant tenant);
-    }
-
+    [AssemblyNeutral]
     [ApplicationOnly]
     public interface ITenantConfigurationComposer
     {

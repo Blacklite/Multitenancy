@@ -1,7 +1,9 @@
-﻿using Microsoft.Framework.DependencyInjection;
+﻿using Blacklite.Framework;
+using Blacklite.Framework.Multitenancy;
+using Microsoft.Framework.DependencyInjection;
 using System;
 
-namespace Blacklite.Framework.Multitenancy
+namespace Microsoft.Framework.DependencyInjection
 {
     public static class ApplicationOnlyServiceDescriptorExtensions
     {

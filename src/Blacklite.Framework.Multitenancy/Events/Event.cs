@@ -2,10 +2,28 @@
 
 namespace Blacklite.Framework.Multitenancy.Events
 {
-    public class Event
+    public class Event : IEvent
     {
-        public string Name { get; set; }
+        public Event()
+        {
+
+        }
+
+        internal Event(IEvent @event)
+        {
+            Type = @event.Type;
+            Name = @event.Name;
+            User = @event.User;
+            Reason = @event.Reason;
+        }
+
         public string Type { get; set; }
+
+        public string Name { get; set; }
+
+        public string User { get; set; }
+
+        public string Reason { get; set; }
 
         public Event Clone()
         {

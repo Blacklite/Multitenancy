@@ -1,0 +1,20 @@
+﻿{
+    "version": "1.0.0-*",
+    "dependencies": {
+        "Microsoft.Framework.DependencyInjection": "1.0.0-rc1-*",
+        "Blacklite.Framework.Interfaces": { "version": "1.0.0-beta-*", "type": "build" }
+    },
+
+    "frameworks": {
+        "aspnet50": {
+            "dependencies": {
+            }
+        },
+        "aspnetcore50": {
+            "dependencies": {
+                "System.Runtime": "4.0.20-beta-*",
+                "System.ComponentModel": "4.0.0-beta-*"
+            }
+        }
+    }
+}

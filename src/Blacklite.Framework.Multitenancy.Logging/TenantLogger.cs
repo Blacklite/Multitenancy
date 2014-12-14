@@ -4,9 +4,6 @@ using System;
 
 namespace Blacklite.Framework.Multitenancy
 {
-    [TenantOnly]
-    public interface ITenantLogger : ILogger { }
-
     class TenantLogger : ITenantLogger
     {
         private ILogger _logger;

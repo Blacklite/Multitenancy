@@ -57,6 +57,7 @@ namespace Tenants.Tests.Web
             services.AddMvc();
             services.AddAssembly(this);
             services.AddMultitenancyApplicationEvents();
+            services.AddMultitenancyLogging();
 
             return new ContainerBuilder()
                 .Populate(services)

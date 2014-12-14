@@ -1,4 +1,5 @@
 ﻿using Blacklite;
+using Blacklite.Framework;
 using Blacklite.Framework.Multitenancy;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
@@ -7,9 +8,9 @@ using System.Collections.Generic;
 
 namespace Microsoft.Framework.DependencyInjection
 {
-    public static class ApplicationOnlyServiceCollectionExtensions
+    public static class TenantOnlyServiceCollectionExtensions
     {
-        public static IServiceCollection AddApplicationOnlySingleton([NotNull] this IServiceCollection collection,
+        public static IServiceCollection AddTenantOnlySingleton([NotNull] this IServiceCollection collection,
                                                             [NotNull] Type service,
                                                             [NotNull] Type implementationType)
         {
@@ -17,7 +18,7 @@ namespace Microsoft.Framework.DependencyInjection
             return collection.Add(descriptor);
         }
 
-        public static IServiceCollection AddApplicationOnlySingleton([NotNull] this IServiceCollection collection,
+        public static IServiceCollection AddTenantOnlySingleton([NotNull] this IServiceCollection collection,
                                                       [NotNull] Type service,
                                                       [NotNull] Func<IServiceProvider, object> implementationFactory)
         {
@@ -25,27 +26,27 @@ namespace Microsoft.Framework.DependencyInjection
             return collection.Add(descriptor);
         }
 
-        public static IServiceCollection AddApplicationOnlySingleton<TService, TImplementation>([NotNull] this IServiceCollection services)
+        public static IServiceCollection AddTenantOnlySingleton<TService, TImplementation>([NotNull] this IServiceCollection services)
         {
-            return services.AddApplicationOnlySingleton(typeof(TService), typeof(TImplementation));
+            return services.AddTenantOnlySingleton(typeof(TService), typeof(TImplementation));
         }
 
-        public static IServiceCollection AddApplicationOnlySingleton([NotNull] this IServiceCollection services,
+        public static IServiceCollection AddTenantOnlySingleton([NotNull] this IServiceCollection services,
                                                             [NotNull] Type serviceType)
         {
-            return services.AddApplicationOnlySingleton(serviceType, serviceType);
+            return services.AddTenantOnlySingleton(serviceType, serviceType);
         }
 
-        public static IServiceCollection AddApplicationOnlySingleton<TService>([NotNull] this IServiceCollection services)
+        public static IServiceCollection AddTenantOnlySingleton<TService>([NotNull] this IServiceCollection services)
         {
-            return services.AddApplicationOnlySingleton(typeof(TService));
+            return services.AddTenantOnlySingleton(typeof(TService));
         }
 
-        public static IServiceCollection AddApplicationOnlySingleton<TService>([NotNull] this IServiceCollection services,
+        public static IServiceCollection AddTenantOnlySingleton<TService>([NotNull] this IServiceCollection services,
                                                                       [NotNull] Func<IServiceProvider, TService> implementationFactory)
             where TService : class
         {
-            return services.AddApplicationOnlySingleton(typeof(TService), implementationFactory);
+            return services.AddTenantOnlySingleton(typeof(TService), implementationFactory);
         }
     }
 }

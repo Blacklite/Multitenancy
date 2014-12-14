@@ -11,37 +11,10 @@ using System.Reactive.Subjects;
 
 namespace Blacklite.Framework.Multitenancy
 {
-    public enum TenantState
-    {
-        None,
-        Boot,
-        Started,
-        Stopped,
-        Shutdown
-    }
-
-    [TenantOnly]
-    public interface ITenant : IDisposable
-    {
-        string Id { get; }
-        TenantState State { get; }
-        IConfiguration Configuration { get; }
-        void Broadcast(Event operation);
-
-        IObservable<Event> Events { get; }
-        IObservable<Event> Boot { get; }
-        IObservable<Event> Start { get; }
-        IObservable<Event> Stop { get; }
-        IObservable<Event> Shutdown { get; }
-
-        void DoStart();
-        void DoStop();
-    }
-
     public class Tenant : ITenant
     {
         private bool _initalized = false;
-        private readonly IObserver<Event> _changeSubject;
+        private readonly IObserver<IEvent> _changeSubject;
         private readonly IDictionary<TenantState, TenantState[]> _validStates = new Dictionary<TenantState, TenantState[]>()
         {
             [TenantState.None] = new[] { TenantState.Boot, TenantState.Started },
@@ -55,7 +28,7 @@ namespace Blacklite.Framework.Multitenancy
         {
             Configuration = configuration;
 
-            var subject = new Subject<Event>();
+            var subject = new Subject<IEvent>();
             _changeSubject = subject;
             Events = subject;
             Boot = Events.Where(x => x.Type == string.Format("{0}", TenantState.Boot));
@@ -97,22 +70,22 @@ namespace Blacklite.Framework.Multitenancy
         /// <summary>
         /// Broadcasts from the tenant, specificly, should ignore state changes.
         ///  This allows for operations to be broadcast, that are not tenant related.        /// </summary>
-        /// <param name="operation"></param>
-        void ITenant.Broadcast(Event operation)
+        /// <param name="event"></param>
+        void ITenant.Broadcast(IEvent @event)
         {
             // Broadcasts from the tenant, specificly, should ignore state changes.
             //  This allows for operations to be broadcast, that are not tenant related.
             TenantState movingTo;
-            if (Enum.TryParse(operation.Type, out movingTo))
-                operation.Type = "Not" + operation.Type;
+            if (Enum.TryParse(@event.Type, out movingTo))
+                @event = new Event(@event) { Type = "Not" + @event.Type };
 
-            Broadcast(operation);
+            Broadcast(@event);
         }
 
-        public void Broadcast(Event operation)
+        public void Broadcast(IEvent @event)
         {
             TenantState movingTo;
-            if (Enum.TryParse(operation.Type, out movingTo))
+            if (Enum.TryParse(@event.Type, out movingTo))
             {
                 TenantState[] validStates;
                 if (_validStates.TryGetValue(State, out validStates))
@@ -121,23 +94,22 @@ namespace Blacklite.Framework.Multitenancy
                     {
                         foreach (var s in validStates.TakeWhile(x => x != movingTo))
                         {
-                            var newOperation = operation.Clone();
-                            newOperation.Type = string.Format("{0}", s);
+                            var newOperation = new Event(@event) { Type = string.Format("{0}", s) };
 
                             _changeSubject.OnNext(newOperation);
                         }
 
-                        _changeSubject.OnNext(operation);
+                        _changeSubject.OnNext(@event);
                         return;
                     }
                 }
 
-                operation.Type = string.Format("InvalidStateTransition{0}", operation.Type);
-                _changeSubject.OnNext(operation);
+                @event = new Event(@event) { Type = string.Format("InvalidStateTransition{0}", @event.Type) };
+                _changeSubject.OnNext(@event);
             }
             else
             {
-                _changeSubject.OnNext(operation);
+                _changeSubject.OnNext(@event);
             }
         }
 
@@ -147,11 +119,11 @@ namespace Blacklite.Framework.Multitenancy
             Broadcast(operation);
         }
 
-        public IObservable<Event> Events { get; }
-        public IObservable<Event> Boot { get; }
-        public IObservable<Event> Start { get; }
-        public IObservable<Event> Stop { get; }
-        public IObservable<Event> Shutdown { get; }
+        public IObservable<IEvent> Events { get; }
+        public IObservable<IEvent> Boot { get; }
+        public IObservable<IEvent> Start { get; }
+        public IObservable<IEvent> Stop { get; }
+        public IObservable<IEvent> Shutdown { get; }
 
         public void DoStart()
         {
