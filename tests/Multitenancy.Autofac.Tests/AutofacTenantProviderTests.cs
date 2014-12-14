@@ -15,10 +15,10 @@ namespace Multitenancy.Autofac.Tests
         [Fact]
         public void ProvidesTenants()
         {
-            var tenant = new Mock<ITenant>();
+            var tenant = new Tenant(new TenantConfiguration());
 
             var childServiceProvider = new Mock<IServiceProvider>();
-            childServiceProvider.Setup(x => x.GetService(typeof(ITenant))).Returns(tenant.Object);
+            childServiceProvider.Setup(x => x.GetService(typeof(ITenant))).Returns(tenant);
 
             var builder = new ContainerBuilder();
             builder.RegisterInstance(childServiceProvider.Object).As<IServiceProvider>();
@@ -36,17 +36,17 @@ namespace Multitenancy.Autofac.Tests
 
             lifetimeScope.Verify(x => x.BeginLifetimeScope(AutofacTenantProvider.TenantTag), Times.Once);
 
-            Assert.Equal(result.Tenant, tenant.Object);
+            Assert.Equal(result.Tenant, tenant);
             Assert.Equal(result.ServiceProvider, childServiceProvider.Object);
         }
 
         [Fact]
         public void ProvidesListOfTenantIds()
         {
-            var tenant = new Mock<ITenant>();
+            var tenant = new Tenant(new TenantConfiguration());
 
             var childServiceProvider = new Mock<IServiceProvider>();
-            childServiceProvider.Setup(x => x.GetService(typeof(ITenant))).Returns(tenant.Object);
+            childServiceProvider.Setup(x => x.GetService(typeof(ITenant))).Returns(tenant);
 
             var builder = new ContainerBuilder();
             builder.RegisterInstance(childServiceProvider.Object).As<IServiceProvider>();
