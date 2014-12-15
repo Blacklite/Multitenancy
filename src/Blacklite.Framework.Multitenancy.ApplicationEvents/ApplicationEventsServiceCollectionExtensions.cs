@@ -14,8 +14,14 @@ namespace Microsoft.Framework.DependencyInjection
             [NotNull] this IServiceCollection services,
             IConfiguration configuration = null)
         {
+            ConfigureDefaultServices(services, configuration);
             services.TryAdd(ApplicationEventsServices.GetApplicationEvents(configuration));
             return services;
+        }
+
+        private static void ConfigureDefaultServices(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddGlobalEvents(configuration);
         }
     }
 }

@@ -2,7 +2,8 @@
     "version": "1.0.0-*",
     "dependencies": {
         "Microsoft.Framework.DependencyInjection": "1.0.0-rc1-*",
-        "Blacklite.Framework.Multitenancy": "1.0.0-beta-*"
+        "Blacklite.Framework.Multitenancy": "1.0.0-beta-*",
+        "Blacklite.Framework.GlobalEvents": "1.0.0-beta-*"
     },
 
     "frameworks": {

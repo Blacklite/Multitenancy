@@ -20,6 +20,8 @@ namespace Blacklite.Framework.Multitenancy.ApplicationEvents
             Reason = @event.Reason;
         }
 
+        internal static ApplicationEvent Create(IEvent x) => new ApplicationEvent("_global", x);
+
         internal static Func<IEvent, ApplicationEvent> Create(string tenantId) => x => new ApplicationEvent(tenantId, x);
 
         public string Tenant { get; set; }
