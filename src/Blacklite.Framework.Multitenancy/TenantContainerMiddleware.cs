@@ -47,7 +47,7 @@ namespace Blacklite.Framework.Multitenancy
 
             _httpContextAccessor = httpContextAccessor;
         }
-        
+
         public async Task Invoke(HttpContext httpContext)
         {
             if (httpContext.RequestServices != null)
