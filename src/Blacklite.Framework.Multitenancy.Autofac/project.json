@@ -4,6 +4,8 @@
         "Blacklite.Framework.Multitenancy": "1.0.0-beta-*"
     },
 
+    "compilationOptions": {"languageVersion": "experimental"},
+
     "frameworks": {
         "aspnet50": {
             "frameworkAssemblies": { "System.Collections.Concurrent": "4.0.0.0" },
