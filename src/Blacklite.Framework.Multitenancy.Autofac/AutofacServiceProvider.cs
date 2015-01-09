@@ -28,6 +28,8 @@ namespace Blacklite.Framework.Multitenancy.Autofac
                 throw new NotSupportedException(string.Format("Cannot resolve dependency {0}.  It can only be resolved from outside of a tenant", serviceType.FullName), dre);
             }
             catch { throw; }
+
+            return true;
         }
     }
 }
