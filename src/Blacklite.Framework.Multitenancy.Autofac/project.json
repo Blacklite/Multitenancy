@@ -4,7 +4,7 @@
         "Blacklite.Framework.Multitenancy": "1.0.0-beta-*"
     },
 
-    "compilationOptions": {"languageVersion": "experimental"},
+    "compilationOptions": {"languageVersion": "csharp6"},
 
     "frameworks": {
         "aspnet50": {

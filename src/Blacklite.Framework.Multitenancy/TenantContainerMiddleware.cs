@@ -17,7 +17,7 @@ namespace Blacklite.Framework.Multitenancy
     {
         private readonly RequestDelegate _next;
         private readonly IServiceProvider _serviceProvider;
-        private readonly IContextAccessor<HttpContext> _httpContextAccessor;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ITenantProvider _serviceScopeFactory;
         private readonly ITenantIdentificationStrategy _tenantIdentificationStrategy;
         private readonly IHostingEnvironment _environment;
@@ -28,7 +28,7 @@ namespace Blacklite.Framework.Multitenancy
             ITenantProvider serviceScopeFactory,
             ITenantIdentificationStrategy tenantIdentificationStrategy,
             IHostingEnvironment environment,
-            IContextAccessor<HttpContext> httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor)
         {
             if (serviceProvider == null)
             {
@@ -67,7 +67,7 @@ namespace Blacklite.Framework.Multitenancy
             {
                 appServiceProvider = priorApplicationServices;
                 appServiceScopeFactory = priorApplicationServices.GetRequiredService<ITenantProvider>();
-                appHttpContextAccessor = priorApplicationServices.GetRequiredService<IContextAccessor<HttpContext>>();
+                appHttpContextAccessor = priorApplicationServices.GetRequiredService<IHttpContextAccessor>();
             }
 
             string tenantId;

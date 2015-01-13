@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Http;
+﻿using Microsoft.AspNet.Hosting;
+using Microsoft.AspNet.Http;
 using Microsoft.Framework.DependencyInjection;
 using System;
 
@@ -10,13 +11,13 @@ namespace Blacklite.Framework.Multitenancy
         private IServiceProvider _priorAppServices;
         private HttpContext _priorAppHttpContext;
         private HttpContext _priorScopeHttpContext;
-        private IContextAccessor<HttpContext> _httpContextAccessor;
-        private IContextAccessor<HttpContext> _scopeContextAccessor;
+        private IHttpContextAccessor _httpContextAccessor;
+        private IHttpContextAccessor _scopeContextAccessor;
 
         public TenantRequestServicesContainer(
             HttpContext context,
             string tenantId,
-            IContextAccessor<HttpContext> httpContextAccessor,
+            IHttpContextAccessor httpContextAccessor,
             ITenantProvider tenantProvider,
             IServiceProvider appServiceProvider)
         {
@@ -35,7 +36,7 @@ namespace Blacklite.Framework.Multitenancy
 
             // Begin the scope
             var scope = tenantProvider.GetOrAdd(tenantId);
-            _scopeContextAccessor = scope.ServiceProvider.GetRequiredService<IContextAccessor<HttpContext>>();
+            _scopeContextAccessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
 
             if (scope.Tenant.State == TenantState.Boot)
                 scope.Tenant.DoStart();
