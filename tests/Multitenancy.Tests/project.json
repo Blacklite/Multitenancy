@@ -1,11 +1,11 @@
 ﻿{
     "dependencies": {
-        "Xunit.KRunner": "1.0.0-beta3-*",
+        "xunit.runner.kre": "1.0.0-*",
         "Blacklite.Framework.Multitenancy": ""
     },
 
     "commands": {
-        "test": "Xunit.KRunner"
+        "test": "xunit.runner.kre"
     },
 
     "frameworks": {
