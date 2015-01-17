@@ -1,9 +1,9 @@
 ﻿{
     "version": "1.0.0-*",
     "dependencies": {
-        "Microsoft.AspNet.Http": "1.0.0-rc1-*",
-        "Microsoft.AspNet.Http.Extensions": "1.0.0-rc1-*",
-        "Microsoft.AspNet.Hosting": "1.0.0-rc1-*",
+        "Microsoft.AspNet.Http": "1.0.0-beta3-*",
+        "Microsoft.AspNet.Http.Extensions": "1.0.0-beta3-*",
+        "Microsoft.AspNet.Hosting": "1.0.0-beta3-*",
         "Rx-Core": "2.2.5.0",
         "Rx-Linq": "2.2.5.0",
         "Blacklite.Framework.Interfaces": { "version": "1.0.0-beta-*", "type": "build" },

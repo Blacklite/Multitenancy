@@ -1,6 +1,6 @@
 ﻿{
     "dependencies": {
-        "Xunit.KRunner": "1.0.0-rc1-*",
+        "Xunit.KRunner": "1.0.0-beta3-*",
         "Moq": "4.2.1408.619",
         "Blacklite.Framework.Multitenancy.Autofac": ""
     },
