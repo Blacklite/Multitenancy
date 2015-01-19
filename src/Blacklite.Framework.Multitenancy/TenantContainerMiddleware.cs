@@ -16,36 +16,22 @@ namespace Blacklite.Framework.Multitenancy
     public class TenantContainerMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly IServiceProvider _serviceProvider;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ITenantProvider _serviceScopeFactory;
+        private readonly IServiceProvider _services;
         private readonly ITenantIdentificationStrategy _tenantIdentificationStrategy;
-        private readonly IHostingEnvironment _environment;
 
         public TenantContainerMiddleware(
             RequestDelegate next,
             IServiceProvider serviceProvider,
-            ITenantProvider serviceScopeFactory,
-            ITenantIdentificationStrategy tenantIdentificationStrategy,
-            IHostingEnvironment environment,
-            IHttpContextAccessor httpContextAccessor)
+            ITenantIdentificationStrategy tenantIdentificationStrategy)
         {
             if (serviceProvider == null)
             {
-                throw new ArgumentNullException("rootServiceProvider");
-            }
-            if (serviceScopeFactory == null)
-            {
-                throw new ArgumentNullException("rootServiceScopeFactory");
+                throw new ArgumentNullException(nameof(serviceProvider));
             }
 
             _next = next;
-            _serviceProvider = serviceProvider;
-            _serviceScopeFactory = serviceScopeFactory;
+            _services = serviceProvider;
             _tenantIdentificationStrategy = tenantIdentificationStrategy;
-            _environment = environment;
-
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task Invoke(HttpContext httpContext)
@@ -55,26 +41,11 @@ namespace Blacklite.Framework.Multitenancy
                 throw new Exception("TODO: nested request container scope? this is probably a mistake on your part?");
             }
 
-            var priorApplicationServices = httpContext.ApplicationServices;
-            var priorRequestServices = httpContext.RequestServices;
-
-            var appServiceProvider = _serviceProvider;
-            var appServiceScopeFactory = _serviceScopeFactory;
-            var appHttpContextAccessor = _httpContextAccessor;
-
-            if (priorApplicationServices != null &&
-                priorApplicationServices != appServiceProvider)
-            {
-                appServiceProvider = priorApplicationServices;
-                appServiceScopeFactory = priorApplicationServices.GetRequiredService<ITenantProvider>();
-                appHttpContextAccessor = priorApplicationServices.GetRequiredService<IHttpContextAccessor>();
-            }
-
             string tenantId;
             if (!_tenantIdentificationStrategy.TryIdentifyTenant(httpContext, out tenantId))
                 throw new Exception("Could not identify tenant!");
 
-            using (var container = new TenantRequestServicesContainer(httpContext, tenantId, appHttpContextAccessor, appServiceScopeFactory, appServiceProvider))
+            using (var container = TenantServicesContainer.EnsureTenantServices(httpContext, _services, tenantId))
             {
                 await _next.Invoke(httpContext);
             }

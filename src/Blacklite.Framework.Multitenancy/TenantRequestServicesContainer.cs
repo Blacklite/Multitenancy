@@ -5,25 +5,22 @@ using System;
 
 namespace Blacklite.Framework.Multitenancy
 {
-    class TenantRequestServicesContainer : IDisposable
+    public class TenantServicesContainer : IDisposable
     {
-        private HttpContext _context;
-        private IServiceProvider _priorAppServices;
-        private HttpContext _priorAppHttpContext;
-        private HttpContext _priorScopeHttpContext;
-        private IHttpContextAccessor _httpContextAccessor;
-        private IHttpContextAccessor _scopeContextAccessor;
+        private HttpContext _context { get; set; }
+        private IServiceProvider _priorAppServices { get; set; }
+        private IServiceProvider _priorRequestServices { get; set; }
+        private ITenantScope _scope { get; set; }
 
-        public TenantRequestServicesContainer(
+        public TenantServicesContainer(
             HttpContext context,
-            string tenantId,
-            IHttpContextAccessor httpContextAccessor,
-            ITenantProvider tenantProvider,
-            IServiceProvider appServiceProvider)
+            IServiceProvider appServiceProvider,
+            ITenantProvider scopeFactory,
+            string tenantId)
         {
-            if (tenantProvider == null)
+            if (scopeFactory == null)
             {
-                throw new ArgumentNullException(nameof(tenantProvider));
+                throw new ArgumentNullException(nameof(scopeFactory));
             }
             if (context == null)
             {
@@ -31,20 +28,54 @@ namespace Blacklite.Framework.Multitenancy
             }
 
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
             _priorAppServices = context.ApplicationServices;
+            _priorRequestServices = context.RequestServices;
 
-            // Begin the scope
-            var scope = tenantProvider.GetOrAdd(tenantId);
-            _scopeContextAccessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
+            var scope = _scope = scopeFactory.GetOrAdd(tenantId);
 
             if (scope.Tenant.State == TenantState.Boot)
                 scope.Tenant.DoStart();
 
-            _context.ApplicationServices = scope.ServiceProvider;
+            _context.ApplicationServices = appServiceProvider;
+            _context.RequestServices = _scope.ServiceProvider;
+        }
 
-            _priorAppHttpContext = _httpContextAccessor.SetValue(context);
-            _priorScopeHttpContext = _scopeContextAccessor.SetValue(context);
+
+        // CONSIDER: this could be an extension method on HttpContext instead
+        public static TenantServicesContainer EnsureTenantServices(HttpContext httpContext, IServiceProvider services, string tenantId)
+        {
+            // All done if we already have a request services
+            if (httpContext.RequestServices != null)
+            {
+                return null;
+            }
+
+            var serviceProvider = httpContext.ApplicationServices ?? services;
+            if (serviceProvider == null)
+            {
+                throw new InvalidOperationException("TODO: services and httpContext.ApplicationServices are both null!");
+            }
+
+            // Matches constructor of RequestContainer
+            var rootServiceProvider = serviceProvider.GetRequiredService<IServiceProvider>();
+            var rootServiceScopeFactory = serviceProvider.GetRequiredService<ITenantProvider>();
+
+            // Pre Scope setup
+            var priorApplicationServices = serviceProvider;
+            var priorRequestServices = serviceProvider;
+
+            var appServiceProvider = rootServiceProvider;
+            var appServiceScopeFactory = rootServiceScopeFactory;
+
+            if (priorApplicationServices != null &&
+                priorApplicationServices != appServiceProvider)
+            {
+                appServiceProvider = priorApplicationServices;
+                appServiceScopeFactory = priorApplicationServices.GetRequiredService<ITenantProvider>();
+            }
+
+            // Creates the scope and does the service swaps
+            return new TenantServicesContainer(httpContext, appServiceProvider, appServiceScopeFactory, tenantId);
         }
 
         #region IDisposable Support
@@ -56,16 +87,19 @@ namespace Blacklite.Framework.Multitenancy
             {
                 if (disposing)
                 {
-                    _httpContextAccessor.SetValue(_priorAppHttpContext);
-                    _scopeContextAccessor.SetValue(_priorScopeHttpContext);
+                    _context.RequestServices = _priorRequestServices;
                     _context.ApplicationServices = _priorAppServices;
+                }
+
+                if (_scope != null)
+                {
+                    _scope.Dispose();
+                    _scope = null;
                 }
 
                 _context = null;
                 _priorAppServices = null;
-                _scopeContextAccessor = null;
-                _priorAppHttpContext = null;
-                _priorScopeHttpContext = null;
+                _priorRequestServices = null;
 
                 disposedValue = true;
             }
@@ -78,6 +112,5 @@ namespace Blacklite.Framework.Multitenancy
             Dispose(true);
         }
         #endregion
-
     }
 }

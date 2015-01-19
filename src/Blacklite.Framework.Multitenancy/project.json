@@ -1,6 +1,7 @@
 ﻿{
 	"version": "1.0.0-*",
 	"dependencies": {
+		"Microsoft.Framework.DependencyInjection": "1.0.0-beta3-*",
 		"Microsoft.AspNet.Http": "1.0.0-beta3-*",
 		"Microsoft.AspNet.Http.Extensions": "1.0.0-beta3-*",
 		"Microsoft.AspNet.Hosting": "1.0.0-beta3-*",
@@ -17,6 +18,9 @@
 
 	"frameworks": {
 		"aspnet50": {
+			"frameworkAssemblies": {
+				"System.Runtime": "4.0.20.0"
+			},
 			"dependencies": {
 			}
 		},
