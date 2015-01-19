@@ -7,9 +7,9 @@
 		"Microsoft.AspNet.Hosting": "1.0.0-beta3-*",
 		"Rx-Core": "2.2.5.0",
 		"Rx-Linq": "2.2.5.0",
-		"Blacklite.Framework.Interfaces": { "version": "1.0.0-beta-*", "type": "build" },
+		"Blacklite.Framework.Interfaces": "1.0.0-beta-*",
 		"Blacklite.Framework.Multitenancy.DependencyInjection": "1.0.0-beta-*",
-		"Blacklite.Framework.Multitenancy.Interfaces": { "version": "1.0.0-beta-*", "type": "build" }
+		"Blacklite.Framework.Multitenancy.Interfaces": "1.0.0-beta-*"
 	},
 
 	"compilationOptions": {
