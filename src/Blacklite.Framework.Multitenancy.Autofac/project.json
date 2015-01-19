@@ -3,8 +3,10 @@
     "dependencies": {
         "Blacklite.Framework.Multitenancy": "1.0.0-beta-*"
     },
-
-    "compilationOptions": {"languageVersion": "csharp6"},
+	
+	"compilationOptions": {
+		"warningsAsErrors": true
+	},
 
     "frameworks": {
         "aspnet50": {

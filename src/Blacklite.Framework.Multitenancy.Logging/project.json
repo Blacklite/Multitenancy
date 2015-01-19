@@ -7,6 +7,10 @@
         "Blacklite.Framework.Multitenancy": "1.0.0-beta-*"
     },
 
+	"compilationOptions": {
+		"warningsAsErrors": true
+	},
+
     "frameworks": {
         "aspnet50": {
             "dependencies": {
