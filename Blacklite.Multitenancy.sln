@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22310.1
+VisualStudioVersion = 14.0.22512.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Blacklite.Framework.Multitenancy", "src\Blacklite.Framework.Multitenancy\Blacklite.Framework.Multitenancy.kproj", "{1628899E-71FF-4D91-8AD3-42E5C8DC384E}"
 EndProject
@@ -17,6 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{F160
 		appveyor.yml = appveyor.yml
 		global.json = global.json
 		NuGet.config = NuGet.config
+	EndProjectSection
+	ProjectSection(FolderGlobals) = preProject
+		blacklite_2Multitenancy_2global_1json__JSONSchema = http://json.schemastore.org/global
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{AFF669A6-0345-4C12-845B-B496055025DA}"
@@ -42,9 +45,15 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Blacklite.Framework.Multite
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Blacklite.Framework.Multitenancy.Logging", "src\Blacklite.Framework.Multitenancy.Logging\Blacklite.Framework.Multitenancy.Logging.kproj", "{97B3D026-90EF-4237-BD75-2CC0291A16F6}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Blacklite.Framework.Multitenancy.DependencyInjection", "src\Blacklite.Framework.Multitenancy.DependencyInjection\Blacklite.Framework.Multitenancy.DependencyInjection.kproj", "{DC952956-2454-4EB6-A1EB-9BBCBC8059C2}"
-EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Blacklite.Framework.Multitenancy.ApplicationEvents", "src\Blacklite.Framework.Multitenancy.ApplicationEvents\Blacklite.Framework.Multitenancy.ApplicationEvents.kproj", "{53BA5248-AF85-42DC-A762-E7C411E4ACB0}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Blacklite.Framework.Interfaces", "..\Common\src\Blacklite.Framework.Interfaces\Blacklite.Framework.Interfaces.kproj", "{B31A377D-1905-4438-A02B-CD4EEAD8DCC7}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Blacklite.Framework.GlobalEvents", "..\Common\src\Blacklite.Framework.GlobalEvents\Blacklite.Framework.GlobalEvents.kproj", "{61900673-90C0-4492-BAD8-97767CE28B84}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Blacklite.Framework.Events", "..\Common\src\Blacklite.Framework.Events\Blacklite.Framework.Events.kproj", "{161CF813-CA55-49ED-B0A5-CB1A7F1CC43D}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Blacklite.Framework.Multitenancy.Http", "src\Blacklite.Framework.Multitenancy.Http\Blacklite.Framework.Multitenancy.Http.kproj", "{B723A722-2BD6-4C93-ADCB-78B9EB94653A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -80,14 +89,26 @@ Global
 		{97B3D026-90EF-4237-BD75-2CC0291A16F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97B3D026-90EF-4237-BD75-2CC0291A16F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97B3D026-90EF-4237-BD75-2CC0291A16F6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DC952956-2454-4EB6-A1EB-9BBCBC8059C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC952956-2454-4EB6-A1EB-9BBCBC8059C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC952956-2454-4EB6-A1EB-9BBCBC8059C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC952956-2454-4EB6-A1EB-9BBCBC8059C2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{53BA5248-AF85-42DC-A762-E7C411E4ACB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{53BA5248-AF85-42DC-A762-E7C411E4ACB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53BA5248-AF85-42DC-A762-E7C411E4ACB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53BA5248-AF85-42DC-A762-E7C411E4ACB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B31A377D-1905-4438-A02B-CD4EEAD8DCC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B31A377D-1905-4438-A02B-CD4EEAD8DCC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B31A377D-1905-4438-A02B-CD4EEAD8DCC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B31A377D-1905-4438-A02B-CD4EEAD8DCC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61900673-90C0-4492-BAD8-97767CE28B84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61900673-90C0-4492-BAD8-97767CE28B84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61900673-90C0-4492-BAD8-97767CE28B84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61900673-90C0-4492-BAD8-97767CE28B84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{161CF813-CA55-49ED-B0A5-CB1A7F1CC43D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{161CF813-CA55-49ED-B0A5-CB1A7F1CC43D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{161CF813-CA55-49ED-B0A5-CB1A7F1CC43D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{161CF813-CA55-49ED-B0A5-CB1A7F1CC43D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B723A722-2BD6-4C93-ADCB-78B9EB94653A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B723A722-2BD6-4C93-ADCB-78B9EB94653A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B723A722-2BD6-4C93-ADCB-78B9EB94653A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B723A722-2BD6-4C93-ADCB-78B9EB94653A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,7 +121,7 @@ Global
 		{31D050A9-82A6-4BAF-B323-5E594F2C27AB} = {0A9E1BE6-3595-4978-94B5-F7B673B15E14}
 		{57A8E605-6ADB-4683-854E-D8ABB6CF2BCC} = {E7107856-A73C-4F45-B766-32A27E7BD335}
 		{97B3D026-90EF-4237-BD75-2CC0291A16F6} = {E7107856-A73C-4F45-B766-32A27E7BD335}
-		{DC952956-2454-4EB6-A1EB-9BBCBC8059C2} = {E7107856-A73C-4F45-B766-32A27E7BD335}
 		{53BA5248-AF85-42DC-A762-E7C411E4ACB0} = {E7107856-A73C-4F45-B766-32A27E7BD335}
+		{B723A722-2BD6-4C93-ADCB-78B9EB94653A} = {E7107856-A73C-4F45-B766-32A27E7BD335}
 	EndGlobalSection
 EndGlobal

@@ -1,18 +1,20 @@
 ﻿using Blacklite.Framework.Events;
+using Blacklite.Framework.Multitenancy;
+using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
+using System.Collections;
+using Newtonsoft.Json;
 
-namespace Blacklite.Framework.Multitenancy.ApplicationEvents
+namespace Tenants.Tests.Web
 {
-    public class ApplicationBroadcastComposer : ITenantComposer, IDisposable
+    public class TenantEventStoreComposer : ITenantComposer, IDisposable
     {
-        private readonly IEventOrchestrator<IApplicationEvent> _orchestrator;
         private readonly IList<IDisposable> _disposables;
 
-        public ApplicationBroadcastComposer(IEventOrchestrator<IApplicationEvent> orchestrator)
+        public TenantEventStoreComposer()
         {
-            _orchestrator = orchestrator;
             _disposables = new List<IDisposable>();
         }
 
@@ -20,10 +22,12 @@ namespace Blacklite.Framework.Multitenancy.ApplicationEvents
 
         public void Configure(ITenant tenant)
         {
+            var eventStore = tenant.Services.GetService<TenantEventStore>();
+
             _disposables.Add(
                 tenant.Events
-                .Select(ApplicationEvent.Create(tenant.Id))
-                .Subscribe(_orchestrator.Broadcast)
+                .Select(JsonConvert.SerializeObject)
+                .Subscribe(eventStore.Add)
             );
         }
 
@@ -63,5 +67,16 @@ namespace Blacklite.Framework.Multitenancy.ApplicationEvents
             // GC.SuppressFinalize(this);
         }
         #endregion
+    }
+
+    public class TenantEventStore : IEnumerable<string>
+    {
+        private readonly IList<string> _items = new List<string>();
+
+        public void Add(string item) => _items.Add(item);
+
+        public IEnumerator<string> GetEnumerator() => _items.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => _items.GetEnumerator();
     }
 }

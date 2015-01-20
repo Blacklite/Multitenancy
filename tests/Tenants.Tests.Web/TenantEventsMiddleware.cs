@@ -17,36 +17,21 @@ namespace Tenants.Tests.Web
         private readonly RequestDelegate _next;
         private readonly IDictionary<string, IList<string>> _tenantEvents = new Dictionary<string, IList<string>>();
 
-        public TenantEventsMiddleware(RequestDelegate next, IApplicationObservable observable)
+        public TenantEventsMiddleware(RequestDelegate next)
         {
             _next = next;
-            observable.Subscribe(x =>
-            {
-                IList<string> tenantEvents = null;
-                if (!_tenantEvents.TryGetValue(x.Tenant, out tenantEvents))
-                {
-                    tenantEvents = new List<string>();
-                    _tenantEvents.Add(x.Tenant, tenantEvents);
-                }
-                var value = JsonConvert.SerializeObject(x);
-                tenantEvents.Add(value);
-            });
         }
-        public async Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext, TenantEventStore store)
         {
-            var tenant = httpContext.RequestServices.GetService<ITenant>();
-            IList<string> tenantEvents = null;
             var sb = new StringBuilder();
-            if (_tenantEvents.TryGetValue(tenant.Id, out tenantEvents))
-            {
-                sb.AppendLine("--------------------------")
-                    .AppendLine("Tenant Events").AppendLine();
+            sb.AppendLine("--------------------------")
+                .AppendLine("Tenant Events").AppendLine();
 
-                foreach (var evt in tenantEvents)
-                {
-                    sb.AppendLine(evt);
-                }
+            foreach (var evt in store)
+            {
+                sb.AppendLine(evt);
             }
+
 
             await httpContext.Response.WriteAsync(sb.ToString());
         }

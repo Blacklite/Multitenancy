@@ -8,13 +8,14 @@ using System.Collections.Generic;
 
 namespace Microsoft.Framework.DependencyInjection
 {
-    public static class MultitenancyServiceCollectionExtensions
+    public static class BlackliteMultitenancyHttpServiceCollectionExtensions
     {
         public static IServiceCollection AddMultitenancy(
             [NotNull] this IServiceCollection services,
             IConfiguration configuration = null)
         {
-            services.TryAdd(MultitenancyServices.GetDefaultServices(configuration));
+            services.TryAdd(BlackliteMultitenancyServices.GetDefaultServices(configuration));
+            services.TryAdd(BlackliteMultitenancyHttpServices.GetDefaultServices(configuration));
             return services;
         }
     }

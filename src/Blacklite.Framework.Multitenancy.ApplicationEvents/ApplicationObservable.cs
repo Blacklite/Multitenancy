@@ -1,12 +1,13 @@
-﻿using Blacklite.Framework.Multitenancy.Events;
+﻿using Blacklite.Framework.Events;
+using Blacklite.Framework.Multitenancy.Events;
 using System;
 
 namespace Blacklite.Framework.Multitenancy.ApplicationEvents
 {
-    public class ApplicationObservable : IApplicationObservable
+    public class ApplicationObservable : IEventObservable<IApplicationEvent>
     {
         private readonly IObservable<IApplicationEvent> _observable;
-        public ApplicationObservable(IApplicationOrchestrator orchestrator)
+        public ApplicationObservable(IEventOrchestrator<IApplicationEvent> orchestrator)
         {
             _observable = orchestrator.Events;
         }

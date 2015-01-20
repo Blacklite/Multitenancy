@@ -16,17 +16,11 @@ namespace Tenants.Tests.Web
         {
             _next = next;
         }
-        public async Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext, TenantDependencyScoped tenantScoped, ITenantLogger logger, GlobalDependencyScoped globalScoped)
         {
-            var tenantScoped = httpContext.RequestServices.GetService<TenantDependencyScoped>();
             tenantScoped.Number++;
-
-            var logger = httpContext.RequestServices.GetService<ITenantLogger>();
             logger.WriteWarning(nameof(TenantTestMiddleware2));
-
-            var globalScoped = httpContext.RequestServices.GetService<GlobalDependencyScoped>();
             globalScoped.Number++;
-
             await _next.Invoke(httpContext);
         }
     }
@@ -40,31 +34,21 @@ namespace Tenants.Tests.Web
             _next = next;
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext, ITenant tenant,
+            TenantDependencySingleton tenantSingleton, TenantDependencyScoped tenantScoped, TenantDependencyTransient tenantTransient,
+            ITenantLogger logger,
+            GlobalDependencySingleton globalSingleton, GlobalDependencyScoped globalScoped, GlobalDependencyTransient globalTransient
+        )
         {
-            var tenant = httpContext.RequestServices.GetService<ITenant>();
-
-            var tenantSingleton = httpContext.RequestServices.GetService<TenantDependencySingleton>();
             tenantSingleton.Number++;
-
-            var tenantScoped = httpContext.RequestServices.GetService<TenantDependencyScoped>();
             tenantScoped.Number++;
-
-            var tenantTransient = httpContext.RequestServices.GetService<TenantDependencyTransient>();
             tenantTransient.Number++;
 
-            var globalSingleton = httpContext.RequestServices.GetService<GlobalDependencySingleton>();
             globalSingleton.Number++;
-
-            var globalScoped = httpContext.RequestServices.GetService<GlobalDependencyScoped>();
             globalScoped.Number++;
-
-            var globalTransient = httpContext.RequestServices.GetService<GlobalDependencyTransient>();
             globalTransient.Number++;
 
-            var logger = httpContext.RequestServices.GetService<ITenantLogger>();
             logger.WriteWarning(nameof(TenantTestMiddleware));
-
 
             await httpContext.Response.WriteAsync(httpContext.Request.Path + "\n\n");
 

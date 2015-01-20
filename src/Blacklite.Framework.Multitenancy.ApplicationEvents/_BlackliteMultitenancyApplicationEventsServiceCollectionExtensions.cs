@@ -8,14 +8,14 @@ using System.Collections.Generic;
 
 namespace Microsoft.Framework.DependencyInjection
 {
-    public static class MultitenancyServiceCollectionExtensions
+    public static class BlackliteMultitenancyApplicationEventsServiceCollectionExtensions
     {
         public static IServiceCollection AddMultitenancyApplicationEvents(
             [NotNull] this IServiceCollection services,
             IConfiguration configuration = null)
         {
             ConfigureDefaultServices(services, configuration);
-            services.TryAdd(ApplicationEventsServices.GetApplicationEvents(configuration));
+            services.Add(BlackliteMultitenancyApplicationEventsServices.GetApplicationEvents(configuration));
             return services;
         }
 

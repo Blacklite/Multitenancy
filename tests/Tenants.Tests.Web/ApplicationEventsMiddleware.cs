@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Text;
+using Blacklite.Framework.Events;
 
 namespace Tenants.Tests.Web
 {
@@ -17,7 +18,7 @@ namespace Tenants.Tests.Web
         private readonly RequestDelegate _next;
         private readonly IList<string> _events = new List<string>();
 
-        public ApplicationEventsMiddleware(RequestDelegate next, IApplicationObservable observable)
+        public ApplicationEventsMiddleware(RequestDelegate next, IEventObservable<IApplicationEvent> observable)
         {
             _next = next;
             observable.Subscribe(x =>
@@ -28,8 +29,6 @@ namespace Tenants.Tests.Web
         }
         public async Task Invoke(HttpContext httpContext)
         {
-            var applicationServices = httpContext.RequestServices.GetService<IApplicationObservable>();
-
             var sb = new StringBuilder();
             sb.AppendLine("--------------------------")
                 .AppendLine("Events").AppendLine();

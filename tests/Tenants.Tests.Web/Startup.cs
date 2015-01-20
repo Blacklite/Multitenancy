@@ -54,6 +54,8 @@ namespace Tenants.Tests.Web
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(typeof(ITenantIdentificationStrategy), typeof(PathTenantIdentificationStrategy));
+            services.AddTransient<ITenantComposer, TenantEventStoreComposer>();
+            services.AddTenantOnlySingleton<TenantEventStore, TenantEventStore>();
             services.AddMvc();
             services.AddAssembly(this);
             services.AddMultitenancyApplicationEvents();
@@ -84,10 +86,11 @@ namespace Tenants.Tests.Web
 
             app.MapWhen(IsTenantInPath, x =>
             {
-                x.UseMultitenancyTenant();
+                x.UseMultitenancy();
                 x.UseMvc();
                 x.UseMiddleware<TenantTestMiddleware2>();
                 x.UseMiddleware<TenantTestMiddleware>();
+                x.UseMiddleware<TenantEventsMiddleware>();
             });
 
             app.UseWelcomePage();

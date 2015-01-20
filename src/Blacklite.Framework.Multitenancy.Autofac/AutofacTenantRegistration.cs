@@ -6,7 +6,6 @@ using Blacklite.Framework.Multitenancy;
 using Blacklite.Framework.Multitenancy.Autofac;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
-using Microsoft.Framework.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -23,16 +22,11 @@ namespace Autofac
                 IConfiguration configuration = null)
             where T : ContainerBuilder
         {
-
             services.AddSingleton<ITenantProvider, AutofacTenantProvider>();
             services.AddMultitenancy(configuration);
 
-            MultitenancyServices.HasRequiredServicesRegistered(services);
-
             builder.RegisterType<AutofacServiceProvider>().As<IServiceProvider>();
             builder.RegisterType<AutofacServiceScopeFactory>().As<IServiceScopeFactory>();
-
-            //Populate(builder, services.Where(service => service.Lifecycle == LifecycleKind.Singleton && MultitenancyServices.IsNotTenant(service)));
 
             Register(builder, services);
 

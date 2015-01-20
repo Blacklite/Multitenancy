@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Blacklite.Framework.Events;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -18,6 +19,7 @@ namespace Blacklite.Framework.Multitenancy.ApplicationEvents
             Type = @event.Type;
             User = @event.User;
             Reason = @event.Reason;
+            Data = @event.Data ?? Data;
         }
 
         internal static ApplicationEvent Create(IEvent x) => new ApplicationEvent("_global", x);
@@ -33,5 +35,7 @@ namespace Blacklite.Framework.Multitenancy.ApplicationEvents
         public string User { get; set; }
 
         public string Reason { get; set; }
+
+        public IReadOnlyDictionary<string, string> Data { get; }
     }
 }

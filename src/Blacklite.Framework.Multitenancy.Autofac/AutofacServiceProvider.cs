@@ -19,28 +19,10 @@ namespace Blacklite.Framework.Multitenancy.Autofac
             {
                 return _componentContext.ResolveOptional(serviceType);
             }
-            // convert back to catch if when it's working...
-            //catch (DependencyResolutionException dre) if (dre.Message.Contains(AutofacTenantProvider.TenantTag))
-            //{
-            //    throw new NotSupportedException(string.Format("Cannot resolve dependency {0}.  It can only be resolved from inside of a tenant.", serviceType.FullName), dre);
-            //}
-            //catch (DependencyResolutionException dre) if (dre.Message.Contains(AutofacTenantProvider.ApplicationTag))
-            //{
-            //    throw new NotSupportedException(string.Format("Cannot resolve dependency {0}.  It can only be resolved from outside of a tenant", serviceType.FullName), dre);
-            //}
-            catch (DependencyResolutionException dre)
+            catch
             {
-                if (dre.Message.Contains(AutofacTenantProvider.TenantTag))
-                {
-                    throw new NotSupportedException(string.Format("Cannot resolve dependency {0}.  It can only be resolved from inside of a tenant.", serviceType.FullName), dre);
-                }
-
-                if (dre.Message.Contains(AutofacTenantProvider.ApplicationTag))
-                {
-                    throw new NotSupportedException(string.Format("Cannot resolve dependency {0}.  It can only be resolved from outside of a tenant", serviceType.FullName), dre);
-                }
-
-                throw;
+                // Service provider interfaces says if it can't be resolved, it returns null, does not throw.
+                return null;
             }
         }
     }

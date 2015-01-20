@@ -8,13 +8,13 @@ using System.Collections.Generic;
 
 namespace Microsoft.Framework.DependencyInjection
 {
-    public static class MultitenancyLoggingCollectionExtensions
+    public static class BlackliteMultitenancyServiceCollectionExtensions
     {
-        public static IServiceCollection AddMultitenancyLogging(
+        public static IServiceCollection AddMultitenancy(
             [NotNull] this IServiceCollection services,
             IConfiguration configuration = null)
         {
-            services.Add(MultitenancyLoggingServices.GetDefaultServices(configuration));
+            services.TryAdd(BlackliteMultitenancyServices.GetDefaultServices(configuration));
             return services;
         }
     }

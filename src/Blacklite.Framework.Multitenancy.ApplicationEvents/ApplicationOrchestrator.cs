@@ -1,4 +1,5 @@
-﻿using Blacklite.Framework.GlobalEvents;
+﻿using Blacklite.Framework.Events;
+using Blacklite.Framework.GlobalEvents;
 using Blacklite.Framework.Multitenancy.ApplicationEvents;
 using System;
 using System.Reactive;
@@ -7,18 +8,14 @@ using System.Reactive.Subjects;
 
 namespace Blacklite.Framework.Multitenancy.ApplicationEvents
 {
-    public class ApplicationOrchestrator : IApplicationOrchestrator
+    public class ApplicationOrchestrator : IEventOrchestrator<IApplicationEvent>
     {
         private readonly ISubject<IApplicationEvent> _subject;
 
-        public ApplicationOrchestrator(IGlobalObservable globalObservable)
+        public ApplicationOrchestrator()
         {
             _subject = new Subject<IApplicationEvent>();
             Events = _subject;
-
-            globalObservable
-                .Select(ApplicationEvent.Create)
-                .Subscribe(_subject.OnNext);
         }
 
         public IObservable<IApplicationEvent> Events { get; }

@@ -34,7 +34,7 @@ namespace Blacklite.Framework.Multitenancy
             if (t == null)
                 throw new NotSupportedException(string.Format("All tenant implementations must derive from the {0} class.", nameof(Tenant)));
 
-            t.Broadcast(Event.Boot());
+            t.Broadcast(TenantEvent.Boot());
         }
 
         public void Start(ITenant tenant)
@@ -43,7 +43,7 @@ namespace Blacklite.Framework.Multitenancy
             if (t == null)
                 throw new NotSupportedException(string.Format("All tenant implementations must derive from the {0} class.", nameof(Tenant)));
 
-            t.Broadcast(Event.Start());
+            t.Broadcast(TenantEvent.Start());
         }
 
         public void Stop(ITenant tenant)
@@ -52,7 +52,7 @@ namespace Blacklite.Framework.Multitenancy
             if (t == null)
                 throw new NotSupportedException(string.Format("All tenant implementations must derive from the {0} class.", nameof(Tenant)));
 
-            t.Broadcast(Event.Stop());
+            t.Broadcast(TenantEvent.Stop());
         }
 
         public void Shutdown(ITenant tenant)
@@ -61,7 +61,7 @@ namespace Blacklite.Framework.Multitenancy
             if (t == null)
                 throw new NotSupportedException(string.Format("All tenant implementations must derive from the {0} class.", nameof(Tenant)));
 
-            t.Broadcast(Event.Shutdown());
+            t.Broadcast(TenantEvent.Shutdown());
         }
     }
 }

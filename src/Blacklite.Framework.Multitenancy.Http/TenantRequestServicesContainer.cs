@@ -91,12 +91,6 @@ namespace Blacklite.Framework.Multitenancy
                     _context.ApplicationServices = _priorAppServices;
                 }
 
-                if (_scope != null)
-                {
-                    _scope.Dispose();
-                    _scope = null;
-                }
-
                 _context = null;
                 _priorAppServices = null;
                 _priorRequestServices = null;

@@ -1,5 +1,6 @@
 ﻿using Blacklite.Framework.Multitenancy;
 using Blacklite.Framework.Multitenancy.ConfigurationModel;
+using Moq;
 using System;
 using Xunit;
 
@@ -14,11 +15,11 @@ namespace Multitenancy.Tests
 
             Assert.Null(tenant.Id);
 
-            tenant.Initialize("tenant1");
+            tenant.Initialize("tenant1", Mock.Of<IServiceProvider>());
 
             Assert.Equal(tenant.Id, "tenant1");
 
-            tenant.Initialize("tenant2");
+            tenant.Initialize("tenant2", Mock.Of<IServiceProvider>());
 
             Assert.NotEqual(tenant.Id, "tenant2");
         }
@@ -27,7 +28,7 @@ namespace Multitenancy.Tests
         public void TenantHasNoStateWhenCreated()
         {
             var tenant = new Tenant(new TenantConfiguration());
-            tenant.Initialize("tenant1");
+            tenant.Initialize("tenant1", Mock.Of<IServiceProvider>());
 
             Assert.Equal(tenant.State, TenantState.None);
         }
@@ -36,7 +37,7 @@ namespace Multitenancy.Tests
         public void TenantChangesStateWhenBooted()
         {
             var tenant = new Tenant(new TenantConfiguration());
-            tenant.Initialize("tenant1");
+            tenant.Initialize("tenant1", Mock.Of<IServiceProvider>());
 
             tenant.ChangeState(TenantState.Boot);
 
@@ -47,7 +48,7 @@ namespace Multitenancy.Tests
         public void TenantChangesStateWhenStarted()
         {
             var tenant = new Tenant(new TenantConfiguration());
-            tenant.Initialize("tenant1");
+            tenant.Initialize("tenant1", Mock.Of<IServiceProvider>());
 
             tenant.ChangeState(TenantState.Started);
 
@@ -58,7 +59,7 @@ namespace Multitenancy.Tests
         public void TenantIgnoresChangesStateWhenStoppedUntilStarted()
         {
             var tenant = new Tenant(new TenantConfiguration());
-            tenant.Initialize("tenant1");
+            tenant.Initialize("tenant1", Mock.Of<IServiceProvider>());
 
             tenant.ChangeState(TenantState.Stopped);
 
@@ -74,7 +75,7 @@ namespace Multitenancy.Tests
         public void TenantIgnoresChangesStateWhenShutdownUntilBooted()
         {
             var tenant = new Tenant(new TenantConfiguration());
-            tenant.Initialize("tenant1");
+            tenant.Initialize("tenant1", Mock.Of<IServiceProvider>());
 
             tenant.ChangeState(TenantState.Shutdown);
 

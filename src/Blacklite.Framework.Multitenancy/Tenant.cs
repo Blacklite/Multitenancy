@@ -1,4 +1,5 @@
-﻿using Blacklite.Framework.Multitenancy.ConfigurationModel;
+﻿using Blacklite.Framework.Events;
+using Blacklite.Framework.Multitenancy.ConfigurationModel;
 using Blacklite.Framework.Multitenancy.Events;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
@@ -44,12 +45,13 @@ namespace Blacklite.Framework.Multitenancy
             Shutdown.Subscribe(x => State = TenantState.Shutdown);
         }
 
-        public void Initialize([NotNull] string identifier)
+        public void Initialize([NotNull] string identifier, IServiceProvider serviceProvider)
         {
             if (_initalized)
                 return;
 
             Id = identifier;
+            Services = serviceProvider;
             _initalized = true;
         }
 
@@ -61,7 +63,7 @@ namespace Blacklite.Framework.Multitenancy
 
         public void ChangeState(TenantState state)
         {
-            Broadcast(new Event()
+            Broadcast(new TenantEvent()
             {
                 Type = state.ToString()
             });
@@ -77,7 +79,7 @@ namespace Blacklite.Framework.Multitenancy
             //  This allows for operations to be broadcast, that are not tenant related.
             TenantState movingTo;
             if (Enum.TryParse(@event.Type, out movingTo))
-                @event = new Event(@event) { Type = "Not" + @event.Type };
+                @event = new TenantEvent(@event) { Type = "Not" + @event.Type };
 
             Broadcast(@event);
         }
@@ -94,7 +96,7 @@ namespace Blacklite.Framework.Multitenancy
                     {
                         foreach (var s in validStates.TakeWhile(x => x != movingTo))
                         {
-                            var newOperation = new Event(@event) { Type = s.ToString() };
+                            var newOperation = new TenantEvent(@event) { Type = s.ToString() };
 
                             _changeSubject.OnNext(newOperation);
                         }
@@ -104,7 +106,7 @@ namespace Blacklite.Framework.Multitenancy
                     }
                 }
 
-                @event = new Event(@event) { Type = string.Format("InvalidStateTransition{0}", @event.Type) };
+                @event = new TenantEvent(@event) { Type = string.Format("InvalidStateTransition{0}", @event.Type) };
                 _changeSubject.OnNext(@event);
             }
             else
@@ -113,7 +115,7 @@ namespace Blacklite.Framework.Multitenancy
             }
         }
 
-        public void ChangeState(TenantState state, Event operation)
+        public void ChangeState(TenantState state, TenantEvent operation)
         {
             operation.Type = state.ToString();
             Broadcast(operation);
@@ -125,14 +127,16 @@ namespace Blacklite.Framework.Multitenancy
         public IObservable<IEvent> Stop { get; }
         public IObservable<IEvent> Shutdown { get; }
 
+        public IServiceProvider Services { get; private set; }
+
         public void DoStart()
         {
-            Broadcast(new Event() { Type = TenantState.Started.ToString() });
+            Broadcast(new TenantEvent() { Type = TenantState.Started.ToString() });
         }
 
         public void DoStop()
         {
-            Broadcast(new Event() { Type = TenantState.Stopped.ToString() });
+            Broadcast(new TenantEvent() { Type = TenantState.Stopped.ToString() });
         }
 
         #region IDisposable Support
