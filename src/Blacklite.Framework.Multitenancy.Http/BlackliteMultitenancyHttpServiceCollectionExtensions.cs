@@ -10,12 +10,12 @@ namespace Microsoft.Framework.DependencyInjection
 {
     public static class BlackliteMultitenancyHttpServiceCollectionExtensions
     {
-        public static IServiceCollection AddMultitenancy(
+        public static IServiceCollection AddHttpMultitenancy(
             [NotNull] this IServiceCollection services,
             IConfiguration configuration = null)
         {
-            services.TryAdd(BlackliteMultitenancyServices.GetDefaultServices(configuration));
-            services.TryAdd(BlackliteMultitenancyHttpServices.GetDefaultServices(configuration));
+            services.AddMultitenancy()
+                    .TryAdd(BlackliteMultitenancyHttpServices.GetDefaultServices(configuration));
             return services;
         }
     }
