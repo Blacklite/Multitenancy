@@ -14,7 +14,7 @@ namespace Microsoft.Framework.DependencyInjection
                                                             [NotNull] Type service,
                                                             [NotNull] Type implementationType)
         {
-            var descriptor = new TenantOnlyServiceDescriptor(service, implementationType, LifecycleKind.Singleton);
+            var descriptor = new ApplicationOnlyServiceDescriptor(service, implementationType, LifecycleKind.Singleton);
             return collection.Add(descriptor);
         }
 
@@ -22,7 +22,7 @@ namespace Microsoft.Framework.DependencyInjection
                                                       [NotNull] Type service,
                                                       [NotNull] Func<IServiceProvider, object> implementationFactory)
         {
-            var descriptor = new TenantOnlyServiceDescriptor(service, implementationFactory, LifecycleKind.Singleton);
+            var descriptor = new ApplicationOnlyServiceDescriptor(service, implementationFactory, LifecycleKind.Singleton);
             return collection.Add(descriptor);
         }
 

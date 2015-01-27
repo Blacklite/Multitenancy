@@ -16,7 +16,8 @@
 	"frameworks": {
 		"net45": {
 			"frameworkAssemblies": {
-                "System.Runtime": "4.0.0.0",
+				"System.Runtime": "4.0.0.0",
+				"System.ComponentModel": "4.0.0.0",
                 "System.Collections": "4.0.0.0",
                 "System.Collections.Concurrent": "4.0.0.0",
                 "System.ObjectModel": "4.0.0.0",
@@ -29,7 +30,8 @@
 		},
 		"aspnet50": {
 			"frameworkAssemblies": {
-                "System.Runtime": "4.0.20.0",
+				"System.Runtime": "4.0.20.0",
+				"System.ComponentModel": "4.0.0.0",
                 "System.Collections": "4.0.10.0",
                 "System.Collections.Concurrent": "4.0.0.0",
                 "System.ObjectModel": "4.0.10.0",
@@ -43,6 +45,7 @@
 		"aspnetcore50": {
 			"dependencies": {
 				"System.Runtime": "4.0.20-beta-*",
+				"System.ComponentModel": "4.0.0-beta-*",
 				"System.Collections": "4.0.10-beta-*",
 				"System.Collections.Concurrent": "4.0.0-beta-*",
 				"System.ObjectModel": "4.0.10-beta-*",

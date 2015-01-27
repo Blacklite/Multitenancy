@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Blacklite.Framework.Multitenancy
+namespace Blacklite.Framework.Multitenancy.Http
 {
     public static class BlackliteMultitenancyHttpServices
     {

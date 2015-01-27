@@ -3,7 +3,7 @@ using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using Blacklite.Framework;
-using Blacklite.Framework.Multitenancy;
+using Blacklite.Framework.Multitenancy.Http;
 
 namespace Microsoft.AspNet.Builder
 {

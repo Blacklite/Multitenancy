@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNet.Http;
 using System;
 
-namespace Blacklite.Framework.Multitenancy
+namespace Blacklite.Framework.Multitenancy.Http
 {
     /// <summary>
     /// Defines a provider that determines the current tenant ID from

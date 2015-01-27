@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
 
-namespace Blacklite.Framework.Multitenancy
+namespace Blacklite.Framework.Multitenancy.Http
 {
     public class TenantContainerMiddleware
     {
@@ -28,11 +28,6 @@ namespace Blacklite.Framework.Multitenancy
 
         public async Task Invoke(HttpContext httpContext)
         {
-            if (httpContext.RequestServices != null)
-            {
-                throw new Exception("TODO: nested request container scope? this is probably a mistake on your part?");
-            }
-
             string tenantId;
             if (!_tenantIdentificationStrategy.TryIdentifyTenant(httpContext, out tenantId))
                 throw new Exception("Could not identify tenant!");

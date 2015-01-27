@@ -1,6 +1,6 @@
 ﻿using Blacklite;
 using Blacklite.Framework;
-using Blacklite.Framework.Multitenancy;
+using Blacklite.Framework.Multitenancy.Http;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using System;

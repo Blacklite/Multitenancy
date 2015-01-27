@@ -3,13 +3,12 @@ using Microsoft.AspNet.Http;
 using Microsoft.Framework.DependencyInjection;
 using System;
 
-namespace Blacklite.Framework.Multitenancy
+namespace Blacklite.Framework.Multitenancy.Http
 {
     public class TenantServicesContainer : IDisposable
     {
         private HttpContext _context { get; set; }
         private IServiceProvider _priorAppServices { get; set; }
-        private IServiceProvider _priorRequestServices { get; set; }
         private ITenantScope _scope { get; set; }
 
         public TenantServicesContainer(
@@ -29,27 +28,19 @@ namespace Blacklite.Framework.Multitenancy
 
             _context = context;
             _priorAppServices = context.ApplicationServices;
-            _priorRequestServices = context.RequestServices;
 
             var scope = _scope = scopeFactory.GetOrAdd(tenantId);
 
             if (scope.Tenant.State == TenantState.Boot)
                 scope.Tenant.DoStart();
 
-            _context.ApplicationServices = appServiceProvider;
-            _context.RequestServices = _scope.ServiceProvider;
+            _context.ApplicationServices = scope.ServiceProvider.GetRequiredService<IServiceProvider>();
         }
 
 
         // CONSIDER: this could be an extension method on HttpContext instead
         public static TenantServicesContainer EnsureTenantServices(HttpContext httpContext, IServiceProvider services, string tenantId)
         {
-            // All done if we already have a request services
-            if (httpContext.RequestServices != null)
-            {
-                return null;
-            }
-
             var serviceProvider = httpContext.ApplicationServices ?? services;
             if (serviceProvider == null)
             {
@@ -62,7 +53,6 @@ namespace Blacklite.Framework.Multitenancy
 
             // Pre Scope setup
             var priorApplicationServices = serviceProvider;
-            var priorRequestServices = serviceProvider;
 
             var appServiceProvider = rootServiceProvider;
             var appServiceScopeFactory = rootServiceScopeFactory;
@@ -87,13 +77,11 @@ namespace Blacklite.Framework.Multitenancy
             {
                 if (disposing)
                 {
-                    _context.RequestServices = _priorRequestServices;
                     _context.ApplicationServices = _priorAppServices;
                 }
 
                 _context = null;
                 _priorAppServices = null;
-                _priorRequestServices = null;
 
                 disposedValue = true;
             }
