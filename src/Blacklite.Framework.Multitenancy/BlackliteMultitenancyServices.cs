@@ -18,6 +18,7 @@ namespace Blacklite.Framework.Multitenancy
 
             yield return describe.TenantOnlySingleton<ITenant, Tenant>();
             yield return describe.TenantOnlySingleton<ITenantConfiguration, TenantConfiguration>();
+            yield return describe.ApplicationOnlySingleton<ITenantRegistry, DefaultTenantRegistry>();
         }
     }
 }

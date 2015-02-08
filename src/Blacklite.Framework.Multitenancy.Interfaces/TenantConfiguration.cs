@@ -10,7 +10,7 @@ namespace Blacklite.Framework.Multitenancy.ConfigurationModel
     [AssemblyNeutral]
 #endif
     [TenantOnly]
-    public interface ITenantConfiguration : IConfiguration
+    public interface ITenantConfiguration : IConfigurationSourceContainer
     {
 
     }

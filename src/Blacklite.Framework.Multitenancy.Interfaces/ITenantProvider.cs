@@ -15,6 +15,5 @@ namespace Blacklite.Framework.Multitenancy
         ITenantScope Get([NotNull] string tenantId);
         ITenantScope GetOrAdd([NotNull] string tenantId);
         void DisposeTenant(string tenantId);
-        IEnumerable<string> Tenants { get; }
     }
 }

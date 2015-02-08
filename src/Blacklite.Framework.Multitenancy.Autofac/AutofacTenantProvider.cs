@@ -41,8 +41,6 @@ namespace Blacklite.Framework.Multitenancy.Autofac
             return _tenantScopes.GetOrAdd(tenantId, x => new TenantScope(_lifetimeScope.BeginLifetimeScope(AutofacTenantProvider.TenantTag), _configurationService, x));
         }
 
-        public IEnumerable<string> Tenants { get { return _tenantScopes.Keys; } }
-
         public void DisposeTenant(string tenantId)
         {
             ITenantScope tenant;

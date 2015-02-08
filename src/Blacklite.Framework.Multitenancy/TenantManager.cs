@@ -18,15 +18,17 @@ namespace Blacklite.Framework.Multitenancy
 
     public class TenantManager : ITenantManager
     {
-        private ITenantProvider _provider;
-        public TenantManager(ITenantProvider provider)
+        private readonly ITenantProvider _provider;
+        private readonly ITenantRegistry _registry;
+        public TenantManager(ITenantProvider provider, ITenantRegistry registry)
         {
             _provider = provider;
+            _registry = registry;
         }
 
         public ITenant GetTenant(string tenantId) { return _provider.GetOrAdd(tenantId)?.Tenant; }
 
-        public IEnumerable<string> AvailableTenants { get { return _provider.Tenants; } }
+        public IEnumerable<string> AvailableTenants { get { return _registry.GetTenants().Select(x => x.Id); } }
 
         public void Boot(ITenant tenant)
         {

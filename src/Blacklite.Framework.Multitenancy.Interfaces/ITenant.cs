@@ -4,6 +4,9 @@ using Microsoft.Framework.Runtime;
 using Microsoft.Framework.ConfigurationModel;
 using Blacklite.Framework.Events;
 using System;
+using System.Threading.Tasks;
+using Blacklite.Framework.Multitenancy.ConfigurationModel;
+using System.Collections.Generic;
 
 namespace Blacklite.Framework.Multitenancy
 {
@@ -16,7 +19,8 @@ namespace Blacklite.Framework.Multitenancy
         string Id { get; }
         IServiceProvider Services { get; }
         TenantState State { get; }
-        IConfiguration Configuration { get; }
+        ITenantConfiguration Configuration { get; }
+        IObservable<KeyValuePair<string, string>> ConfigurationChanged { get; }
         void Broadcast(IEvent operation);
 
         IObservable<IEvent> Events { get; }
@@ -25,7 +29,7 @@ namespace Blacklite.Framework.Multitenancy
         IObservable<IEvent> Stop { get; }
         IObservable<IEvent> Shutdown { get; }
 
-        void DoStart();
-        void DoStop();
+        Task DoStart();
+        Task DoStop();
     }
 }

@@ -1,14 +1,19 @@
 ﻿using Microsoft.AspNet.Http;
 using System;
+using System.Threading.Tasks;
 
 namespace Blacklite.Framework.Multitenancy.Http
 {
     public class SingleTenantIdentificationStrategy : ITenantIdentificationStrategy
     {
-        public bool TryIdentifyTenant(HttpContext context, out string tenantId)
+        public ITenantIdentificationResult TryIdentifyTenant(HttpContext context)
         {
-            tenantId = "Single";
-            return true;
+            return TenantIdentificationResult.Passed;
+        }
+
+        public Task<ITenantIdentificationResult> TryIdentifyTenantAsync([NotNull]HttpContext context)
+        {
+            return Task.FromResult(TryIdentifyTenant(context));
         }
     }
 }

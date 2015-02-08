@@ -9,31 +9,42 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
 
 namespace Blacklite.Framework.Multitenancy
 {
     public class Tenant : ITenant
     {
         private bool _initalized = false;
-        private readonly IObserver<IEvent> _changeSubject;
+        private readonly Subject<IEvent> _eventObserver;
+        private readonly Subject<KeyValuePair<string, string>> _configurationObservable;
+        private Task _starting;
+        private Task _stopping;
+        private readonly ObservableTenantConfigurationSource _observableTenantConfigurationSource;
         private readonly IDictionary<TenantState, TenantState[]> _validStates = new Dictionary<TenantState, TenantState[]>()
         {
-            [TenantState.None] = new[] { TenantState.Boot, TenantState.Started },
+            [TenantState.None] = new[] { TenantState.Boot },
             [TenantState.Boot] = new[] { TenantState.Started, TenantState.Shutdown },
-            [TenantState.Started] = new[] { TenantState.Stopped, TenantState.Shutdown },
+            [TenantState.Started] = new[] { TenantState.Stopped },
             [TenantState.Stopped] = new[] { TenantState.Started, TenantState.Shutdown },
             [TenantState.Shutdown] = new TenantState[] { },
         };
 
         public Tenant(ITenantConfiguration configuration)
         {
-            Configuration = configuration;
+            var eventSubject = _eventObserver = new Subject<IEvent>();
+            var configurationSubject = _configurationObservable = new Subject<KeyValuePair<string, string>>();
 
-            var subject = new Subject<IEvent>();
-            _changeSubject = subject;
-            Events = subject;
+            Configuration = configuration;
+            ConfigurationChanged = configurationSubject;
+            _observableTenantConfigurationSource = new ObservableTenantConfigurationSource(_configurationObservable);
+
+            Events = eventSubject;
             Boot = Events.Where(x => x.Type == TenantState.Boot.ToString());
             Boot.Subscribe(x => State = TenantState.Boot);
+            Boot.Subscribe(x => { if (!Configuration.Contains(_observableTenantConfigurationSource)) Configuration.Add(_observableTenantConfigurationSource); });
+            // dont start observing configuration changes until after we finish booting
+
 
             Start = Events.Where(x => x.Type == TenantState.Started.ToString());
             Start.Subscribe(x => State = TenantState.Started);
@@ -57,7 +68,7 @@ namespace Blacklite.Framework.Multitenancy
 
         public string Id { get; private set; }
 
-        public IConfiguration Configuration { get; }
+        public ITenantConfiguration Configuration { get; }
 
         public TenantState State { get; private set; }
 
@@ -71,7 +82,8 @@ namespace Blacklite.Framework.Multitenancy
 
         /// <summary>
         /// Broadcasts from the tenant, specificly, should ignore state changes.
-        ///  This allows for operations to be broadcast, that are not tenant related.        /// </summary>
+        ///  This allows for operations to be broadcast, that are not tenant related.
+        /// </summary>
         /// <param name="event"></param>
         void ITenant.Broadcast(IEvent @event)
         {
@@ -98,20 +110,20 @@ namespace Blacklite.Framework.Multitenancy
                         {
                             var newOperation = new TenantEvent(@event) { Type = s.ToString() };
 
-                            _changeSubject.OnNext(newOperation);
+                            _eventObserver.OnNext(newOperation);
                         }
 
-                        _changeSubject.OnNext(@event);
+                        _eventObserver.OnNext(@event);
                         return;
                     }
                 }
 
                 @event = new TenantEvent(@event) { Type = string.Format("InvalidStateTransition{0}", @event.Type) };
-                _changeSubject.OnNext(@event);
+                _eventObserver.OnNext(@event);
             }
             else
             {
-                _changeSubject.OnNext(@event);
+                _eventObserver.OnNext(@event);
             }
         }
 
@@ -129,14 +141,28 @@ namespace Blacklite.Framework.Multitenancy
 
         public IServiceProvider Services { get; private set; }
 
-        public void DoStart()
+        public IObservable<KeyValuePair<string, string>> ConfigurationChanged { get; }
+
+        public Task DoStart()
         {
-            Broadcast(new TenantEvent() { Type = TenantState.Started.ToString() });
+            if (_starting == null && _validStates.Any(z => z.Value.Contains(TenantState.Started) && z.Key == State))
+            {
+                var task = _starting = new Task(() => Broadcast(new TenantEvent() { Type = TenantState.Started.ToString() }));
+                task.ContinueWith(x => _starting = null);
+                task.Start();
+            }
+            return _starting ?? Task.Delay(0);
         }
 
-        public void DoStop()
+        public Task DoStop()
         {
-            Broadcast(new TenantEvent() { Type = TenantState.Stopped.ToString() });
+            if (_stopping == null && _validStates.Any(z => z.Value.Contains(TenantState.Stopped) && z.Key == State))
+            {
+                var task = _stopping = new Task(() => Broadcast(new TenantEvent() { Type = TenantState.Stopped.ToString() }));
+                task.ContinueWith(x => _stopping = null);
+                task.Start();
+            }
+            return _stopping ?? Task.Delay(0);
         }
 
         #region IDisposable Support
@@ -158,6 +184,9 @@ namespace Blacklite.Framework.Multitenancy
                     {
                         ChangeState(TenantState.Shutdown);
                     }
+
+                    _eventObserver.Dispose();
+                    _configurationObservable.Dispose();
                 }
 
                 disposedValue = true;
