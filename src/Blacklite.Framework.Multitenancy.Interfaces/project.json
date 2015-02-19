@@ -1,8 +1,8 @@
 ﻿{
     "version": "1.0.0-*",
     "dependencies": {
-        "Microsoft.Framework.ConfigurationModel": "1.0.0-beta4-*",
-        "Microsoft.Framework.DependencyInjection": "1.0.0-beta4-*",
+        "Microsoft.Framework.ConfigurationModel": "1.0.0-beta3-*",
+        "Microsoft.Framework.DependencyInjection": "1.0.0-beta3-*",
 		"Blacklite.Framework.Interfaces": "1.0.0-beta-*",
 		"Blacklite.Framework.Events": "1.0.0-beta-*"
     },
