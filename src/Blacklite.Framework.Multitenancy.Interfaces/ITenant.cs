@@ -1,7 +1,4 @@
-﻿#if ASPNET50 || ASPNETCORE50
-using Microsoft.Framework.Runtime;
-#endif
-using Microsoft.Framework.ConfigurationModel;
+﻿using Microsoft.Framework.ConfigurationModel;
 using Blacklite.Framework.Events;
 using System;
 using System.Threading.Tasks;
@@ -10,9 +7,6 @@ using System.Collections.Generic;
 
 namespace Blacklite.Framework.Multitenancy
 {
-#if ASPNET50 || ASPNETCORE50
-    [AssemblyNeutral]
-#endif
     [TenantOnly]
     public interface ITenant : IDisposable
     {

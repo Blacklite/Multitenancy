@@ -1,8 +1,8 @@
 ﻿{
 	"version": "1.0.0-*",
 	"dependencies": {
-		"Microsoft.AspNet.Http.Extensions": "1.0.0-beta4-*",
-		"Microsoft.AspNet.Hosting": "1.0.0-beta4-*",
+		"Microsoft.AspNet.Http.Extensions": "1.0.0-beta3",
+		"Microsoft.AspNet.Hosting": "1.0.0-beta3",
 		"Blacklite.Framework.Multitenancy": "1.0.0-beta-*"
 	},
 
@@ -13,7 +13,7 @@
 	"frameworks": {
 		"aspnet50": {
 			"frameworkAssemblies": {
-				"System.Runtime": "4.0.20.0"
+				"System.Runtime": "4.0.10.0"
 			},
 			"dependencies": {
 			}

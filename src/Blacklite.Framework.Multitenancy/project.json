@@ -1,13 +1,17 @@
 ﻿{
 	"version": "1.0.0-*",
 	"dependencies": {
-		"Microsoft.Framework.DependencyInjection": "1.0.0-beta3-*",
+		"Microsoft.Framework.DependencyInjection": "1.0.0-beta3",
 		"Rx-Core": "2.2.5.0",
 		"Rx-Linq": "2.2.5.0",
 		"Blacklite.Framework.Interfaces": "1.0.0-beta-*",
 		"Blacklite.Framework.Events": "1.0.0-beta-*",
 		"Blacklite.Framework.Multitenancy.Interfaces": "1.0.0-beta-*"
 	},
+
+   "devDependencies": {
+        "NR6Pack": "0.5.0.0"
+    },
 
 	"compilationOptions": {
 		"warningsAsErrors": true
@@ -30,12 +34,12 @@
 		},
 		"aspnet50": {
 			"frameworkAssemblies": {
-				"System.Runtime": "4.0.20.0",
+				"System.Runtime": "4.0.10.0",
 				"System.ComponentModel": "4.0.0.0",
-                "System.Collections": "4.0.10.0",
+                "System.Collections": "4.0.0.0",
                 "System.Collections.Concurrent": "4.0.0.0",
-                "System.ObjectModel": "4.0.10.0",
-                "System.Reflection": "4.0.10.0",
+                "System.ObjectModel": "4.0.0.0",
+                "System.Reflection": "4.0.0.0",
                 "System.Reflection.Primitives": "4.0.0.0",
                 "System.Reflection.Extensions": "4.0.0.0"
 			},
