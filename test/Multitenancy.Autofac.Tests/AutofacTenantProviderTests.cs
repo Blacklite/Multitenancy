@@ -27,7 +27,6 @@ namespace Multitenancy.Autofac.Tests
             var lifetimeScope = new Mock<ILifetimeScope>();
             lifetimeScope.Setup(x => x.BeginLifetimeScope(AutofacTenantProvider.TenantTag)).Returns(lifetimeScopeContainer);
 
-            //.Setup(x => x.Resolve< IServiceProvider>()).Returns(;
             var tenantConfigurationService = new Mock<ITenantConfigurationService>();
 
             var provider = new AutofacTenantProvider(lifetimeScope.Object, tenantConfigurationService.Object);
@@ -38,41 +37,6 @@ namespace Multitenancy.Autofac.Tests
 
             Assert.Equal(result.Tenant, tenant);
             Assert.Equal(result.ServiceProvider, childServiceProvider.Object);
-        }
-
-        [Fact]
-        public void ProvidesListOfTenantIds()
-        {
-            var tenant = new Tenant(new TenantConfiguration());
-
-            var childServiceProvider = new Mock<IServiceProvider>();
-            childServiceProvider.Setup(x => x.GetService(typeof(ITenant))).Returns(tenant);
-
-            var builder = new ContainerBuilder();
-            builder.RegisterInstance(childServiceProvider.Object).As<IServiceProvider>();
-            var lifetimeScopeContainer = builder.Build();
-
-            var lifetimeScope = new Mock<ILifetimeScope>();
-            lifetimeScope.Setup(x => x.BeginLifetimeScope(AutofacTenantProvider.TenantTag)).Returns(lifetimeScopeContainer);
-
-            //.Setup(x => x.Resolve< IServiceProvider>()).Returns(;
-            var tenantConfigurationService = new Mock<ITenantConfigurationService>();
-
-            var provider = new AutofacTenantProvider(lifetimeScope.Object, tenantConfigurationService.Object);
-
-            provider.GetOrAdd("tenant1");
-            provider.GetOrAdd("tenant2");
-            provider.GetOrAdd("tenant3");
-            provider.GetOrAdd("tenant4");
-            provider.GetOrAdd("tenant5");
-
-            Assert.Contains("tenant1", provider.Tenants);
-            Assert.Contains("tenant2", provider.Tenants);
-            Assert.Contains("tenant3", provider.Tenants);
-            Assert.Contains("tenant4", provider.Tenants);
-            Assert.Contains("tenant5", provider.Tenants);
-            Assert.Equal(5, provider.Tenants.Count());
-
         }
     }
 }
