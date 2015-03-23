@@ -4,7 +4,7 @@
         "Microsoft.Framework.Logging.Interfaces": { "version": "1.0.0-beta3", "type": "build" },
         "Microsoft.Framework.ConfigurationModel": "1.0.0-beta3",
         "Microsoft.Framework.DependencyInjection": "1.0.0-beta3",
-        "Blacklite.Framework.Multitenancy": "1.0.0-beta-*"
+        "Blacklite.Framework.Multitenancy": "1.0.0-*"
     },
 
 	"compilationOptions": {
@@ -12,13 +12,17 @@
 	},
 
     "frameworks": {
+        "net45": {
+            "dependencies": {
+            }
+        },
         "aspnet50": {
             "dependencies": {
             }
         },
         "aspnetcore50": {
             "dependencies": {
-                "System.Runtime": "4.0.20-beta-*"
+                "System.Runtime": "4.0.20-*"
             }
         }
     }

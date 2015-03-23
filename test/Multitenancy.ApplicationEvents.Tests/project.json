@@ -2,7 +2,7 @@
     "dependencies": {
         "xunit.runner.kre": "1.0.0-beta3-*",
         "Moq": "4.2",
-        "Blacklite.Framework.Multitenancy.ApplicationEvents": ""
+        "Blacklite.Framework.Multitenancy.ApplicationEvents": "1.0.0-*"
     },
 
     "commands": {

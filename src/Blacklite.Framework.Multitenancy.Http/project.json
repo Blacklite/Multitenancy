@@ -1,27 +1,25 @@
 ﻿{
-	"version": "1.0.0-*",
-	"dependencies": {
-		"Microsoft.AspNet.Http.Extensions": "1.0.0-beta3",
-		"Microsoft.AspNet.Hosting": "1.0.0-beta3",
-		"Blacklite.Framework.Multitenancy": "1.0.0-beta-*"
-	},
+    "version": "1.0.0-*",
+    "dependencies": {
+        "Microsoft.AspNet.Http.Extensions": "1.0.0-beta3",
+        "Microsoft.AspNet.Hosting": "1.0.0-beta3",
+        "Blacklite.Framework.Multitenancy": "1.0.0-beta-*"
+    },
 
-	"compilationOptions": {
-		"warningsAsErrors": true
-	},
+    "compilationOptions": {
+        "warningsAsErrors": true
+    },
 
-	"frameworks": {
-		"aspnet50": {
-			"frameworkAssemblies": {
-				"System.Runtime": "4.0.10.0"
-			},
-			"dependencies": {
-			}
-		},
-		"aspnetcore50": {
-			"dependencies": {
-				"System.Runtime": "4.0.20-beta-22416"
-			}
-		}
-	}
+    "frameworks": {
+        "aspnet50": {
+            "frameworkAssemblies": {
+                "System.Runtime": "4.0.10.0"
+            }
+        },
+        "aspnetcore50": {
+            "dependencies": {
+                "System.Runtime": "4.0.20-beta-*"
+            }
+        }
+    }
 }

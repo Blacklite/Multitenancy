@@ -3,8 +3,8 @@
     "dependencies": {
         "Microsoft.Framework.ConfigurationModel": "1.0.0-beta3",
         "Microsoft.Framework.DependencyInjection": "1.0.0-beta3",
-		"Blacklite.Framework.Interfaces": "1.0.0-beta-*",
-		"Blacklite.Framework.Events": "1.0.0-beta-*"
+		"Blacklite.Framework.Interfaces": "1.0.0-*",
+		"Blacklite.Framework.Events": "1.0.0-*"
     },
 
    "devDependencies": {
@@ -32,7 +32,7 @@
         },
         "aspnetcore50": {
             "dependencies": {
-                "System.Runtime": "4.0.20-beta-*"
+                "System.Runtime": "4.0.20-*"
             }
         }
     }

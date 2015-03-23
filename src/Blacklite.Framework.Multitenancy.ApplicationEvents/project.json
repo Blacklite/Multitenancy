@@ -1,9 +1,9 @@
 ﻿{
 	"version": "1.0.0-*",
 	"dependencies": {
-		"Blacklite.Framework.Multitenancy": "1.0.0-beta-*",
-		"Blacklite.Framework.Events": "1.0.0-beta-*",
-		"Blacklite.Framework.GlobalEvents": "1.0.0-beta-*"
+		"Blacklite.Framework.Multitenancy": "1.0.0-*",
+		"Blacklite.Framework.Events": "1.0.0-*",
+		"Blacklite.Framework.GlobalEvents": "1.0.0-*"
 	},
 
 	"compilationOptions": {
@@ -27,7 +27,7 @@
 		},
 		"aspnetcore50": {
 			"dependencies": {
-				"System.Runtime": "4.0.20-beta-*"
+				"System.Runtime": "4.0.20-*"
 			}
 		}
 	}
