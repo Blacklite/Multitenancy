@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Autofac.Core;
-using Blacklite.Framework.Multitenancy.ConfigurationModel;
+using Blacklite.Framework.Multitenancy.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Collections.Concurrent;

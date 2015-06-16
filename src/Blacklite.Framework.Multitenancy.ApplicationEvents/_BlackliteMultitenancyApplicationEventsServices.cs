@@ -12,10 +12,8 @@ namespace Blacklite.Framework.Multitenancy.ApplicationEvents
 {
     public static class BlackliteMultitenancyApplicationEventsServices
     {
-        public static IEnumerable<IServiceDescriptor> GetApplicationEvents(IConfiguration configuration = null)
+        public static IEnumerable<ServiceDescriptor> GetApplicationEvents()
         {
-            var describe = new ServiceDescriber(configuration);
-
             yield return describe.ApplicationOnlySingleton<IEventObservable<IApplicationEvent>, ApplicationObservable>();
             yield return describe.ApplicationOnlySingleton<IEventOrchestrator<IApplicationEvent>, ApplicationOrchestrator>();
             yield return describe.Transient<ITenantComposer, ApplicationBroadcastComposer>();

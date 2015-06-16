@@ -1,5 +1,5 @@
-﻿using Blacklite.Framework.Multitenancy.ConfigurationModel;
-using Microsoft.Framework.ConfigurationModel;
+﻿using Blacklite.Framework.Multitenancy.Configuration;
+using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -10,15 +10,13 @@ namespace Blacklite.Framework.Multitenancy
 {
     public static class BlackliteMultitenancyServices
     {
-        public static IEnumerable<IServiceDescriptor> GetDefaultServices(IConfiguration configuration = null)
+        public static IEnumerable<ServiceDescriptor> GetDefaultServices()
         {
-            var describe = new ServiceDescriber(configuration);
+            yield return ApplicationOnlyServiceDescriptor.Singleton<ITenantConfigurationService, TenantConfigurationService>();
 
-            yield return describe.ApplicationOnlySingleton<ITenantConfigurationService, TenantConfigurationService>();
-
-            yield return describe.TenantOnlySingleton<ITenant, Tenant>();
-            yield return describe.TenantOnlySingleton<ITenantConfiguration, TenantConfiguration>();
-            yield return describe.ApplicationOnlySingleton<ITenantRegistry, DefaultTenantRegistry>();
+            yield return TenantOnlyServiceDescriptor.Singleton<ITenant, Tenant>();
+            yield return TenantOnlyServiceDescriptor.Singleton<ITenantConfiguration, TenantConfiguration>();
+            yield return ApplicationOnlyServiceDescriptor.Singleton<ITenantRegistry, DefaultTenantRegistry>();
         }
     }
 }

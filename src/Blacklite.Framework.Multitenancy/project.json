@@ -1,63 +1,36 @@
 ﻿{
-	"version": "1.0.0-*",
-	"dependencies": {
-        "Microsoft.Framework.DependencyInjection": "1.0.0-beta3",
+    "version": "1.0.0-*",
+    "dependencies": {
+        "Microsoft.Framework.DependencyInjection": "1.0.0-beta5-*",
         "Rx-Core": "2.2.5",
-		"Rx-Linq": "2.2.5",
-		"Blacklite.Framework.Interfaces": "1.0.0-*",
-		"Blacklite.Framework.Events": "1.0.0-*",
-		"Blacklite.Framework.Multitenancy.Interfaces": "1.0.0-*"
-	},
+        "Rx-Linq": "2.2.5",
+        "Blacklite.Framework.Abstractions": "1.0.0-*",
+        "Blacklite.Framework.Events": "1.0.0-*",
+        "Blacklite.Framework.Multitenancy.Interfaces": "1.0.0-*"
+    },
 
-   "devDependencies": {
+    "devDependencies": {
         "NR6Pack": "0.5.0.0"
     },
 
-	"compilationOptions": {
-		"warningsAsErrors": true
-	},
+    "compilationOptions": {
+        "warningsAsErrors": true
+    },
 
-	"frameworks": {
-		"net45": {
-			"frameworkAssemblies": {
-				"System.Runtime": "4.0.0.0",
-				"System.ComponentModel": "4.0.0.0",
-                "System.Collections": "4.0.0.0",
-                "System.Collections.Concurrent": "4.0.0.0",
-                "System.ObjectModel": "4.0.0.0",
-                "System.Reflection": "4.0.0.0",
-                "System.Reflection.Primitives": "4.0.0.0",
-                "System.Reflection.Extensions": "4.0.0.0"
-			},
-			"dependencies": {
-			}
-		},
-		"aspnet50": {
-			"frameworkAssemblies": {
-				"System.Runtime": "4.0.10.0",
-				"System.ComponentModel": "4.0.0.0",
-                "System.Collections": "4.0.0.0",
-                "System.Collections.Concurrent": "4.0.0.0",
-                "System.ObjectModel": "4.0.0.0",
-                "System.Reflection": "4.0.0.0",
-                "System.Reflection.Primitives": "4.0.0.0",
-                "System.Reflection.Extensions": "4.0.0.0"
-			},
-			"dependencies": {
-			}
-		},
-		"aspnetcore50": {
-			"dependencies": {
-				"System.Runtime": "4.0.20-*",
-				"System.ComponentModel": "4.0.0-*",
-				"System.Collections": "4.0.10-*",
-				"System.Collections.Concurrent": "4.0.0-*",
-				"System.ObjectModel": "4.0.10-*",
-				"System.Reflection": "4.0.10-*",
-				"System.Reflection.Primitives": "4.0.0-*",
-				"System.Reflection.Extensions": "4.0.0-*",
-				"System.Reflection.TypeExtensions": "4.0.0-*"
-			}
-		}
-	}
+    "frameworks": {
+        "dnx451": { },
+        "dnxcore50": {
+            "dependencies": {
+                "System.Runtime": "4.0.20-beta-*",
+                "System.ComponentModel": "4.0.0-beta-*",
+                "System.Collections": "4.0.10-beta-*",
+                "System.Collections.Concurrent": "4.0.0-beta-*",
+                "System.ObjectModel": "4.0.10-beta-*",
+                "System.Reflection": "4.0.10-beta-*",
+                "System.Reflection.Primitives": "4.0.0-beta-*",
+                "System.Reflection.Extensions": "4.0.0-beta-*",
+                "System.Reflection.TypeExtensions": "4.0.0-beta-*"
+            }
+        }
+    }
 }

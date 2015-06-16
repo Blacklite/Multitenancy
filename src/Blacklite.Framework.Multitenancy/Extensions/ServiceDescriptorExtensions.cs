@@ -7,7 +7,7 @@ namespace Blacklite.Framework.Multitenancy
 {
     public static class ServiceDescriptorExtensions
     {
-        public static bool IsTenantScope(this IServiceDescriptor service)
+        public static bool IsTenantScope(this ServiceDescriptor service)
         {
             return service is TenantOnlyServiceDescriptor || (
                           service.ServiceType != null && service.ServiceType.GetTypeInfo().GetCustomAttributes<TenantOnlyAttribute>(true).Any() ||
@@ -15,7 +15,7 @@ namespace Blacklite.Framework.Multitenancy
                      );
         }
 
-        public static bool IsApplicationScope(this IServiceDescriptor service)
+        public static bool IsApplicationScope(this ServiceDescriptor service)
         {
             return service is ApplicationOnlyServiceDescriptor || (
                            service.ServiceType != null && service.ServiceType.GetTypeInfo().GetCustomAttributes<ApplicationOnlyAttribute>(true).Any() ||

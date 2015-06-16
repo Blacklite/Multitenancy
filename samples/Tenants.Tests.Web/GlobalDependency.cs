@@ -4,7 +4,7 @@ using System;
 
 namespace Tenants.Tests.Web
 {
-    [ServiceDescriptor(Lifecycle = LifecycleKind.Singleton)]
+    [ServiceDescriptor(Lifetime = ServiceLifetime.Singleton)]
     public class GlobalDependencySingleton
     {
         public int Number { get; set; }
@@ -14,7 +14,7 @@ namespace Tenants.Tests.Web
         }
     }
 
-    [ServiceDescriptor(Lifecycle = LifecycleKind.Scoped)]
+    [ServiceDescriptor(Lifetime = ServiceLifetime.Scoped)]
     public class GlobalDependencyScoped
     {
         public int Number { get; set; }
@@ -24,7 +24,7 @@ namespace Tenants.Tests.Web
         }
     }
 
-    [ServiceDescriptor(Lifecycle = LifecycleKind.Transient)]
+    [ServiceDescriptor(Lifetime = ServiceLifetime.Transient)]
     public class GlobalDependencyTransient
     {
         public int Number { get; set; }

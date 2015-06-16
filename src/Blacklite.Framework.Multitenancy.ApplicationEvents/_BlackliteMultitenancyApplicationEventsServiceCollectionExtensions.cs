@@ -12,7 +12,7 @@ namespace Microsoft.Framework.DependencyInjection
     {
         public static IServiceCollection AddMultitenancyApplicationEvents(
             [NotNull] this IServiceCollection services,
-            IConfiguration configuration = null)
+            )
         {
             ConfigureDefaultServices(services, configuration);
             services.Add(BlackliteMultitenancyApplicationEventsServices.GetApplicationEvents(configuration));

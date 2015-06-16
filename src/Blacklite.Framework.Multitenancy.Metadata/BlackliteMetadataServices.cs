@@ -11,10 +11,8 @@ namespace Blacklite.Framework.Multitenancy.Metadata
 {
     public static class BlackliteMultitenancyMetadataServices
     {
-        public static IEnumerable<IServiceDescriptor> GetMultitenancyMetadata(IConfiguration configuration = null)
+        public static IEnumerable<ServiceDescriptor> GetMultitenancyMetadata()
         {
-            var describe = new ServiceDescriber(configuration);
-
             yield return describe.TenantOnlySingleton<ITenantMetadataProvider, TenantMetadataProvider>();
             yield return describe.Scoped<IMetadataProvider, ScopedMetadataProvider>();
         }

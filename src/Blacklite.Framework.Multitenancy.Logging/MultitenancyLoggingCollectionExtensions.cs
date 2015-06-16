@@ -12,7 +12,7 @@ namespace Microsoft.Framework.DependencyInjection
     {
         public static IServiceCollection AddMultitenancyLogging(
             [NotNull] this IServiceCollection services,
-            IConfiguration configuration = null)
+            )
         {
             services.Add(MultitenancyLoggingServices.GetDefaultServices(configuration));
             return services;

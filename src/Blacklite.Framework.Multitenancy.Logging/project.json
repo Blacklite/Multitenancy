@@ -1,28 +1,21 @@
 ﻿{
     "version": "1.0.0-*",
     "dependencies": {
-        "Microsoft.Framework.Logging.Interfaces": { "version": "1.0.0-beta3", "type": "build" },
-        "Microsoft.Framework.ConfigurationModel": "1.0.0-beta3",
-        "Microsoft.Framework.DependencyInjection": "1.0.0-beta3",
+        "Microsoft.Framework.Logging.Interfaces": { "version": "1.0.0-beta5-*", "type": "build" },
+        "Microsoft.Framework.ConfigurationModel": "1.0.0-beta5-*",
+        "Microsoft.Framework.DependencyInjection": "1.0.0-beta5-*",
         "Blacklite.Framework.Multitenancy": "1.0.0-*"
     },
 
-	"compilationOptions": {
-		"warningsAsErrors": true
-	},
+    "compilationOptions": {
+        "warningsAsErrors": true
+    },
 
     "frameworks": {
-        "net45": {
+        "dnx451": { },
+        "dnxcore50": {
             "dependencies": {
-            }
-        },
-        "aspnet50": {
-            "dependencies": {
-            }
-        },
-        "aspnetcore50": {
-            "dependencies": {
-                "System.Runtime": "4.0.20-*"
+                "System.Runtime": "4.0.20-beta-*"
             }
         }
     }

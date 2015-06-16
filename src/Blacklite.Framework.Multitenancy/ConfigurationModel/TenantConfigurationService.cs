@@ -1,9 +1,9 @@
-﻿using Microsoft.Framework.ConfigurationModel;
+﻿using Microsoft.Framework.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Blacklite.Framework.Multitenancy.ConfigurationModel
+namespace Blacklite.Framework.Multitenancy.Configuration
 {
     public class TenantConfigurationService : ITenantConfigurationService
     {
@@ -22,7 +22,7 @@ namespace Blacklite.Framework.Multitenancy.ConfigurationModel
         public void Configure(ITenant tenant)
         {
             foreach (var service in _tenantConfigurationComposers)
-                service.Configure(tenant, tenant.Configuration.GetSubKey(service.Key));
+                service.Configure(tenant, tenant.Configuration.GetConfigurationSection(service.Key));
 
             foreach (var service in _tenantComposers)
                 service.Configure(tenant);

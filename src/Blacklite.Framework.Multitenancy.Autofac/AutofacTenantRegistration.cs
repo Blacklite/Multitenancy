@@ -4,7 +4,7 @@ using Blacklite;
 using Blacklite.Framework;
 using Blacklite.Framework.Multitenancy;
 using Blacklite.Framework.Multitenancy.Autofac;
-using Microsoft.Framework.ConfigurationModel;
+using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Collections.Concurrent;
@@ -16,14 +16,11 @@ namespace Autofac
 {
     public static class AutofacTenantRegistration
     {
-        public static T Populate<T>(
-                [NotNull] this T builder,
-                IServiceCollection services,
-                IConfiguration configuration = null)
+        public static T Populate<T>([NotNull] this T builder, IServiceCollection services)
             where T : ContainerBuilder
         {
             services.AddSingleton<ITenantProvider, AutofacTenantProvider>();
-            services.AddMultitenancy(configuration);
+            services.AddMultitenancy();
 
             builder.RegisterType<AutofacServiceProvider>().As<IServiceProvider>();
             builder.RegisterType<AutofacServiceScopeFactory>().As<IServiceScopeFactory>();
@@ -43,7 +40,7 @@ namespace Autofac
 
         private static void Register(
                 ContainerBuilder builder,
-                IEnumerable<IServiceDescriptor> descriptors)
+                IEnumerable<ServiceDescriptor> descriptors)
         {
             foreach (var descriptor in descriptors)
             {
@@ -56,14 +53,14 @@ namespace Autofac
                         builder
                             .RegisterGeneric(descriptor.ImplementationType)
                             .As(descriptor.ServiceType)
-                            .ConfigureLifecycle(descriptor);
+                            .ConfigureLifetime(descriptor);
                     }
                     else
                     {
                         builder
                             .RegisterType(descriptor.ImplementationType)
                             .As(descriptor.ServiceType)
-                            .ConfigureLifecycle(descriptor);
+                            .ConfigureLifetime(descriptor);
                     }
                 }
                 else if (descriptor.ImplementationFactory != null)
@@ -73,7 +70,7 @@ namespace Autofac
                         var serviceProvider = context.Resolve<IServiceProvider>();
                         return descriptor.ImplementationFactory(serviceProvider);
                     })
-                    .ConfigureLifecycle(descriptor)
+                    .ConfigureLifetime(descriptor)
                     .CreateRegistration();
 
                     builder.RegisterComponent(registration);
@@ -83,18 +80,18 @@ namespace Autofac
                     builder
                         .RegisterInstance(descriptor.ImplementationInstance)
                         .As(descriptor.ServiceType)
-                        .ConfigureLifecycle(descriptor);
+                        .ConfigureLifetime(descriptor);
                 }
             }
         }
 
-        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> ConfigureLifecycle<TLimit, TReflectionActivatorData, TStyle>(
+        public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> ConfigureLifetime<TLimit, TReflectionActivatorData, TStyle>(
                 this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
-                IServiceDescriptor descriptor)
+                ServiceDescriptor descriptor)
         {
-            switch (descriptor.Lifecycle)
+            switch (descriptor.Lifetime)
             {
-                case LifecycleKind.Singleton:
+                case ServiceLifetime.Singleton:
                     if (descriptor.IsTenantScope())
                         registration.InstancePerTenantScope();
                     else if (descriptor.IsApplicationScope())
@@ -102,10 +99,10 @@ namespace Autofac
                     else // Global
                         registration.SingleInstance();
                     break;
-                case LifecycleKind.Scoped:
+                case ServiceLifetime.Scoped:
                     registration.InstancePerLifetimeScope();
                     break;
-                case LifecycleKind.Transient:
+                case ServiceLifetime.Transient:
                     registration.InstancePerDependency();
                     break;
             }

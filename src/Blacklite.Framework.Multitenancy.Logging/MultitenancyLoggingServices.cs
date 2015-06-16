@@ -11,10 +11,8 @@ namespace Blacklite.Framework.Multitenancy
 {
     public static class MultitenancyLoggingServices
     {
-        public static IEnumerable<IServiceDescriptor> GetDefaultServices(IConfiguration configuration = null)
+        public static IEnumerable<ServiceDescriptor> GetDefaultServices()
         {
-            var describe = new ServiceDescriber(configuration);
-
             yield return describe.TenantOnlySingleton<ITenantLogger, TenantLogger>();
             yield return describe.TenantOnlySingleton<ILogger>(x => x.GetRequiredService<ITenantLogger>());
         }

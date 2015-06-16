@@ -1,4 +1,4 @@
-﻿using Microsoft.Framework.ConfigurationModel;
+﻿using Microsoft.Framework.Configuration;
 using System;
 
 namespace Blacklite.Framework.Multitenancy

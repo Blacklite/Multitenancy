@@ -1,9 +1,9 @@
-﻿using Microsoft.Framework.ConfigurationModel;
+﻿using Microsoft.Framework.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Blacklite.Framework.Multitenancy.ConfigurationModel
+namespace Blacklite.Framework.Multitenancy.Configuration
 {    [ApplicationOnly]
     public interface ITenantConfigurationService
     {

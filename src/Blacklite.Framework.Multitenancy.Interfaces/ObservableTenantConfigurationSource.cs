@@ -1,9 +1,9 @@
-﻿using Microsoft.Framework.ConfigurationModel;
+﻿using Microsoft.Framework.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Blacklite.Framework.Multitenancy.ConfigurationModel
+namespace Blacklite.Framework.Multitenancy
 {
     class ObservableTenantConfigurationSource : IConfigurationSource
     {
@@ -14,7 +14,7 @@ namespace Blacklite.Framework.Multitenancy.ConfigurationModel
         }
         public void Load() { }
 
-        public IEnumerable<string> ProduceSubKeys(IEnumerable<string> earlierKeys, string prefix, string delimiter)
+        public IEnumerable<string> ProduceConfigurationSections(IEnumerable<string> earlierKeys, string prefix, string delimiter)
         {
             return Enumerable.Empty<string>();
         }

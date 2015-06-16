@@ -13,7 +13,7 @@ namespace Microsoft.Framework.DependencyInjection
     {
         public static IServiceCollection AddMultitenancyMetadata(
             [NotNull] this IServiceCollection services,
-            IConfiguration configuration = null)
+            )
         {
             services.AddMetadata()
                     .Add(BlackliteMultitenancyMetadataServices.GetMultitenancyMetadata(configuration));

@@ -1,8 +1,8 @@
-﻿using Microsoft.Framework.ConfigurationModel;
+﻿using Microsoft.Framework.Configuration;
 using Blacklite.Framework.Events;
 using System;
 using System.Threading.Tasks;
-using Blacklite.Framework.Multitenancy.ConfigurationModel;
+using Blacklite.Framework.Multitenancy.Configuration;
 using System.Collections.Generic;
 
 namespace Blacklite.Framework.Multitenancy
@@ -13,7 +13,7 @@ namespace Blacklite.Framework.Multitenancy
         string Id { get; }
         IServiceProvider Services { get; }
         TenantState State { get; }
-        ITenantConfiguration Configuration { get; }
+        TenantConfiguration Configuration { get; }
         IObservable<KeyValuePair<string, string>> ConfigurationChanged { get; }
         void Broadcast(IEvent operation);
 

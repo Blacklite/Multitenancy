@@ -1,9 +1,11 @@
 ﻿{
     "version": "1.0.0-*",
     "dependencies": {
-        "Microsoft.Framework.ConfigurationModel": "1.0.0-beta3",
-        "Microsoft.Framework.DependencyInjection": "1.0.0-beta3",
-		"Blacklite.Framework.Interfaces": "1.0.0-*",
+        "Microsoft.Framework.Configuration": "1.0.0-beta5-*",
+        "Microsoft.Framework.DependencyInjection": "1.0.0-beta5-*",
+        "Rx-Core": "2.2.5",
+        "Rx-Linq": "2.2.5",
+		"Blacklite.Framework.Abstractions": "1.0.0-*",
 		"Blacklite.Framework.Events": "1.0.0-*"
     },
 
@@ -16,23 +18,10 @@
 	},
 
     "frameworks": {
-        "net45": {
-			"frameworkAssemblies": {
-				"System.Runtime": "4.0.0.0"
-			},
+        "dnx451": { },
+        "dnxcore50": {
             "dependencies": {
-            }
-        },
-        "aspnet50": {
-			"frameworkAssemblies": {
-				"System.Runtime": "4.0.10.0"
-			},
-            "dependencies": {
-            }
-        },
-        "aspnetcore50": {
-            "dependencies": {
-                "System.Runtime": "4.0.20-*"
+                "System.Runtime": "4.0.20-beta-*"
             }
         }
     }
