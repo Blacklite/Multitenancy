@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Http;
+using Microsoft.AspNet.Http;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,21 +15,21 @@ namespace Blacklite.Framework.Multitenancy.Http
 
         private static object _tenantKey = new object();
 
-        public ITenantIdentificationResult TryIdentifyTenant(HttpContext context)
+        public TenantIdentificationResult IdentifyTenant(HttpContext context)
         {
-            var task = TryIdentifyTenantAsync(context);
+            var task = IdentifyTenantAsync(context);
             task.Wait();
             return task.Result;
         }
 
-        public async Task<ITenantIdentificationResult> TryIdentifyTenantAsync([NotNull]HttpContext context)
+        public async Task<TenantIdentificationResult> IdentifyTenantAsync([NotNull]HttpContext context)
         {
             if (context.Items.ContainsKey(_tenantKey))
             {
-                return (ITenantIdentificationResult)context.Items[_tenantKey];
+                return (TenantIdentificationResult)context.Items[_tenantKey];
             }
 
-            ITenantIdentificationResult result;
+            TenantIdentificationResult result;
             if (context.Request.Path.HasValue && context.Request.Path.Value.Count(x => x == '/') > 0)
             {
                 var path = context.Request.Path.Value.TrimStart('/');

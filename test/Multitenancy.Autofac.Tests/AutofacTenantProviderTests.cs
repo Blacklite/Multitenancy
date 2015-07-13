@@ -1,12 +1,14 @@
-﻿using System;
+using System;
 using Xunit;
 using Moq;
 using Autofac;
+using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using Blacklite.Framework.Multitenancy;
 using Blacklite.Framework.Multitenancy.Autofac;
-using Blacklite.Framework.Multitenancy.ConfigurationModel;
+using Blacklite.Framework.Multitenancy.Configuration;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Multitenancy.Autofac.Tests
 {
@@ -15,7 +17,7 @@ namespace Multitenancy.Autofac.Tests
         [Fact]
         public void ProvidesTenants()
         {
-            var tenant = new Tenant(new TenantConfiguration());
+            var tenant = new Tenant(new TenantConfiguration(new List<IConfigurationSource>()));
 
             var childServiceProvider = new Mock<IServiceProvider>();
             childServiceProvider.Setup(x => x.GetService(typeof(ITenant))).Returns(tenant);

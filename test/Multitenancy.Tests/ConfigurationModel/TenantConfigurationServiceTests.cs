@@ -1,12 +1,12 @@
-﻿using Blacklite.Framework.Multitenancy;
-using Blacklite.Framework.Multitenancy.ConfigurationModel;
-using Microsoft.Framework.ConfigurationModel;
+using Blacklite.Framework.Multitenancy;
+using Blacklite.Framework.Multitenancy.Configuration;
+using Microsoft.Framework.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace Multitenancy.Tests.ConfigurationModel
+namespace Multitenancy.Tests.Configuration
 {
     public class TenantConfigurationServiceTests
     {
@@ -15,7 +15,7 @@ namespace Multitenancy.Tests.ConfigurationModel
         {
             var service = new TenantConfigurationService(Enumerable.Empty<ITenantComposer>(), Enumerable.Empty<ITenantConfigurationComposer>());
 
-            service.Configure(new Tenant(new TenantConfiguration()));
+            service.Configure(new Tenant(new TenantConfiguration(new List<IConfigurationSource>())));
 
             Assert.True(true);
         }

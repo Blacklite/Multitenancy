@@ -3,7 +3,7 @@ using Blacklite.Framework.Events;
 
 namespace Blacklite.Framework.Multitenancy
 {
-    public interface IApplicationEvent : IEvent
+    public interface ITenantEvent : IEvent
     {
         string Tenant { get; }
     }

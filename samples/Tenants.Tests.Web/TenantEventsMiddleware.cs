@@ -1,5 +1,5 @@
 using Blacklite.Framework.Multitenancy;
-using Blacklite.Framework.Multitenancy.ApplicationEvents;
+using Blacklite.Framework.Multitenancy.Events;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
 using Microsoft.Framework.DependencyInjection;

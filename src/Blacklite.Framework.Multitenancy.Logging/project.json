@@ -1,8 +1,8 @@
 ﻿{
     "version": "1.0.0-*",
     "dependencies": {
-        "Microsoft.Framework.Logging.Interfaces": { "version": "1.0.0-beta5-*", "type": "build" },
-        "Microsoft.Framework.ConfigurationModel": "1.0.0-beta5-*",
+        "Microsoft.Framework.Logging.Abstractions": { "version": "1.0.0-beta5-*", "type": "build" },
+        "Microsoft.Framework.Configuration": "1.0.0-beta5-*",
         "Microsoft.Framework.DependencyInjection": "1.0.0-beta5-*",
         "Blacklite.Framework.Multitenancy": "1.0.0-*"
     },

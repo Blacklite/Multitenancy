@@ -1,7 +1,8 @@
-﻿using Blacklite.Framework.Multitenancy.Events;
+using Blacklite.Framework.Multitenancy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Blacklite.Framework.Multitenancy.Events;
 
 namespace Blacklite.Framework.Multitenancy
 {

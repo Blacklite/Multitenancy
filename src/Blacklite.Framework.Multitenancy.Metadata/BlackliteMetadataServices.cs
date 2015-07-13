@@ -1,6 +1,5 @@
-﻿using Blacklite.Framework.Metadata;
+using Blacklite.Framework.Metadata;
 using Blacklite.Framework.Metadata.Properties;
-using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -13,8 +12,8 @@ namespace Blacklite.Framework.Multitenancy.Metadata
     {
         public static IEnumerable<ServiceDescriptor> GetMultitenancyMetadata()
         {
-            yield return describe.TenantOnlySingleton<ITenantMetadataProvider, TenantMetadataProvider>();
-            yield return describe.Scoped<IMetadataProvider, ScopedMetadataProvider>();
+            yield return TenantOnlyServiceDescriptor.Singleton<ITenantMetadataProvider, TenantMetadataProvider>();
+            yield return ServiceDescriptor.Scoped<IMetadataProvider, ScopedMetadataProvider>();
         }
     }
 }

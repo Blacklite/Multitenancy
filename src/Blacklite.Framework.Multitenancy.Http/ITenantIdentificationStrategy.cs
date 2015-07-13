@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.Http;
+using Microsoft.AspNet.Http;
 using System;
 using System.Threading.Tasks;
 
@@ -22,7 +22,7 @@ namespace Blacklite.Framework.Multitenancy.Http
         /// <see langword="true" /> if the tenant could be identified; <see langword="false" />
         /// if not.
         /// </returns>
-        ITenantIdentificationResult TryIdentifyTenant([NotNull] HttpContext context);
+        TenantIdentificationResult IdentifyTenant([NotNull] HttpContext context);
 
         /// <summary>
         /// Attempts to identify the tenant from the current execution context.
@@ -34,6 +34,6 @@ namespace Blacklite.Framework.Multitenancy.Http
         /// <see langword="true" /> if the tenant could be identified; <see langword="false" />
         /// if not.
         /// </returns>
-        Task<ITenantIdentificationResult> TryIdentifyTenantAsync([NotNull] HttpContext context);
+        Task<TenantIdentificationResult> IdentifyTenantAsync([NotNull] HttpContext context);
     }
 }

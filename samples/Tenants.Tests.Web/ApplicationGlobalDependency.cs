@@ -1,4 +1,4 @@
-﻿using Blacklite.Framework.Multitenancy;
+using Blacklite.Framework.Multitenancy;
 using Microsoft.Framework.DependencyInjection;
 using System;
 

@@ -1,4 +1,4 @@
-﻿using Blacklite.Framework.Multitenancy;
+using Blacklite.Framework.Multitenancy;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
 using Microsoft.Framework.DependencyInjection;
@@ -19,7 +19,7 @@ namespace Tenants.Tests.Web
         public async Task Invoke(HttpContext httpContext, TenantDependencyScoped tenantScoped, ITenantLogger logger, GlobalDependencyScoped globalScoped)
         {
             tenantScoped.Number++;
-            logger.WriteWarning(nameof(TenantTestMiddleware2));
+            logger.LogWarning(nameof(TenantTestMiddleware2));
             globalScoped.Number++;
             await _next.Invoke(httpContext);
         }
@@ -48,7 +48,7 @@ namespace Tenants.Tests.Web
             globalScoped.Number++;
             globalTransient.Number++;
 
-            logger.WriteWarning(nameof(TenantTestMiddleware));
+            logger.LogWarning(nameof(TenantTestMiddleware));
 
             await httpContext.Response.WriteAsync(httpContext.Request.Path + "\n\n");
 

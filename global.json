@@ -1,6 +1,6 @@
 ﻿{
-    "projects": [ "src", "test", "../Common/src", "../Features/src", "../Metadata/src" ],
+    "projects": [ "src", "test", "../Common/src", "../DependencyInjection/src", "../Features/src", "../Metadata/src" ],
     "sdk": {
-        "version": "1.0.0-beta5-12077"
+        "version": "1.0.0-beta5"
     }
 }

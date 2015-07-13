@@ -1,43 +1,55 @@
-﻿using Blacklite.Framework.Events;
+using Blacklite.Framework.Events;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Reflection;
+using System.Linq;
 
 namespace Blacklite.Framework.Multitenancy.Events
 {
-    public class TenantEvent : IEvent
+    public class TenantEvent : Event, ITenantEvent
     {
-        public TenantEvent()
-        {
+        public TenantEvent(IDictionary<string, object> data = null) : base(data) { }
 
+        public string Tenant { get { return _getValue<string>(nameof(ITenantEvent.Tenant)); } }
+
+        public static TenantEvent Create(string tenantId, IEvent @event)
+        {
+            var dict = @event.Data.ToDictionary(x => x.Key, x => x.Value);
+            dict[nameof(ITenantEvent.Tenant)] = tenantId;
+            return new TenantEvent(dict);
         }
 
-        internal TenantEvent(IEvent @event)
+        public static Event Boot()
         {
-            Type = @event.Type;
-            Name = @event.Name;
-            User = @event.User;
-            Reason = @event.Reason;
-            Data = @event.Data ?? Data;
+            return new Event(new Dictionary<string, object>() {
+                { nameof(Event.Category), nameof(Tenant) },
+                { nameof(Event.Type), TenantState.Boot.ToString() },
+            });
         }
 
-        public string Type { get; set; }
-
-        public string Name { get; set; }
-
-        public string User { get; set; }
-
-        public string Reason { get; set; }
-
-        public IReadOnlyDictionary<string, string> Data { get; set; }
-
-        public TenantEvent Clone()
+        public static Event Start()
         {
-            return (TenantEvent)this.MemberwiseClone();
+            return new Event(new Dictionary<string, object>() {
+                { nameof(Event.Category), nameof(Tenant) },
+                { nameof(Event.Type), TenantState.Started.ToString() },
+            });
         }
 
-        public static TenantEvent Boot() { return new TenantEvent() { Type = TenantState.Boot.ToString() }; }
-        public static TenantEvent Start() { return new TenantEvent() { Type = TenantState.Started.ToString() }; }
-        public static TenantEvent Stop() { return new TenantEvent() { Type = TenantState.Stopped.ToString() }; }
-        public static TenantEvent Shutdown() { return new TenantEvent() { Type = TenantState.Shutdown.ToString() }; }
+        public static Event Stop()
+        {
+            return new Event(new Dictionary<string, object>() {
+                { nameof(Event.Category), nameof(Tenant) },
+                { nameof(Event.Type), TenantState.Stopped.ToString() },
+            });
+        }
+
+        public static Event Shutdown()
+        {
+            return new Event(new Dictionary<string, object>() {
+                { nameof(Event.Category), nameof(Tenant) },
+                { nameof(Event.Type), TenantState.Shutdown.ToString() },
+            });
+        }
     }
 }

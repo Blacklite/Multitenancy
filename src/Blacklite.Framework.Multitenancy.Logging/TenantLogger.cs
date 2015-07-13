@@ -1,4 +1,4 @@
-﻿using Microsoft.Framework.DependencyInjection;
+using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
 using System;
 
@@ -9,12 +9,12 @@ namespace Blacklite.Framework.Multitenancy
         private ILogger _logger;
         public TenantLogger([NotNull] ITenant tenant, [NotNull] ILoggerFactory factory)
         {
-            _logger = factory.Create(tenant.Id);
+            _logger = factory.CreateLogger(tenant.Id);
         }
 
-        public IDisposable BeginScope(object state)
+        public IDisposable BeginScopeImpl(object state)
         {
-            return _logger.BeginScope(state);
+            return _logger.BeginScopeImpl(state);
         }
 
         public bool IsEnabled(LogLevel logLevel)
@@ -22,9 +22,9 @@ namespace Blacklite.Framework.Multitenancy
             return _logger.IsEnabled(logLevel);
         }
 
-        public void Write(LogLevel logLevel, int eventId, object state, Exception exception, Func<object, Exception, string> formatter)
+        public void Log(LogLevel logLevel, int eventId, object state, Exception exception, Func<object, Exception, string> formatter)
         {
-            _logger.Write(logLevel, eventId, state, exception, formatter);
+            _logger.Log(logLevel, eventId, state, exception, formatter);
         }
     }
 }

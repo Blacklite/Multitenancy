@@ -1,5 +1,5 @@
 using Blacklite.Framework.Multitenancy;
-using Blacklite.Framework.Multitenancy.ApplicationEvents;
+using Blacklite.Framework.Multitenancy.Events;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
 using Microsoft.Framework.DependencyInjection;
@@ -13,20 +13,21 @@ using Blacklite.Framework.Events;
 
 namespace Tenants.Tests.Web
 {
-    public class ApplicationEventsMiddleware
+    public class EventsMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly IList<string> _events = new List<string>();
 
-        public ApplicationEventsMiddleware(RequestDelegate next, IEventObservable<IApplicationEvent> observable)
+        public EventsMiddleware(RequestDelegate next)
         {
             _next = next;
-            observable.Subscribe(x =>
+            MultitenancyEvents.Global.Subscribe(x =>
             {
                 var value = JsonConvert.SerializeObject(x);
                 _events.Add(value);
             });
         }
+        
         public async Task Invoke(HttpContext httpContext)
         {
             var sb = new StringBuilder();

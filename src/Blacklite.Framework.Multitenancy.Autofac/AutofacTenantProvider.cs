@@ -1,4 +1,4 @@
-﻿using Autofac;
+using Autofac;
 using Autofac.Core;
 using Blacklite.Framework.Multitenancy.Configuration;
 using Microsoft.Framework.DependencyInjection;

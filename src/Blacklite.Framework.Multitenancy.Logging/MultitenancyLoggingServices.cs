@@ -1,5 +1,3 @@
-﻿using Blacklite.Framework.Multitenancy.ConfigurationModel;
-using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
 using System;
@@ -13,8 +11,8 @@ namespace Blacklite.Framework.Multitenancy
     {
         public static IEnumerable<ServiceDescriptor> GetDefaultServices()
         {
-            yield return describe.TenantOnlySingleton<ITenantLogger, TenantLogger>();
-            yield return describe.TenantOnlySingleton<ILogger>(x => x.GetRequiredService<ITenantLogger>());
+            yield return TenantOnlyServiceDescriptor.Singleton<ITenantLogger, TenantLogger>();
+            yield return TenantOnlyServiceDescriptor.Singleton<ILogger>(x => x.GetRequiredService<ITenantLogger>());
         }
     }
 }

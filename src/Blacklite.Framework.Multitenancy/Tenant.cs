@@ -1,6 +1,5 @@
-﻿using Blacklite.Framework.Events;
+using Blacklite.Framework.Events;
 using Blacklite.Framework.Multitenancy.Configuration;
-using Blacklite.Framework.Multitenancy.Events;
 using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using System;
@@ -67,10 +66,10 @@ namespace Blacklite.Framework.Multitenancy
 
         public void ChangeState(TenantState state)
         {
-            Broadcast(new TenantEvent()
-            {
-                Type = state.ToString()
-            });
+            Broadcast(new Event(new Dictionary<string, object>() {
+                { nameof(Event.Category), nameof(Tenant) },
+                { nameof(Event.Type), state.ToString() },
+            }));
         }
 
         /// <summary>
@@ -84,7 +83,11 @@ namespace Blacklite.Framework.Multitenancy
             //  This allows for operations to be broadcast, that are not tenant related.
             TenantState movingTo;
             if (Enum.TryParse(@event.Type, out movingTo))
-                @event = new TenantEvent(@event) { Type = "Not" + @event.Type };
+            {
+                var dict = @event.Data.ToDictionary(x => x.Key, x => x.Value);
+                dict[nameof(Event.Type)] = "Not" + @event.Type;
+                @event = new Event(dict);
+            }
 
             Broadcast(@event);
         }
@@ -101,8 +104,10 @@ namespace Blacklite.Framework.Multitenancy
                     {
                         foreach (var s in validStates.TakeWhile(x => x != movingTo))
                         {
-                            var newOperation = new TenantEvent(@event) { Type = s.ToString() };
-
+                            var newOperation = new Event(new Dictionary<string, object>() {
+                                { nameof(Event.Category), nameof(Tenant) },
+                                    { nameof(Event.Type), s.ToString() },
+                            });
                             _eventObserver.OnNext(newOperation);
                         }
 
@@ -111,7 +116,11 @@ namespace Blacklite.Framework.Multitenancy
                     }
                 }
 
-                @event = new TenantEvent(@event) { Type = string.Format("InvalidStateTransition{0}", @event.Type) };
+                @event = new Event(new Dictionary<string, object>() {
+                    { nameof(Event.Category), nameof(Tenant) },
+                    { nameof(Event.Type), string.Format("InvalidStateTransition{0}", @event.Type) },
+                });
+
                 _eventObserver.OnNext(@event);
             }
             else
@@ -120,10 +129,11 @@ namespace Blacklite.Framework.Multitenancy
             }
         }
 
-        public void ChangeState(TenantState state, TenantEvent operation)
+        public void ChangeState(TenantState state, Event operation)
         {
-            operation.Type = state.ToString();
-            Broadcast(operation);
+            var dict = operation.Data.ToDictionary(x => x.Key, x => x.Value);
+            dict[nameof(Event.Type)] = "Not" + operation.Type;
+            Broadcast(new Event(dict));
         }
 
         public IObservable<IEvent> Events { get; }
@@ -140,7 +150,10 @@ namespace Blacklite.Framework.Multitenancy
         {
             if (_starting == null && _validStates.Any(z => z.Value.Contains(TenantState.Started) && z.Key == State))
             {
-                var task = _starting = new Task(() => Broadcast(new TenantEvent() { Type = TenantState.Started.ToString() }));
+                var task = _starting = new Task(() => Broadcast(new Event(new Dictionary<string, object>() {
+                    { nameof(Event.Category), nameof(Tenant) },
+                    { nameof(Event.Type), TenantState.Started.ToString() },
+                })));
                 task.ContinueWith(x => _starting = null);
                 task.Start();
             }
@@ -151,7 +164,10 @@ namespace Blacklite.Framework.Multitenancy
         {
             if (_stopping == null && _validStates.Any(z => z.Value.Contains(TenantState.Stopped) && z.Key == State))
             {
-                var task = _stopping = new Task(() => Broadcast(new TenantEvent() { Type = TenantState.Stopped.ToString() }));
+                var task = _stopping = new Task(() => Broadcast(new Event(new Dictionary<string, object>() {
+                    { nameof(Event.Category), nameof(Tenant) },
+                    { nameof(Event.Type), TenantState.Stopped.ToString() },
+                })));
                 task.ContinueWith(x => _stopping = null);
                 task.Start();
             }

@@ -1,34 +1,40 @@
-﻿using System;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Autofac;
+using Blacklite.Framework;
+using Blacklite.Framework.Multitenancy;
+using Blacklite.Framework.Multitenancy.Http;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
 using Microsoft.Framework.DependencyInjection;
-using Blacklite.Framework.Multitenancy;
-using Autofac;
-using System.Threading.Tasks;
-using System.Linq;
+using Microsoft.Framework.DependencyInjection.ServiceLookup;
 using Microsoft.Framework.Logging;
 using Microsoft.Framework.Logging.Console;
-using Microsoft.Framework.DependencyInjection.ServiceLookup;
 
 namespace Tenants.Tests.Web
 {
     class DefaultTenantIdentificationStrategy : ITenantIdentificationStrategy
     {
-        public bool TryIdentifyTenant(HttpContext context, out string tenantId)
+        public TenantIdentificationResult IdentifyTenant(HttpContext context)
         {
-            tenantId = "Default";
-            return true;
+            return TenantIdentificationResult.Passed;
+        }
+
+        public Task<TenantIdentificationResult> IdentifyTenantAsync([NotNull] HttpContext context)
+        {
+            return Task.FromResult(this.IdentifyTenant(context));
         }
     }
 
     class PathTenantIdentificationStrategy : ITenantIdentificationStrategy
     {
-        public bool TryIdentifyTenant(HttpContext context, out string tenantId)
+        public TenantIdentificationResult IdentifyTenant([NotNull] HttpContext context)
         {
             if (context.Items.ContainsKey("TENANTNAME"))
             {
-                tenantId = (string)context.Items["TENANTNAME"];
-                return true;
+                var tenantId = (string)context.Items["TENANTNAME"];
+                return new TenantIdentificationResult(tenantId, true, true);
             }
 
             if (context.Request.Path.HasValue && context.Request.Path.Value.Count(x => x == '/') > 0)
@@ -37,13 +43,17 @@ namespace Tenants.Tests.Web
                 var name = path.Split('/')[0];
                 if (!string.IsNullOrWhiteSpace(name) && name != "favicon.ico")
                 {
-                    context.Items["TENANTNAME"] = tenantId = name;
-                    return true;
+                    context.Items["TENANTNAME"] = name;
+                    return new TenantIdentificationResult(name, true, true);
                 }
             }
-            //context.Request.Path
-            tenantId = null;
-            return false;
+
+            return TenantIdentificationResult.Failed;
+        }
+
+        public Task<TenantIdentificationResult> IdentifyTenantAsync([NotNull] HttpContext context)
+        {
+            return Task.FromResult(this.IdentifyTenant(context));
         }
     }
 
@@ -58,7 +68,6 @@ namespace Tenants.Tests.Web
             services.AddTenantOnlySingleton<TenantEventStore, TenantEventStore>();
             services.AddMvc();
             services.AddAssembly(this);
-            services.AddMultitenancyApplicationEvents();
             services.AddMultitenancyLogging();
 
             return new ContainerBuilder()
@@ -80,7 +89,7 @@ namespace Tenants.Tests.Web
                 x.UseMvc();
             });
 
-            app.Map("/events", x => x.UseMvc().UseMiddleware<ApplicationEventsMiddleware>());
+            app.Map("/events", x => x.UseMvc().UseMiddleware<EventsMiddleware>());
             app.UseRuntimeInfoPage("/runtimeinfo");
 
 
@@ -98,10 +107,10 @@ namespace Tenants.Tests.Web
 
         public bool IsTenantInPath(HttpContext context)
         {
-            string tenantId;
-            if (_tenantIdentificationStrategy.TryIdentifyTenant(context, out tenantId))
+            var result = _tenantIdentificationStrategy.IdentifyTenant(context);
+            if (result.Enabled && result.Success)
             {
-                var path = new PathString(string.Format("/{0}", tenantId));
+                var path = new PathString(string.Format("/{0}", result.Id));
 
                 PathString remainingPath;
                 if (path.StartsWithSegments(path, out remainingPath))
