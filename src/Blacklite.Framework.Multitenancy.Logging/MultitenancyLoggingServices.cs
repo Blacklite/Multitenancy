@@ -12,7 +12,7 @@ namespace Blacklite.Framework.Multitenancy
         public static IEnumerable<ServiceDescriptor> GetDefaultServices()
         {
             yield return TenantOnlyServiceDescriptor.Singleton<ITenantLogger, TenantLogger>();
-            yield return TenantOnlyServiceDescriptor.Singleton<ILogger>(x => x.GetRequiredService<ITenantLogger>());
+            yield return ApplicationOnlyServiceDescriptor.Singleton<IApplicationLogger, ApplicationLogger>();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Autofac;
+using Autofac;
 using Autofac.Builder;
 using Blacklite;
 using Blacklite.Framework;
@@ -34,6 +34,8 @@ namespace Autofac
             where T : ContainerBuilder
         {
             var container = builder.Build();
+
+            // We make the default application services the application container.
             var applicationLifetime = container.BeginLifetimeScope(AutofacTenantProvider.ApplicationTag);
             return applicationLifetime.Resolve<IServiceProvider>();
         }

@@ -19,7 +19,6 @@
         "Microsoft.Framework.Logging.Console": "1.0.0-beta5-*",
         "Blacklite.Framework.Multitenancy.Http": "",
         "Blacklite.Framework.Multitenancy.Autofac": "",
-        "Blacklite.Framework.Multitenancy.Events": "",
         "Blacklite.Framework.Multitenancy.Logging": "",
         "Blacklite.Framework.DependencyInjection": "1.0.0-beta-*",
         "Microsoft.AspNet.Mvc": "6.0.0-beta5-*",

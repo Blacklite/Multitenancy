@@ -68,6 +68,8 @@ namespace Tenants.Tests.Web
             services.AddTenantOnlySingleton<TenantEventStore, TenantEventStore>();
             services.AddMvc();
             services.AddAssembly(this);
+            services.AddMultitenancy();
+            services.AddHttpMultitenancy();
             services.AddMultitenancyLogging();
 
             return new ContainerBuilder()
@@ -79,13 +81,13 @@ namespace Tenants.Tests.Web
         {
             var loggerFactory = app.ApplicationServices.GetRequiredService<ILoggerFactory>();
             loggerFactory.AddConsole();
-            // Create the container and use the default application services as a fallback
 
             _tenantIdentificationStrategy = app.ApplicationServices.GetService<ITenantIdentificationStrategy>();
-            // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
 
             app.Map("/admin", x =>
             {
+                // This is for request services, if this isn't set then you're going to have issues
+                x.UseMultitenancyApplication();
                 x.UseMvc();
             });
 
@@ -96,7 +98,7 @@ namespace Tenants.Tests.Web
             app.MapWhen(IsTenantInPath, x =>
             {
                 x.UseMultitenancy();
-                x.UseMvc();
+                //x.UseMvc();
                 x.UseMiddleware<TenantTestMiddleware2>();
                 x.UseMiddleware<TenantTestMiddleware>();
                 x.UseMiddleware<TenantEventsMiddleware>();

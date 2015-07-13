@@ -11,24 +11,20 @@ namespace Blacklite.Framework.Multitenancy.Http
     public class TenantMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly IServiceProvider _services;
         private readonly ITenantIdentificationStrategy _tenantIdentificationStrategy;
         private readonly ITenantProvider _tenantProvider;
         private readonly TenantMiddlewareOptions _options;
 
         public TenantMiddleware(
             RequestDelegate next,
-            IServiceProvider serviceProvider,
             ITenantProvider tenantProvider,
             ITenantIdentificationStrategy tenantIdentificationStrategy,
             TenantMiddlewareOptions options)
         {
-            if (serviceProvider == null) { throw new ArgumentNullException(nameof(serviceProvider)); }
             if (tenantProvider == null) { throw new ArgumentNullException(nameof(tenantProvider)); }
             if (tenantIdentificationStrategy == null) { throw new ArgumentNullException(nameof(tenantIdentificationStrategy)); }
 
             _next = next;
-            _services = serviceProvider;
             _tenantIdentificationStrategy = tenantIdentificationStrategy;
             _tenantProvider = tenantProvider;
             _options = options;
