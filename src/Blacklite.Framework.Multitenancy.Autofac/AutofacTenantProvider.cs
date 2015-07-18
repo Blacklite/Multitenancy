@@ -5,6 +5,8 @@ using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Framework.Configuration;
 
 namespace Blacklite.Framework.Multitenancy.Autofac
 {
@@ -38,7 +40,7 @@ namespace Blacklite.Framework.Multitenancy.Autofac
 
         public ITenantScope GetOrAdd(string tenantId)
         {
-            return _tenantScopes.GetOrAdd(tenantId, x => new TenantScope(_lifetimeScope.BeginLifetimeScope(AutofacTenantProvider.TenantTag), _configurationService, x));
+            return _tenantScopes.GetOrAdd(tenantId, x => new TenantScope(_lifetimeScope.BeginLifetimeScope(AutofacTenantProvider.TenantTag, builder => ConfigureTenant(tenantId, builder)), _configurationService, x));
         }
 
         public void DisposeTenant(string tenantId)
@@ -48,6 +50,15 @@ namespace Blacklite.Framework.Multitenancy.Autofac
             {
                 tenant.Dispose();
             }
+        }
+
+        private void ConfigureTenant(string tenantId, ContainerBuilder builder)
+        {
+            var configuration = new TenantConfiguration(Enumerable.Empty<IConfigurationSource>().ToList());
+            var tenant = new Tenant(tenantId, configuration);
+
+            builder.RegisterInstance<ITenant>(tenant);
+            builder.RegisterInstance(tenant);
         }
     }
 
@@ -59,11 +70,8 @@ namespace Blacklite.Framework.Multitenancy.Autofac
         {
             _lifetimeScope = lifetimeScope;
             ServiceProvider = _lifetimeScope.Resolve<IServiceProvider>();
-
-            var tenant = (Tenant)ServiceProvider.GetRequiredService<ITenant>();
-            tenant.Initialize(tenantId, ServiceProvider);
-
-            configurationService.Configure(tenant);
+            var tenant = _lifetimeScope.Resolve<Tenant>();
+            configurationService.Configure(tenant, ServiceProvider);
 
             tenant.ChangeState(TenantState.Boot);
 

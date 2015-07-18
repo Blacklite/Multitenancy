@@ -14,10 +14,11 @@ namespace Blacklite.Framework.Multitenancy
         public static IEnumerable<ServiceDescriptor> GetDefaultServices()
         {
             yield return ApplicationOnlyServiceDescriptor.Singleton<ITenantConfigurationService, TenantConfigurationService>();
-
-            yield return TenantOnlyServiceDescriptor.Singleton<ITenant, Tenant>();
-            yield return TenantOnlyServiceDescriptor.Singleton<ITenantConfiguration, TenantConfiguration>();
             yield return ApplicationOnlyServiceDescriptor.Singleton<ITenantRegistry, DefaultTenantRegistry>();
+        }
+
+        public static IEnumerable<ServiceDescriptor> GetCollectionServices()
+        {
             yield return ServiceDescriptor.Transient<ITenantComposer, EventsBroadcastComposer>();
         }
     }

@@ -11,11 +11,7 @@
     },
 
     "frameworks": {
-        "dnx451": {
-            "frameworkAssemblies": {
-                "System.Runtime": "4.0.10.0"
-            }
-        },
+        "dnx451": { },
         "dnxcore50": { }
     }
 }

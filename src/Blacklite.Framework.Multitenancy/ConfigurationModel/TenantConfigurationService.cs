@@ -19,13 +19,13 @@ namespace Blacklite.Framework.Multitenancy.Configuration
                 .OrderByDescending(z => z.Order);
         }
 
-        public void Configure(ITenant tenant)
+        public void Configure(ITenant tenant, IServiceProvider tenantServiceProvider)
         {
             foreach (var service in _tenantConfigurationComposers)
                 service.Configure(tenant, tenant.Configuration.GetConfigurationSection(service.Key));
 
             foreach (var service in _tenantComposers)
-                service.Configure(tenant);
+                service.Configure(tenant, tenantServiceProvider);
         }
     }
 }

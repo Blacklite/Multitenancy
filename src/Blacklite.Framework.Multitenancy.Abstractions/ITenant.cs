@@ -11,7 +11,7 @@ namespace Blacklite.Framework.Multitenancy
     public interface ITenant : IDisposable
     {
         string Id { get; }
-        IServiceProvider Services { get; }
+        //IServiceProvider Services { get; }
         TenantState State { get; }
         TenantConfiguration Configuration { get; }
         IObservable<KeyValuePair<string, string>> ConfigurationChanged { get; }

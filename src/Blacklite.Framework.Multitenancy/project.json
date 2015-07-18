@@ -5,6 +5,7 @@
         "Rx-Core": "2.2.5",
         "Rx-Linq": "2.2.5",
         "Blacklite.Framework.Abstractions": "1.0.0-*",
+        "Blacklite.Framework.Shared": "1.0.0-*",
         "Blacklite.Framework.Events": "1.0.0-*",
         "Blacklite.Framework.Multitenancy.Abstractions": "1.0.0-*"
     },

@@ -20,9 +20,9 @@ namespace Tenants.Tests.Web
 
         public int Order { get; } = 0;
 
-        public void Configure(ITenant tenant)
+        public void Configure(ITenant tenant, IServiceProvider tenantServiceProvider)
         {
-            var eventStore = tenant.Services.GetService<TenantEventStore>();
+            var eventStore = tenantServiceProvider.GetService<TenantEventStore>();
 
             _disposables.Add(
                 tenant.Events

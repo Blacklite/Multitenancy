@@ -14,7 +14,6 @@ namespace Blacklite.Framework.Multitenancy
 {
     public class Tenant : ITenant
     {
-        private bool _initalized = false;
         private readonly Subject<IEvent> _eventObserver;
         private Task _starting;
         private Task _stopping;
@@ -27,9 +26,10 @@ namespace Blacklite.Framework.Multitenancy
             [TenantState.Shutdown] = new TenantState[] { },
         };
 
-        public Tenant(TenantConfiguration configuration)
+        public Tenant([NotNull] string identifier, TenantConfiguration configuration)
         {
             var eventSubject = _eventObserver = new Subject<IEvent>();
+            Id = identifier;
 
             Configuration = configuration;
             ConfigurationChanged = configuration.Observable;
@@ -48,17 +48,7 @@ namespace Blacklite.Framework.Multitenancy
             Shutdown.Subscribe(x => State = TenantState.Shutdown);
         }
 
-        public void Initialize([NotNull] string identifier, IServiceProvider serviceProvider)
-        {
-            if (_initalized)
-                return;
-
-            Id = identifier;
-            Services = serviceProvider;
-            _initalized = true;
-        }
-
-        public string Id { get; private set; }
+        public string Id { get; }
 
         public TenantConfiguration Configuration { get; }
 
@@ -142,7 +132,7 @@ namespace Blacklite.Framework.Multitenancy
         public IObservable<IEvent> Stop { get; }
         public IObservable<IEvent> Shutdown { get; }
 
-        public IServiceProvider Services { get; private set; }
+        //public IServiceProvider Services { get; private set; }
 
         public IObservable<KeyValuePair<string, string>> ConfigurationChanged { get; }
 

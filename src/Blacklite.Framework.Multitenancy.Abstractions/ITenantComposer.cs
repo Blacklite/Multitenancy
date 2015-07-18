@@ -6,6 +6,6 @@ namespace Blacklite.Framework.Multitenancy
     public interface ITenantComposer
     {
         int Order { get; }
-        void Configure(ITenant tenant);
+        void Configure(ITenant tenant, IServiceProvider tenantServiceProvider);
     }
 }

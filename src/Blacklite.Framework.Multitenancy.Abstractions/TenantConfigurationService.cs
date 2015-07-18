@@ -7,6 +7,6 @@ namespace Blacklite.Framework.Multitenancy.Configuration
 {    [ApplicationOnly]
     public interface ITenantConfigurationService
     {
-        void Configure(ITenant tenant);
+        void Configure(ITenant tenant, IServiceProvider tenantServiceProvider);
     }
 }

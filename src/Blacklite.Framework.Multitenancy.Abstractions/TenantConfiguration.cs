@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reactive.Subjects;
+using System.Linq;
 
 namespace Blacklite.Framework.Multitenancy.Configuration
 {

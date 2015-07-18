@@ -33,8 +33,7 @@ namespace Blacklite.Framework.Multitenancy.Http
         public async Task Invoke(HttpContext httpContext)
         {
             var tenantIdentificationResult = await _tenantIdentificationStrategy.IdentifyTenantAsync(httpContext);
-
-            if (tenantIdentificationResult.Success && tenantIdentificationResult.Success)
+            if (tenantIdentificationResult.Enabled && tenantIdentificationResult.Success)
             {
                 var scope = _tenantProvider.GetOrAdd(tenantIdentificationResult.Id);
 

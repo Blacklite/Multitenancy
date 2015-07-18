@@ -1,4 +1,4 @@
-﻿using Microsoft.Framework.DependencyInjection;
+using Microsoft.Framework.DependencyInjection;
 using System;
 using System.Linq;
 using System.Reflection;

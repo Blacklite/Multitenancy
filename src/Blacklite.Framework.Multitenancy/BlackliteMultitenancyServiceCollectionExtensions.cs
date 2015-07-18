@@ -13,6 +13,7 @@ namespace Microsoft.Framework.DependencyInjection
         public static IServiceCollection AddMultitenancy([NotNull] this IServiceCollection services)
         {
             services.TryAdd(BlackliteMultitenancyServices.GetDefaultServices());
+            services.TryAddImplementation(BlackliteMultitenancyServices.GetCollectionServices());
             return services;
         }
     }

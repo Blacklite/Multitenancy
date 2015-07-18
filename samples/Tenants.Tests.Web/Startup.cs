@@ -94,7 +94,6 @@ namespace Tenants.Tests.Web
             app.Map("/events", x => x.UseMvc().UseMiddleware<EventsMiddleware>());
             app.UseRuntimeInfoPage("/runtimeinfo");
 
-
             app.MapWhen(IsTenantInPath, x =>
             {
                 x.UseMultitenancy();

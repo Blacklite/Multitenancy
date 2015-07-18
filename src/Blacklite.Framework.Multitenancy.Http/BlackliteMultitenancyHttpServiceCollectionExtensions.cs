@@ -18,7 +18,7 @@ namespace Microsoft.Framework.DependencyInjection
                     .TryAdd(BlackliteMultitenancyHttpServices.GetDefaultServices());
 
             var autoRequestServices = services.FirstOrDefault(x => x.ImplementationType == typeof(AutoRequestServicesStartupFilter));
-            if (autoRequestServices == null)
+            if (autoRequestServices != null)
             {
                 services.Remove(autoRequestServices);
             }

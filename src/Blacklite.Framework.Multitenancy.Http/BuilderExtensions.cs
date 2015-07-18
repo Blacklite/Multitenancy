@@ -20,6 +20,7 @@ namespace Microsoft.AspNet.Builder
                     ThrowWhenOffline = true
                 };
             }
+
             app.UseMiddleware<TenantMiddleware>(options);
 
             // This little hack makes it so that requests services are run after our tenant middleware, ensuring that the tenant middle first replaces application services

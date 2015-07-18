@@ -17,7 +17,7 @@ namespace Blacklite.Framework.Multitenancy.Events
 
         public int Order { get; } = 0;
 
-        public void Configure(ITenant tenant)
+        public void Configure(ITenant tenant, IServiceProvider tenantServiceProvider)
         {
             _disposable.Add(MultitenancyEvents.Global.Add(
                 tenant.Events.Select(z => TenantEvent.Create(tenant.Id, z))
